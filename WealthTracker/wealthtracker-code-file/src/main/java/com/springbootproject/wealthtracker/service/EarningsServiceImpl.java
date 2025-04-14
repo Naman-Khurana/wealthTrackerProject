@@ -3,6 +3,7 @@ package com.springbootproject.wealthtracker.service;
 import com.springbootproject.wealthtracker.dao.AccountHolderRepository;
 import com.springbootproject.wealthtracker.dao.EarningsRepository;
 import com.springbootproject.wealthtracker.dto.ExpenseOrEarningInDetailDTO;
+import com.springbootproject.wealthtracker.dto.ExpensesNEarningsInputDTO;
 import com.springbootproject.wealthtracker.dto.FilteredExpenseOrEarningInfoDTO;
 import com.springbootproject.wealthtracker.dto.EarningsHomeDataDTO;
 import com.springbootproject.wealthtracker.entity.AccountHolder;
@@ -36,14 +37,15 @@ public class EarningsServiceImpl implements EarningsService{
 
     @Override
     @Transactional
-    public void addNewEarningsToUserUsingId(int userid, Earnings newEarnings) {
+    public void addNewEarningsToUserUsingId(int userid, ExpensesNEarningsInputDTO newEarnings) {
         //get the account holder
         AccountHolder tempAccountHolder = accountHolderRepository.findAccountNEarnings(userid);
         if (tempAccountHolder == null) {
             throw new RuntimeException("User with ID " + userid + " not found.");
         }
         //add new expense to accont
-        tempAccountHolder.add(newEarnings);
+        Earnings tempEarnings=this.convertInputToEarning(newEarnings);
+        tempAccountHolder.add(tempEarnings);
         //save the account holder
         accountHolderRepository.save(tempAccountHolder);
         System.out.println("Saved New Earnings to the user");
@@ -161,11 +163,22 @@ public class EarningsServiceImpl implements EarningsService{
         }
     }
 
+
+
+
     @Override
-    public void validateEarnings(Earnings earnings) {
-        if (categoryService.categoryValidation(earnings.getCategory()) == false)
-            throw new InvalidCategoryException("Invalid Category provided. Allowed Categories are" +
-                    " :  " + " \nESSENTIALS : " + categoryService.getEssentialCategories() + " \n LUXURY :" + categoryService.getLuxuryCategories());
+    public Earnings convertInputToEarning(ExpensesNEarningsInputDTO earnings) {
+        //create an earnings object
+        Earnings tempEarnings= new Earnings();
+        tempEarnings.setAmount(earnings.getAmount());
+        tempEarnings.setDescription(earnings.getDescription());
+        tempEarnings.setDate(earnings.getDate());
+        tempEarnings.setCategory(earnings.getCategory());
+
+        return tempEarnings;
+        // add the values from input to earnings object
+
+        // return the earnings object
     }
 
 

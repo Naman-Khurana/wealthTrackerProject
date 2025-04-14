@@ -4,6 +4,7 @@ import com.springbootproject.wealthtracker.dao.AccountHolderRepository;
 //import com.springbootproject.wealthtracker.dao.BudgetCustomRespository;
 import com.springbootproject.wealthtracker.dao.BudgetRepository;
 import com.springbootproject.wealthtracker.dao.ExpensesRepository;
+import com.springbootproject.wealthtracker.dto.BudgetInputDTO;
 import com.springbootproject.wealthtracker.entity.AccountHolder;
 import com.springbootproject.wealthtracker.entity.Budget;
 import com.springbootproject.wealthtracker.entity.Expenses;
@@ -12,6 +13,7 @@ import com.springbootproject.wealthtracker.error.InvalidDateRangeException;
 import com.springbootproject.wealthtracker.error.NotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
@@ -36,14 +38,42 @@ public class BudgetServiceImpl implements BudgetService{
         this.categoryService = categoryService;
     }
 
+
+
+//    NOTE : THE BUDGET CHECKING CATEGORY WISE HAS TO BE CHECKED IF IT WORKS AS INTENDED.
     @Override
     @Transactional
-    public void setUserBudget(int userid, Budget budget) {
-        //get account holder
+    public void setUserBudget(int userid, BudgetInputDTO budget) {
+
         AccountHolder tempAccountHolder=accountHolderRepository.findById(userid).orElseThrow(() -> new RuntimeException("USER ID NOT FOUND "));
-        //associate budget with account holder
-        tempAccountHolder.add(budget);
-        checkAllBudgetConstraints(tempAccountHolder,budget.getCategory());
+
+        Budget tempBudget =new Budget();
+
+        //transfer to budget class
+
+        //manage budget category
+        String category=budget.getCategory() == null ? "Total Expenses" : budget.getCategory();
+        tempBudget.setCategory(category);
+
+        tempBudget.setAmount(budget.getAmount());
+
+            // ensure start date and end date values
+        LocalDate startDate=budget.getStartDate() == null ? LocalDate.now() : budget.getStartDate();
+        LocalDate endDate=budget.getEndDate()==null ? startDate.plusMonths(1) : budget.getEndDate();
+        checkBudgetDateRange(startDate,endDate);
+
+        //add the date range to budget object to be added to account
+        tempBudget.setStartDate(startDate);
+        tempBudget.setEndDate(endDate);
+
+        //manage any conflicting date range budget
+        manageConflictingBudget(tempAccountHolder, tempBudget.getCategory(),startDate);
+
+        //commit the changes in database to ensure the unique constraint of budget table is not violated
+        budgetRepository.flush();
+
+        //save the new budget
+        tempAccountHolder.add(tempBudget);
         accountHolderRepository.save(tempAccountHolder);
 
     }
@@ -80,16 +110,7 @@ public class BudgetServiceImpl implements BudgetService{
         return Optional.empty();
     }
 
-    @Override
-    public void validateBudget(Budget budget,int userid) {
-        System.out.println(budget);
-        AccountHolder tempAccountHolder=accountHolderRepository.findById(userid).get();
-        manageConflictingBudget(tempAccountHolder,budget.getCategory(),budget.getStartDate());
-        checkBudgetCategory(budget.getCategory());
-        checkBudgetDateRange(budget.getStartDate(),budget.getEndDate());
 
-
-    }
 
     @Override
     public void checkBudgetDateRange(LocalDate startDate, LocalDate endDate) {
@@ -98,14 +119,7 @@ public class BudgetServiceImpl implements BudgetService{
 
     }
 
-    @Override
-    public void checkBudgetCategory(String category) {
-        if(categoryService.getLuxuryCategories().contains(category) || categoryService.getEssentialCategories().contains(category) ||
-                category.equals("Total Expenses") || categoryService.getAllParentCategories().contains(category))
-            return;
-        throw new InvalidCategoryException("Invalid Category provided. Allowed Categories are" +
-                " :  " + " \nESSENTIALS : " +  categoryService.getEssentialCategories() + " \n LUXURY :" +  categoryService.getLuxuryCategories());
-    }
+
 
     @Override
     @Transactional

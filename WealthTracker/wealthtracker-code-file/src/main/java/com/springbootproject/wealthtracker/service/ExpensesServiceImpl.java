@@ -2,6 +2,7 @@ package com.springbootproject.wealthtracker.service;
 import com.springbootproject.wealthtracker.dao.AccountHolderRepository;
 import com.springbootproject.wealthtracker.dao.ExpensesRepository;
 import com.springbootproject.wealthtracker.dto.ExpenseOrEarningInDetailDTO;
+import com.springbootproject.wealthtracker.dto.ExpensesNEarningsInputDTO;
 import com.springbootproject.wealthtracker.dto.FilteredExpenseOrEarningInfoDTO;
 import com.springbootproject.wealthtracker.dto.ExpensesHomeDataDTO;
 import com.springbootproject.wealthtracker.entity.AccountHolder;
@@ -105,14 +106,15 @@ public class ExpensesServiceImpl implements ExpensesService{
 
     @Override
     @Transactional
-    public void addNewExpenseToUserUsingId(int userid, Expenses newExpense) {
+    public void addNewExpenseToUserUsingId(int userid, ExpensesNEarningsInputDTO newExpense) {
         //get the account holder
         AccountHolder tempAccountHolder = accountHolderRepository.findAccountNExpenses(userid);
         if (tempAccountHolder == null) {
             throw new NotFoundException("User with ID " + userid + " not found.");
         }
         //add new expense to accont
-        tempAccountHolder.add(newExpense);
+        Expenses tempExpense=this.convertInputToExpense(newExpense);
+        tempAccountHolder.add(tempExpense);
         //save the account holder
         accountHolderRepository.save(tempAccountHolder);
         //check for budget constraint
@@ -244,21 +246,18 @@ public class ExpensesServiceImpl implements ExpensesService{
 
     }
 
-
     @Override
-    public void validateExpense(Expenses expense) {
-        if(categoryService.categoryValidation(expense.getCategory())==false)
-            throw new InvalidCategoryException("Invalid Category provided. Allowed Categories are" +
-                    " :  " + " \nESSENTIALS : " +  categoryService.getEssentialCategories() + " \n LUXURY :" +  categoryService.getLuxuryCategories());
-        if(!expenseValueValidation(expense))
-            throw new InvalidInputValueException("Value of an Expense Can't be less than '0'.");
-    }
+    public Expenses convertInputToExpense(ExpensesNEarningsInputDTO expense) {
+        //create an expense object
+        Expenses tempExpense= new Expenses();
+        tempExpense.setAmount(expense.getAmount());
+        tempExpense.setDescription(expense.getDescription());
+        tempExpense.setDate(expense.getDate());
+        tempExpense.setCategory(expense.getCategory());
 
-    @Override
-    public boolean expenseValueValidation(Expenses expenses){
-        if(expenses.getAmount()<0)
-            return false;
-        return true;
+        return tempExpense;
+        // add the values from input to expense object
 
+        // return the expense object
     }
 }

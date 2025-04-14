@@ -1,5 +1,6 @@
 package com.springbootproject.wealthtracker.restcontroller;
 
+import com.springbootproject.wealthtracker.dto.BudgetInputDTO;
 import com.springbootproject.wealthtracker.entity.Budget;
 import com.springbootproject.wealthtracker.service.BudgetService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,7 @@ public class BudgetController {
     }
 
     @PostMapping("/set")
-    public ResponseEntity<String> setBudget(@PathVariable("userid") int userid, @RequestBody Budget budget){
-        budgetService.validateBudget(budget,userid);
+    public ResponseEntity<String> setBudget(@PathVariable("userid") int userid, @RequestBody BudgetInputDTO budget){
         System.out.println("Adding Budget for User ID : " + userid);
         budgetService.setUserBudget(userid,budget);
 

@@ -1,5 +1,6 @@
 package com.springbootproject.wealthtracker.service;
 
+import com.springbootproject.wealthtracker.dto.BudgetInputDTO;
 import com.springbootproject.wealthtracker.entity.AccountHolder;
 import com.springbootproject.wealthtracker.entity.Budget;
 
@@ -8,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BudgetService {
-    void setUserBudget(int userid, Budget budget);
+    void setUserBudget(int userid, BudgetInputDTO budget);
 
 
 
@@ -16,11 +17,11 @@ public interface BudgetService {
 
     Optional<Budget> getAnyBudgetConstraint(AccountHolder accountHolder, String Category, LocalDate startDate,LocalDate endDate);
 
-    void validateBudget(Budget budget,int userid);
+
 
     void checkBudgetDateRange(LocalDate startDate, LocalDate endDate);
 
-    void checkBudgetCategory(String category);
+
     public void manageConflictingBudget(AccountHolder accountHolder,String category,LocalDate startDate);
     public void checkAllBudgetConstraints(AccountHolder accountHolder, String category);
     public boolean checkCategoryBudgetConstraintSatisfaction(AccountHolder accountHolder, Budget budget, String category);

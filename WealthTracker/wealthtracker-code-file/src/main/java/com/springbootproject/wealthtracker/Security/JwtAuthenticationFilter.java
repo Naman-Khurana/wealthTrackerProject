@@ -29,12 +29,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private HandlerExceptionResolver handlerExceptionResolver;
     private JWTUtil jwtUtil;
     private CustomUserDetailsService customUserDetailsService;
+    private TokenBlackList tokenBlackList;
+
 
     @Autowired
-    public JwtAuthenticationFilter(HandlerExceptionResolver handlerExceptionResolver, JWTUtil jwtUtil, CustomUserDetailsService customUserDetailsService) {
+    public JwtAuthenticationFilter(HandlerExceptionResolver handlerExceptionResolver, JWTUtil jwtUtil, CustomUserDetailsService customUserDetailsService, TokenBlackList tokenBlackList) {
         this.handlerExceptionResolver = handlerExceptionResolver;
         this.jwtUtil = jwtUtil;
         this.customUserDetailsService = customUserDetailsService;
+        this.tokenBlackList = tokenBlackList;
     }
 
     @Override
@@ -88,13 +91,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             System.out.println("Code has reached after user validation");
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(userId);
             System.out.println("Code has reached before token validation");
-            if (jwtUtil.isTokenValid(jwt, userDetails)) {
+            if (jwtUtil.isTokenValid(jwt, userDetails) && !tokenBlackList.isTokenBlackListed(jwt)) {
 
                 System.out.println("Code has reached post token validation");
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            }
+            else if (tokenBlackList.isTokenBlackListed(jwt)){
+                System.out.println("the token is blacklisted/logged out.");
+
             }
         }
         filterChain.doFilter(request,response);

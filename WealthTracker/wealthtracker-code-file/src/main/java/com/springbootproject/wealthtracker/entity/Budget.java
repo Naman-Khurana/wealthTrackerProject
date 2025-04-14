@@ -27,12 +27,10 @@ public class Budget {
     @Column(name = "start_date")
     private LocalDate startDate;
 
-    @PrePersist
-    void prePersist(){
-        if(startDate==null) startDate = LocalDate.now();
-    }
+
     @Column(name = "end_date")
     private LocalDate endDate;
+
     @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     @JoinColumn(name = "account_holder_id")
     private AccountHolder accountHolder;

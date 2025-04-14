@@ -63,6 +63,12 @@ public class JWTUtil {
         return generateToken(new HashMap<>(),userDetails);
     }
 
+    //for custom expiration time
+
+    public String generateCustomToken(UserDetails userDetails,int customExpirationTime){
+        return buildToken(userDetails,customExpirationTime);
+    }
+
     public String generateToken(Map<String,Object> extraClaims,UserDetails userDetails){
         return buildToken(userDetails,jwtExpiration);
     }

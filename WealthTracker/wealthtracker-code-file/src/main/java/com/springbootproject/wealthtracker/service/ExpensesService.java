@@ -2,6 +2,7 @@ package com.springbootproject.wealthtracker.service;
 
 import com.springbootproject.wealthtracker.dto.ExpenseOrEarningInDetailDTO;
 import com.springbootproject.wealthtracker.dto.ExpensesHomeDataDTO;
+import com.springbootproject.wealthtracker.dto.ExpensesNEarningsInputDTO;
 import com.springbootproject.wealthtracker.entity.AccountHolder;
 import com.springbootproject.wealthtracker.entity.Budget;
 import com.springbootproject.wealthtracker.entity.Expenses;
@@ -15,7 +16,7 @@ public interface ExpensesService {
 
     ExpensesHomeDataDTO getExpensesHomeData(int userid, LocalDate startDate, LocalDate endDate);
 
-    void addNewExpenseToUserUsingId(int userid, Expenses newExpense);
+    void addNewExpenseToUserUsingId(int userid, ExpensesNEarningsInputDTO newExpense);
 
     void deleteExpenseWithIdFromAccountHolder(int userid,int expenseid) throws Exception;
 
@@ -26,6 +27,6 @@ public interface ExpensesService {
     ResponseEntity<Map<String, Object>> getSubCategoryExpensesTotal(int userid, String expenseType);
 
     double getAnyCategroyExpensesTotal(AccountHolder accountHolder,String budget);
-    void validateExpense(Expenses expense);
-    public boolean expenseValueValidation(Expenses expenses);
+
+    Expenses convertInputToExpense(ExpensesNEarningsInputDTO expense);
 }

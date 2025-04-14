@@ -2,12 +2,15 @@ package com.springbootproject.wealthtracker.restcontroller;
 
 import com.springbootproject.wealthtracker.dto.ExpenseOrEarningInDetailDTO;
 import com.springbootproject.wealthtracker.dto.ExpensesHomeDataDTO;
+import com.springbootproject.wealthtracker.dto.ExpensesNEarningsInputDTO;
 import com.springbootproject.wealthtracker.entity.Expenses;
 import com.springbootproject.wealthtracker.service.ExpensesService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -18,6 +21,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/{userid}/expenses")
 @PreAuthorize("#userid.toString() == principal.username")
+@Validated
 public class ExpensesController {
     //add expensesController injection
     private ExpensesService expensesService;
@@ -54,9 +58,8 @@ public class ExpensesController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addUserNewExpense(@RequestBody Expenses expenses, @PathVariable("userid") int userid) {
+    public ResponseEntity<String> addUserNewExpense(@Valid @RequestBody ExpensesNEarningsInputDTO expenses, @PathVariable("userid") int userid) {
         //call the add new expense service
-        expensesService.validateExpense(expenses);
         System.out.println("Adding new Expense : " + expenses + " to User ID : " + userid);
         expensesService.addNewExpenseToUserUsingId(userid, expenses);
         System.out.println("New expense added.");

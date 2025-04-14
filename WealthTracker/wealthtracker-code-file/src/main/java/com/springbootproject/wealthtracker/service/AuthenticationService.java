@@ -21,4 +21,6 @@ public interface AuthenticationService {
 
      public AccountHolder authenticate(LoginUserDTO loginUserDTO);
 
+     public void logoutUser(String token);
+
 }

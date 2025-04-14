@@ -1,6 +1,7 @@
 package com.springbootproject.wealthtracker.service;
 
 
+import com.springbootproject.wealthtracker.Security.TokenBlackList;
 import com.springbootproject.wealthtracker.config.PasswordEncoderConfig;
 import com.springbootproject.wealthtracker.dao.AccountHolderRepository;
 import com.springbootproject.wealthtracker.dao.RolesRepository;
@@ -26,16 +27,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private RolesRepository rolesRepository;
     private AuthenticationManager authenticationManager;
     private PasswordEncoderConfig passwordEncoderConfig;
+    private TokenBlackList tokenBlackList;
+
 
     @Autowired
-    public AuthenticationServiceImpl(AccountHolderRepository accountHolderRepository, RolesRepository rolesRepository, AuthenticationManager authenticationManager, PasswordEncoderConfig passwordEncoderConfig) {
+    public AuthenticationServiceImpl(AccountHolderRepository accountHolderRepository, RolesRepository rolesRepository, AuthenticationManager authenticationManager, PasswordEncoderConfig passwordEncoderConfig, TokenBlackList tokenBlackList) {
         this.accountHolderRepository = accountHolderRepository;
         this.rolesRepository = rolesRepository;
         this.authenticationManager = authenticationManager;
         this.passwordEncoderConfig = passwordEncoderConfig;
+        this.tokenBlackList = tokenBlackList;
     }
-
-
 
     @Override
     @Transactional
@@ -105,5 +107,25 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUserDTO.getEmail(),loginUserDTO.getPassword()));
 
         return accountHolderRepository.findByEmail(loginUserDTO.getEmail()).orElseThrow();
+    }
+
+
+    @Override
+    public void logoutUser(String token) {
+        // check if the token is valid
+
+        // add the token to blacklist
+        //remove the bearer part of token
+        String jwt=token.substring(7);
+
+        try {
+            tokenBlackList.blackListToken(jwt);
+        }
+        catch (Exception e){
+            System.out.println("Error occurred while logging user out.");
+            throw e;
+        }
+
+
     }
 }

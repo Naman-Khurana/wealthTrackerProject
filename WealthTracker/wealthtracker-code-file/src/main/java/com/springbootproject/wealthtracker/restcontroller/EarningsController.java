@@ -2,12 +2,15 @@ package com.springbootproject.wealthtracker.restcontroller;
 
 import com.springbootproject.wealthtracker.dto.EarningsHomeDataDTO;
 import com.springbootproject.wealthtracker.dto.ExpenseOrEarningInDetailDTO;
+import com.springbootproject.wealthtracker.dto.ExpensesNEarningsInputDTO;
 import com.springbootproject.wealthtracker.entity.Earnings;
 import com.springbootproject.wealthtracker.service.EarningsService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -15,6 +18,7 @@ import java.time.LocalDate;
 @RestController
 @RequestMapping("api/{userid}/earnings")
 @PreAuthorize("#userid.toString() == principal.username")
+@Validated
 public class EarningsController {
 
     private EarningsService earningsService;
@@ -36,7 +40,7 @@ public class EarningsController {
         return tempEarningsHomeData;
     }
     @PostMapping("/add")
-    public ResponseEntity<String> addUserNewEarning(@RequestBody Earnings earnings, @PathVariable("userid") int userid) {
+    public ResponseEntity<String> addUserNewEarning(@Valid @RequestBody ExpensesNEarningsInputDTO earnings, @PathVariable("userid") int userid) {
         //call the add new expense service
 
         System.out.println("Adding new Expense : " + earnings + " to User ID : " + userid);

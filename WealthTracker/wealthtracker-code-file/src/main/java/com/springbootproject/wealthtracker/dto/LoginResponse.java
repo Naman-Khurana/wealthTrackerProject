@@ -10,5 +10,6 @@ public class LoginResponse {
 
     private String token;
     private double expiresIn;
+    private String refreshToken;
 
 }
