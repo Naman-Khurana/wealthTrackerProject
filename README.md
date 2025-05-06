@@ -320,6 +320,6 @@ When contributing to this project:
 4. Write tests for new features
 5. Submit pull requests with detailed descriptions
 
-## License
+## 📩 Contact
 
-[Add your license information here]
+For any queries, reach out at: [**namankhurana2017@gmail.com**](mailto\:namankhurana2017@gmail.com)
