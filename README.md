@@ -317,8 +317,7 @@ When contributing to this project:
 1. Fork the repository
 2. Create a feature branch
 3. Follow existing code style
-4. Write tests for new features
-5. Submit pull requests with detailed descriptions
+4. Submit pull requests with detailed descriptions
 
 ## 📩 Contact
 
