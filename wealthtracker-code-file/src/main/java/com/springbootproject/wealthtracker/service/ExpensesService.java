@@ -1,0 +1,35 @@
+package com.springbootproject.wealthtracker.service;
+
+import com.springbootproject.wealthtracker.dto.*;
+import com.springbootproject.wealthtracker.entity.AccountHolder;
+import com.springbootproject.wealthtracker.entity.Budget;
+import com.springbootproject.wealthtracker.entity.Expenses;
+import org.springframework.http.ResponseEntity;
+
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+public interface ExpensesService {
+
+    ExpensesHomeDataDTO getExpensesHomeData(int userid, LocalDate startDate, LocalDate endDate);
+
+    void addNewExpenseToUserUsingId(int userid, ExpensesNEarningsInputDTO newExpense);
+
+    void deleteExpenseWithIdFromAccountHolder(int userid,int expenseid) throws Exception;
+
+    ExpenseOrEarningInDetailDTO getExpenseWithIdFromAccountHolderId(int userid, int expenseid) throws Exception;
+
+    ExpenseOrEarningInDetailDTO updateExpenseToUser(int userid, Expenses theExpense) throws Exception;
+
+    ResponseEntity<Map<String, Object>> getSubCategoryExpensesTotal(int userid, String expenseType);
+
+    double getAnyCategroyExpensesTotal(AccountHolder accountHolder,String budget);
+
+    Expenses convertInputToExpense(ExpensesNEarningsInputDTO expense);
+    List<MonthlyEarningsNExpensesDTO> getMonthWiseExpenses(int userid);
+    List<ExpensesNEarningsInputDTO> getRecentNTranscations(long userid, int n);
+    public List<ExpensesCategoryWithPercentageUsageDTO> getExpensesCategoriesPercentageUsageWise(long userid);
+
+}
