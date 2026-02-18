@@ -21,12 +21,12 @@ export default function RecentTransactionRowTemplate(props: NExpensesDataType){
     <section className="w-full h-[22%] p-2 flex justify-between items-center border-b border-gray-600 shadow-2xl  transition-all duration-300 ease-in-out text-white/50 ">            
                 <section className="flex gap-5 w-[35%]">
                 <div >Image</div>
-                <div className="text-center">{props.category} </div>
+                <div className="text-center text-white">{props.category} </div>
                 </section>
     
                 <div className="w-[30%] ">{props.date} </div>
                 
-                <div className="w-[20%] ">₹ {props.amount} </div>
+                <div className="w-[20%] text-green-200/80 font-normal ">₹ {props.amount} </div>
                 <div className="w-[5%]">
                     
                     <DropdownMenu >

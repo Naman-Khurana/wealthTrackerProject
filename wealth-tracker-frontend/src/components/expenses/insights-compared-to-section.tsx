@@ -72,7 +72,7 @@ export default function InsightsNCompareSection(){
     const lastMonthDailyAvg=(lastSixMonthsData[lastSixMonthsData.length-2].total)/lastMonthDays();
     const buttons = blocks.map((block) => { 
         return(
-            <div key={block.name} className=" w-full h-[90%] bg-black/50 rounded-4xl   flex flex-col  justify-center 
+            <div key={block.name} className=" w-full h-[90%] bg-black/25 rounded-2xl   flex flex-col  justify-center 
             pl-[5%] border border-[1px] border-gray-600 shadow-2xl">
                 <h1 className=" ">{block.name.toUpperCase()}</h1>
                 <section className="text-white/50 flex flex-col">
@@ -84,7 +84,7 @@ export default function InsightsNCompareSection(){
         )
     })
     return(
-        <section className="w-[98%] h-full flex justify-center items-center gap-4">
+        <section className="w-[100%] h-full flex justify-center items-center gap-4">
             {buttons}
         </section>
     )

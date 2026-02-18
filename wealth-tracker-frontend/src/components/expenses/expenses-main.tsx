@@ -35,13 +35,9 @@ export default function ExpensesComponent(){
             }
             <section className="h-full w-[70%]  flex flex-col ">
                 <section className="w-full h-[25%]  flex">
-                    <section className="h-full w-[80%] flex">
-                        {/* //OVERVIEW SECTION */}
-                        <TotalLuxuryEssentialExpensesBlock/>
-                        {/* <div className="h-full w-[33.34%] bg-indigo-800">TOTAL EXPENSES</div>
-                        <div className="h-full w-[33.34%] bg-cyan-800">LUXURY EXPENSES</div>
-                        <div className="h-full w-[33.34%] bg-lime-800">ESSENTIAL EXPENSES</div>     */}
-                    </section> 
+                
+                    <TotalLuxuryEssentialExpensesBlock/>
+        
                     <div className="h-full w-[20%]  flex flex-col">
                         <AddExpensesNBudgetButton openAddExpenses={openAddExpensesButton} openAddBudget={openAddBudgetButton}/>
                     </div>

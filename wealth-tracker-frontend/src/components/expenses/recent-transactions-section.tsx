@@ -30,7 +30,7 @@ export default function RecentExpensesSection(){
 
     if(loadingNExpenses){
         return(
-            <main className="w-[97.5%] h-[100%]   bg-black/50 backdrop-blur-xl rounded-4xl   flex 
+            <main className="w-[97.5%] h-[100%]   bg-black/25 backdrop-blur-xl rounded-2xl   flex 
             p-5 border border-[1px] border-gray-600 shadow-2xl flex-col gap-3">
             <div className="h-[6%]">RECENT TRANSACTIONS</div>
             
@@ -42,8 +42,8 @@ export default function RecentExpensesSection(){
     }
 
     return(
-        <main className="w-[97.5%] h-[100%]   bg-black/50 backdrop-blur-xl rounded-4xl   flex 
-            p-5 border border-[1px] border-gray-600 shadow-2xl flex-col gap-3">
+        <main className="w-[100%] h-[100%]   bg-black/25 backdrop-blur-xl rounded-2xl   flex 
+            p-5 border border-[1 px] border-gray-800 shadow-2xl flex-col gap-3">
             <div className="h-[6%]">RECENT TRANSACTIONS</div>
             
             <section className="auto-hide-scrollbar overflow-y-scroll h-[94%]" >

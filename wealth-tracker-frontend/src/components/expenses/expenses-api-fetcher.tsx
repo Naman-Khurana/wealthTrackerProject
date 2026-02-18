@@ -1,6 +1,9 @@
 "use client"
+import { API_BASE_URL } from "@/constants/api.constants";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+
+
 
 type NExpensesDataType={
     category : string;
@@ -36,7 +39,7 @@ type AllCategoriesBudgetUsageResponseMapDTO = Record<string, BudgetUsageResponse
 
 
 const fetchNExpenses=async(n : number)=>{
-    const details=await axios.get('http://localhost:8080/api/expenses/recentExpenses', 
+    const details=await axios.get( `${API_BASE_URL}/expenses/recentExpenses`, 
     {
         params:{
             n: n,
@@ -47,7 +50,7 @@ const fetchNExpenses=async(n : number)=>{
 }
 
 const fetchEssentialExpensesDetailWithDetails=async()=>{
-    const details=await axios.get('http://localhost:8080/api/expenses/essential', 
+    const details=await axios.get(`${API_BASE_URL}/expenses/essential`, 
     {
         withCredentials: true,    
     });
@@ -55,7 +58,7 @@ const fetchEssentialExpensesDetailWithDetails=async()=>{
 } 
 
 const fetchLuxuryExpensesDetailWithDetails=async()=>{
-    const details=await axios.get('http://localhost:8080/api/expenses/luxury', 
+    const details=await axios.get(`${API_BASE_URL}/expenses/luxury`, 
     {
         withCredentials: true,    
     });
@@ -63,7 +66,7 @@ const fetchLuxuryExpensesDetailWithDetails=async()=>{
 } 
 
 const fetchExpensesCategoryWithPercentageUsage=async()=>{
-    const details=await axios.get('http://localhost:8080/api/category/getAllExpensesCategoriesWithPercentageWiseUsage', 
+    const details=await axios.get( `${API_BASE_URL}/category/getAllExpensesCategoriesWithPercentageWiseUsage`, 
     {
         withCredentials: true,    
     });
@@ -71,7 +74,7 @@ const fetchExpensesCategoryWithPercentageUsage=async()=>{
 }
 
 const fetchAllBudgetCategoriesWithPercentageUsage=async()=>{
-    const details=await axios.get('http://localhost:8080/api/expenses/budget/percentageAllCategoriesBudgetUsedBudgetRangeCategoryWise', 
+    const details=await axios.get(`${API_BASE_URL}/expenses/budget/percentageAllCategoriesBudgetUsedBudgetRangeCategoryWise`, 
         {
             params:{
                 //for now implementation is only availabel for montly criterias 
