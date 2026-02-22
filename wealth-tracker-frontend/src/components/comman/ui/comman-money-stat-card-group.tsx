@@ -16,6 +16,7 @@ export default function CommanMoneyStatCardGroup({items ,}: MoneyStatGroupProps)
                     key={item.title}
                     title={item.title}
                     amount={item.amount}
+                    classname="px-6 py-5"
                 />
             ))}
         </main>

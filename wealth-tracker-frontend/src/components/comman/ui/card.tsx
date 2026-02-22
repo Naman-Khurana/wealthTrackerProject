@@ -12,7 +12,7 @@ export default function Card({
       className={`
         bg-gray-500/20 rounded-2xl
         shadow-lg shadow-black/40
-        px-6 py-5
+        
         ${className}
       `}
     >

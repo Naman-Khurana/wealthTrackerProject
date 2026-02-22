@@ -1,4 +1,6 @@
+import Card from "../comman/ui/card";
 import AddExpensesNBudgetButton from "../expenses/add-expenses-budget-button";
+import EarningIncomeNSourceAddButtonSection from "./earning-income-n-souce-button-section";
 import EaringsTotalNRecurringNOneTime from "./earnings-total-recurring-one-time";
 
 export default function EarningsComponent() {

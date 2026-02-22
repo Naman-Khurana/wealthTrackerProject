@@ -5,15 +5,17 @@ import Card from "./card";
 type MoneyStatCardProp = {
     title: string;
     amount: number
+    classname?: string;
 }
 
 export default function MoneyStatCard({
     title,
-    amount
+    amount,
+    classname
 }: MoneyStatCardProp
 ) {
     return (
-        <Card className="h-[90%] w-[50%] flex flex-col justify-center" >
+        <Card key={title} className={`h-[90%] w-[50%] flex flex-col justify-center  ${classname}` } >
 
 
             <div className="text-white/70 text-[0.9rem] font-semibold  ">{title}</div>
