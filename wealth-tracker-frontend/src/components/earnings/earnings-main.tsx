@@ -2,6 +2,8 @@ import Card from "../comman/ui/card";
 import AddExpensesNBudgetButton from "../expenses/add-expenses-budget-button";
 import EarningIncomeNSourceAddButtonSection from "./earning-income-n-souce-button-section";
 import EaringsTotalNRecurringNOneTime from "./earnings-total-recurring-one-time";
+import IncomeDistributionSection from "./income-distribution-section";
+import IncomeGrowthSection from "./income-growth-section";
 
 export default function EarningsComponent() {
     return (
@@ -13,9 +15,9 @@ export default function EarningsComponent() {
 
             </section>
 
-            <section className="flex flex-row justify-between items-center h-[30%] w-full">
-                <div className="flex-1">Income Distribution</div>
-                <div className="flex-1">Income Growth</div>
+            <section className="flex flex-row justify-between items-center h-[30%] w-full gap-4 py-2">
+                <div className="flex-4/7 w-full h-full"><IncomeDistributionSection/></div>
+                <div className="flex-3/7 w-full h-full"><IncomeGrowthSection /></div>
             </section>
 
 
