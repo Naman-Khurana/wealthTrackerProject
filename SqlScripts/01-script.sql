@@ -48,6 +48,7 @@ CREATE TABLE `earnings` (
   `date` date DEFAULT NULL,
   `amount` int NOT NULL,
   `account_holder_id` int,
+   `income_type` varchar(20) not null default 'ONE_TIME',
   PRIMARY KEY (`id`),
   CONSTRAINT `account_reference_12312`
   FOREIGN KEY (`account_holder_id`) 
