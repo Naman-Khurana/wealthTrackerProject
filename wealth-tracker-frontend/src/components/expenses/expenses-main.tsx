@@ -26,7 +26,7 @@ export default function ExpensesComponent(){
         <main className="relative w-full h-[99%]  text-white flex justify-center items-center gap-3 ">
             
             { showAddExpense &&(<section className="absolute w-full backdrop-blur-xs h-full z-[9999] flex flex-col  ">
-                <AddExpensesSection closeAddExpenses={openAddExpensesButton} />
+                <AddExpensesSection isOpen={true} closeAddExpenses={openAddExpensesButton} />
             </section>)
             }
             {showAddBudget && (<section className="absolute w-full backdrop-blur-xs h-full z-[9999] flex flex-col  ">

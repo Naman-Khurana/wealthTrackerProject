@@ -33,7 +33,7 @@ export default function StatRowWithProgressBar({
       </div>
 
       {/* Value */}
-      <div className="flex-2 text-[0.8rem] flex items-center gap-1">
+      <div className="flex-1 text-[0.8rem] flex items-center gap-1">
         {value}
       </div>
 

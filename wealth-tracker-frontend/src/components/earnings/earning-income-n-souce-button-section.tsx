@@ -7,7 +7,7 @@ import MoneyStatCard from "../comman/ui/money_stat_card";
 
 export default function EarningIncomeNSourceAddButtonSection() {
     return (
-        <Card className="h-full w-full flex flex-row gap-1">
+        <Card className="h-full w-full flex flex-row gap-1 pr-2">
             <div className="w-[90%]  flex  flex-col flex-1 text-center justify-center items-center  ">
                 <div className="text-white/70 text-[0.8rem] font-semibold  ">Highest Income</div>
                 <div className="text-[0.9rem]">Freelancing</div>
@@ -23,9 +23,9 @@ export default function EarningIncomeNSourceAddButtonSection() {
                 <ActionButton onClick={() => { }} className="h-[40%] w-full text-[0.8rem]  relative  ">
                     + Add Income
                 </ActionButton>
-                <ActionButton onClick={() => { }} className="h-[40%] w-full text-[0.8rem] relative">
+                {/* <ActionButton onClick={() => { }} className="h-[40%] w-full text-[0.8rem] relative">
                     + Add Income Source
-                </ActionButton>
+                </ActionButton> */}
             </div>
 
 
