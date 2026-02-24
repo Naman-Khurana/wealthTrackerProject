@@ -52,12 +52,15 @@ export default function InsightsNCompareSection(){
 
     }
     // console.log("NO OF DAYS IN LAST MONTH IS : " + lastMonthDays());
-            
+
+   
     if(loadingExpenses)
             return <div>Loading...</div>
     const highest = expensesCategoryWithPercentageUsageData?.reduce((max, item) =>
         item.percentageUsed > max.percentageUsed ? item : max
     );
+
+    
 
     const overBudgetCategories = Object.entries(allBudgetCategoriesWithPercentageUsageData??[])
         .filter(([category, info]) => info.percentageUsed > 100)
@@ -67,6 +70,10 @@ export default function InsightsNCompareSection(){
 
 
     const lastSixMonthsData=lastSixMonthsExpensesData??[];
+
+     if (lastSixMonthsData.length < 2) {
+    return <div>Not enough data to generate insights</div>;
+}
     // console.log(lastSixMonthsData);
     const currentMonthDailyAvg=(lastSixMonthsData[lastSixMonthsData.length-1].total)/(new Date().getDate());
     const lastMonthDailyAvg=(lastSixMonthsData[lastSixMonthsData.length-2].total)/lastMonthDays();

@@ -25,13 +25,15 @@ import { Calendar } from "@/components/ui/calendar"
 import axios from "axios";
 import { useState, useRef } from "react";
 import { useAllEssentialExpensesWithDetails, useAllLuxuryExpensesWithDetails } from "./expenses-api-fetcher";
+import Modal from "../comman/ui/modal";
 
 
 type props ={
     closeAddBudget : ()=> void;
+    isOpen: boolean
 }
 
-export default function AddBudgetSection({closeAddBudget} : props) {
+export default function AddBudgetSection({closeAddBudget,isOpen} : props) {
     const [open ,setOpen]=useState(true);
     const [selected,setSelected]=useState<string>("");
     const [startDate, setStartDate] = useState<Date>();
@@ -146,9 +148,8 @@ export default function AddBudgetSection({closeAddBudget} : props) {
 
 
   return (
-    <>
-     <main className="absolute bg-black w-[40%] h-[80%] z-[998] p-0 rounded-4xl flex justify-center items-center border border-gray-600 shadow-2xl left-50">
-      <form className="relative flex flex-col items-center  h-full w-full p-0 m-0 text-black" onSubmit={(e)=> handleSubmit(e)}>
+    <Modal onClose={closeAddBudget} isOpen={isOpen}>
+        <form className="relative flex flex-col items-center  h-full w-full p-0 m-0 text-black" onSubmit={(e)=> handleSubmit(e)}>
         <Button onClick={()=>closeAddBudget()} variant="ghost" className="absolute  right-3  top-5 w-[20%] text-white/50 hover:bg-black/50 hover:scale-[110%] transition-easy-inout "> <X /></Button>
         <div className="h-[2%]"></div>
         <h1 className="h-[10%] text-2xl flex items-center text-white">ADD BUDGET</h1>
@@ -268,7 +269,6 @@ export default function AddBudgetSection({closeAddBudget} : props) {
             <Button variant="secondary">Submit</Button>
         </div>
       </form>
-    </main>
-    </>
+    </Modal>
   );
 }

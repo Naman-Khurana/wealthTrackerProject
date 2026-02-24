@@ -5,6 +5,8 @@ import "../globals.css";
 import Navbar from "@/components/navbar/navbar";
 import Menu from "@/components/main-layout/menu";
 import ReactQueryProvider from "@/components/provider/ReactQueryProvider";
+import { ModalProvider } from "@/context/model-context";
+import ModalRenderer from "@/components/global/modal-renderer";
 
 
 // Font setup
@@ -70,7 +72,10 @@ export default function RootLayout({
           </div>
           <div className="h-full w-[80%] overflow-auto">
             <ReactQueryProvider >
-              {children}
+               <ModalProvider>
+                      {children}
+                      <ModalRenderer/>
+                      </ModalProvider>
             </ReactQueryProvider>
             
             </div>

@@ -9,10 +9,12 @@ import RecentExpensesSection from "./recent-transactions-section";
 import AddExpensesSection from "./add-expenses-section";
 import Example from "./add-expense-section-two";
 import { useState } from "react";
+import { useModal } from "@/context/model-context";
 import AddBudgetSection from "./add-budget-section";
 import ExpensesCategoriesPercentageUsageSection from "./expense-categories-percentage-wise";
 
 export default function ExpensesComponent(){
+    const { openModal } = useModal()
     const [showAddExpense,setShowAddExpenses]=useState(false);
     const [showAddBudget,setShowAddBudget]=useState(false);
     const openAddExpensesButton=()=>{
@@ -25,14 +27,8 @@ export default function ExpensesComponent(){
     return(
         <main className="relative w-full h-[99%]  text-white flex justify-center items-center gap-3 ">
             
-            { showAddExpense &&(<section className="absolute w-full backdrop-blur-xs h-full z-[9999] flex flex-col  ">
-                <AddExpensesSection isOpen={true} closeAddExpenses={openAddExpensesButton} />
-            </section>)
-            }
-            {showAddBudget && (<section className="absolute w-full backdrop-blur-xs h-full z-[9999] flex flex-col  ">
-                <AddBudgetSection closeAddBudget={openAddBudgetButton} />
-            </section>)
-            }
+
+            
             <section className="h-full w-[70%]  flex flex-col ">
                 <section className="w-full h-[25%]  flex">
                 

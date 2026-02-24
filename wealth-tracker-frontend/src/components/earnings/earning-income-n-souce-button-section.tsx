@@ -4,8 +4,14 @@ import { TEXT_COLOR_EMRALD_GREEN } from "@/constants/ui.constants";
 import ActionButton from "../comman/ui/action-button";
 import Card from "../comman/ui/card";
 import MoneyStatCard from "../comman/ui/money_stat_card";
+import { useModal } from "@/context/model-context";
+
 
 export default function EarningIncomeNSourceAddButtonSection() {
+
+    
+const { openModal } = useModal()
+
     return (
         <Card className="h-full w-full flex flex-row gap-1 pr-2">
             <div className="w-[90%]  flex  flex-col flex-1 text-center justify-center items-center  ">
