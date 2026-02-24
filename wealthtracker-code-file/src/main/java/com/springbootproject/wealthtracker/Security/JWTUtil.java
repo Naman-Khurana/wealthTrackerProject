@@ -1,6 +1,7 @@
 package com.springbootproject.wealthtracker.Security;
 
 import com.springbootproject.wealthtracker.entity.AccountHolder;
+import com.springbootproject.wealthtracker.error.UnauthorizedException;
 import com.springbootproject.wealthtracker.error.jwtTokenExpirationException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -97,6 +98,17 @@ public class JWTUtil {
     public boolean isTokenValid(String token, UserDetails userDetails){
         final String username=extractUserName(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    }
+
+    public int extractUserId(String token) {
+
+        if (token == null || token.isBlank()) {
+            throw new UnauthorizedException("JWT token missing");
+        }
+
+        String username =extractUserName(token);
+
+        return Integer.parseInt(username);
     }
 
 }

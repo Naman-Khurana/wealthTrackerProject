@@ -3,19 +3,20 @@ package com.springbootproject.wealthtracker.service;
 import com.springbootproject.wealthtracker.dao.AccountHolderRepository;
 import com.springbootproject.wealthtracker.dao.EarningsRepository;
 import com.springbootproject.wealthtracker.dto.*;
+import com.springbootproject.wealthtracker.dto.EarningsDTO;
 import com.springbootproject.wealthtracker.entity.AccountHolder;
 import com.springbootproject.wealthtracker.entity.Earnings;
-import com.springbootproject.wealthtracker.entity.Expenses;
-import com.springbootproject.wealthtracker.error.InvalidCategoryException;
-import com.springbootproject.wealthtracker.error.InvalidInputValueException;
+import com.springbootproject.wealthtracker.mapper.EarningsMapper;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
+
 import java.util.List;
 
 @Service
@@ -25,28 +26,33 @@ public class EarningsServiceImpl implements EarningsService{
     AccountHolderRepository accountHolderRepository;
     EarningsRepository earningsRepository;
     CategoryService categoryService;
+    EarningsMapper earningsMapper;
+
+    private static final Logger logger= LoggerFactory.getLogger(EarningsServiceImpl.class);
 
     @Autowired
-    public EarningsServiceImpl(AccountHolderRepository accountHolderRepository, EarningsRepository earningsRepository, CategoryService categoryService) {
+    public EarningsServiceImpl(AccountHolderRepository accountHolderRepository, EarningsRepository earningsRepository, CategoryService categoryService,EarningsMapper earningsMapper) {
         this.accountHolderRepository = accountHolderRepository;
         this.earningsRepository = earningsRepository;
         this.categoryService = categoryService;
+        this.earningsMapper=earningsMapper;
     }
 
     @Override
     @Transactional
-    public void addNewEarningsToUserUsingId(int userid, ExpensesNEarningsInputDTO newEarnings) {
+    public Earnings addNewEarningsToUserUsingId(int userid, EarningsDTO newEarnings) {
         //get the account holder
         AccountHolder tempAccountHolder = accountHolderRepository.findAccountNEarnings(userid);
         if (tempAccountHolder == null) {
             throw new RuntimeException("User with ID " + userid + " not found.");
         }
-        //add new expense to accont
-        Earnings tempEarnings=this.convertInputToEarning(newEarnings);
+        //add new expense to account
+
+        Earnings tempEarnings=earningsMapper.toEntity(newEarnings);
         tempAccountHolder.add(tempEarnings);
         //save the account holder
         accountHolderRepository.save(tempAccountHolder);
-        System.out.println("Saved New Earnings to the user");
+        return tempEarnings;
     }
 
 
@@ -89,7 +95,7 @@ public class EarningsServiceImpl implements EarningsService{
 
     @Override
     @Transactional
-    public ExpenseOrEarningInDetailDTO updateEarningToUser(int userid, Earnings theEarning) throws Exception {
+    public EarningsDTO updateEarningToUser(int userid, Earnings theEarning) throws Exception {
         System.out.println("USING updateEarningToUser in Earnings Services");
         //check if Account Exists
         AccountHolder temp=accountHolderRepository.findById(userid).orElseThrow(() -> new RuntimeException("USER NOT FOUND "));        //check if expense with given id exists
@@ -101,11 +107,18 @@ public class EarningsServiceImpl implements EarningsService{
             tempEarnings.setCategory(theEarning.getCategory());
             tempEarnings.setDate(theEarning.getDate());
             tempEarnings.setDescription(theEarning.getDescription());
+            tempEarnings.setIncomeType(theEarning.getIncomeType());
             earningsRepository.save(tempEarnings);
 
             //return in required format
-
-            ExpenseOrEarningInDetailDTO tempEle=new ExpenseOrEarningInDetailDTO(tempEarnings.getCategory(),tempEarnings.getDescription(),tempEarnings.getDate(),tempEarnings.getAmount());
+            EarningsDTO tempEle = new EarningsDTO()
+                    .builder()
+                    .category(tempEarnings.getCategory())
+                    .description(tempEarnings.getDescription())
+                    .date(tempEarnings.getDate())
+                    .amount(tempEarnings.getAmount())
+                    .incomeType(tempEarnings.getIncomeType())
+                    .build();
             return tempEle;
         }
         catch (Exception e){
@@ -142,16 +155,23 @@ public class EarningsServiceImpl implements EarningsService{
     }
 
     @Override
-    public ExpenseOrEarningInDetailDTO getEarningWithIdFromAccountHolderId(int userid, int earningid) throws Exception {
+    public EarningsDTO getEarningWithIdFromAccountHolderId(int userid, int earningid) throws Exception {
         //check if account is correct
         System.out.println("USING getEarningWithIdFromAccountHolderId in Expense Services");
         AccountHolder temp=accountHolderRepository.findById(userid).orElseThrow(() -> new RuntimeException("USER NOT FOUND "));
 
         //get the expense
         try {
-            Earnings tempEarning=earningsRepository.findEarningUsingEarningIdAndAccountHolder(temp,earningid);
-            ExpenseOrEarningInDetailDTO tempEle=new ExpenseOrEarningInDetailDTO(tempEarning.getCategory(),tempEarning.getDescription(),tempEarning.getDate(),tempEarning.getAmount());
+            Earnings tempEarnings=earningsRepository.findEarningUsingEarningIdAndAccountHolder(temp,earningid);
 
+            EarningsDTO tempEle = new EarningsDTO()
+                    .builder()
+                    .category(tempEarnings.getCategory())
+                    .description(tempEarnings.getDescription())
+                    .date(tempEarnings.getDate())
+                    .amount(tempEarnings.getAmount())
+                    .incomeType(tempEarnings.getIncomeType())
+                    .build();
             //return in correct format
             return tempEle;
         }
@@ -165,7 +185,7 @@ public class EarningsServiceImpl implements EarningsService{
 
 
     @Override
-    public Earnings convertInputToEarning(ExpensesNEarningsInputDTO earnings) {
+    public Earnings convertInputToEarning(EarningsDTO earnings) {
         //create an earnings object
         Earnings tempEarnings= new Earnings();
         tempEarnings.setAmount(earnings.getAmount());

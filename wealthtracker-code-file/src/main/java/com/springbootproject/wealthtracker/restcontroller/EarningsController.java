@@ -1,13 +1,15 @@
 package com.springbootproject.wealthtracker.restcontroller;
 
 import com.springbootproject.wealthtracker.Security.JWTUtil;
+import com.springbootproject.wealthtracker.dto.EarningsDTO;
 import com.springbootproject.wealthtracker.dto.EarningsHomeDataDTO;
-import com.springbootproject.wealthtracker.dto.ExpenseOrEarningInDetailDTO;
-import com.springbootproject.wealthtracker.dto.ExpensesNEarningsInputDTO;
 import com.springbootproject.wealthtracker.dto.MonthlyEarningsNExpensesDTO;
 import com.springbootproject.wealthtracker.entity.Earnings;
 import com.springbootproject.wealthtracker.service.EarningsService;
+import com.springbootproject.wealthtracker.utils.AuthUtils;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -24,23 +26,24 @@ import java.util.List;
 @Validated
 public class EarningsController {
 
-    private EarningsService earningsService;
-    private JWTUtil jwtUtil;
+    private final EarningsService earningsService;
+    private final JWTUtil jwtUtil;
+    private static final Logger logger =
+            LoggerFactory.getLogger(EarningsController.class);
 
 
+    @Autowired
     public EarningsController(EarningsService earningsService, JWTUtil jwtUtil) {
         this.earningsService = earningsService;
         this.jwtUtil = jwtUtil;
     }
 
     @GetMapping("/")
-    public EarningsHomeDataDTO expensesHome(@CookieValue(name = "jwt", required = false) String token,
+    public EarningsHomeDataDTO earningsHome(@CookieValue(name = "jwt", required = false) String token,
                                             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE,pattern = "yyyy/MM/dd") LocalDate startDate,
                                             @RequestParam(required = false) @DateTimeFormat(iso=DateTimeFormat.ISO.DATE,pattern = "yyyy/MM/dd")LocalDate endDate) {
         //create a variable of type expensesdatadto
-        if (token == null) {
-            throw new RuntimeException("Unauthorized - JWT token missing");
-        }
+        AuthUtils.checkAuthToken(token);
 
         String username = jwtUtil.extractUserName(token);
         int userid=Integer.parseInt(username);
@@ -48,34 +51,24 @@ public class EarningsController {
         //return the required data
         return tempEarningsHomeData;
     }
-    @PostMapping("/add")
-    public ResponseEntity<String> addUserNewEarning(@Valid @RequestBody ExpensesNEarningsInputDTO earnings, @CookieValue(name = "jwt", required = false) String token) {
+    @PostMapping("/")
+    public ResponseEntity<Earnings> addNewEarning(@Valid @RequestBody EarningsDTO earnings, @CookieValue(name = "jwt", required = false) String token) {
         //call the add new expense service
 
-        if (token == null) {
-            throw new RuntimeException("Unauthorized - JWT token missing");
-        }
-
-        String username = jwtUtil.extractUserName(token);
-        int userid=Integer.parseInt(username);
-        System.out.println("Adding new Expense : " + earnings + " to User ID : " + userid);
-        earningsService.addNewEarningsToUserUsingId(userid, earnings);
-        System.out.println("New Earnings added.");
-        return ResponseEntity.ok("User updated successfully");
+        int userid= jwtUtil.extractUserId(token);
+        Earnings savedEarnings=earningsService.addNewEarningsToUserUsingId(userid, earnings);
+        logger.info("Added new earning : " + earnings + " for the user with ID : "+ userid);
+        return ResponseEntity.ok(savedEarnings);
 
     }
 
-    @PutMapping("/update")
-    public ExpenseOrEarningInDetailDTO updateUserEarnings(@RequestBody Earnings earnings, @CookieValue(name = "jwt", required = false) String token) throws Exception {
+    @PutMapping("/")
+    public EarningsDTO updateUserEarnings(@RequestBody Earnings earnings, @CookieValue(name = "jwt", required = false) String token) throws Exception {
         //call the add new expense service
-        if (token == null) {
-            throw new RuntimeException("Unauthorized - JWT token missing");
-        }
 
-        String username = jwtUtil.extractUserName(token);
-        int userid=Integer.parseInt(username);
+        int userid= jwtUtil.extractUserId(token);
         System.out.println("Updating : " + earnings + " to User ID : " + userid);
-        ExpenseOrEarningInDetailDTO ans= earningsService.updateEarningToUser(userid,earnings);
+        EarningsDTO ans= earningsService.updateEarningToUser(userid,earnings);
         System.out.println(" Earnings Updated.");
         return ans;
 
@@ -103,14 +96,14 @@ public class EarningsController {
 
     @GetMapping("/{earningid}")
     //call service function for updating expense
-    public ExpenseOrEarningInDetailDTO getEarningFromAccountHolderId(@CookieValue(name = "jwt", required = false) String token, @PathVariable("earningid") int earningid) throws Exception{
+    public EarningsDTO getEarningFromAccountHolderId(@CookieValue(name = "jwt", required = false) String token, @PathVariable("earningid") int earningid) throws Exception{
         if (token == null) {
             throw new RuntimeException("Unauthorized - JWT token missing");
         }
 
         String username = jwtUtil.extractUserName(token);
         int userid=Integer.parseInt(username);
-        ExpenseOrEarningInDetailDTO tempEarning= earningsService.getEarningWithIdFromAccountHolderId(   userid,earningid);
+        EarningsDTO tempEarning= earningsService.getEarningWithIdFromAccountHolderId(   userid,earningid);
 
         //return the updated expense
         return tempEarning;

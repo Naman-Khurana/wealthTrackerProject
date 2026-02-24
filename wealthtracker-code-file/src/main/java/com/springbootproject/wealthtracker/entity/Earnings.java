@@ -1,8 +1,8 @@
 package com.springbootproject.wealthtracker.entity;
 
+import com.springbootproject.wealthtracker.enums.IncomeTypeEnum;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 @Table(name = "earnings")
 public class Earnings {
 
@@ -28,29 +29,30 @@ public class Earnings {
 
     @Column(name = "date")
     private LocalDate date;
+
     @Column(name = "amount")
     private int amount;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name="income_type",nullable = false)
+    private IncomeTypeEnum incomeType;
 
     @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     @JoinColumn(name = "account_holder_id")
     private AccountHolder accountHolder;
 
-    //constructors
 
-    public Earnings() {
-    }
+    //constructors
 
     //foreign key element not included
 
-    public Earnings(String category, String description, LocalDate date, int amount) {
+    public Earnings(String category, String description, LocalDate date, int amount, IncomeTypeEnum incomeType) {
         this.category = category;
         this.description = description;
         this.date = date;
         this.amount = amount;
+        this.incomeType=incomeType;
     }
-
-    //getter setter
 
 
     //toString
@@ -63,66 +65,8 @@ public class Earnings {
                 ", description='" + description + '\'' +
                 ", date=" + date +
                 ", amount=" + amount +
+                ", income_type=" + incomeType +
                 '}';
     }
 
-
-
-
-
-
-
-    /*
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public int getAmount() {
-        return amount;
-    }
-
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
-
-    public AccountHolder getAccountHolder() {
-        return accountHolder;
-    }
-
-    public void setAccountHolder(AccountHolder accountHolder) {
-        this.accountHolder = accountHolder;
-    }
-*/
-
-
-    //setup relation between parent and child classes
 }
