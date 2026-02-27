@@ -1,6 +1,6 @@
 # Wealth Tracker Application
 
-A Spring Boot application for tracking personal finances, including expenses, earnings, budgets, and stock market investments with comprehensive budget management and insights.
+A Full-Stack application for tracking personal finances, including expenses, earnings, budgets, and stock market investments with comprehensive budget management and insights.
 
 ## Project Overview
 
@@ -14,74 +14,6 @@ This application provides a comprehensive system for users to manage their finan
 - JWT-based authentication
 - Financial insights and analytics
 
-## Database Schema
-
-### Account Holder Table
-```sql
-CREATE TABLE `account_holder` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(50) NOT NULL,
-  `last_name` varchar(50) NOT NULL,
-  `email` varchar(50) UNIQUE NOT NULL,
-  `password` varchar(68) NOT NULL,
-  PRIMARY KEY (`id`)
-)
-```
-
-### Roles Table
-```sql
-CREATE TABLE `roles` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int NOT NULL,
-  `role` varchar(50) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `authorities5_idx_1` (`user_id`,`role`),
-  FOREIGN KEY (`user_id`) REFERENCES `account_holder`(`id`)
-)
-```
-
-### Earnings Table
-```sql
-CREATE TABLE `earnings` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `category` varchar(50) DEFAULT NULL,
-  `description` varchar(50) DEFAULT NULL,
-  `date` date DEFAULT NULL,
-  `amount` int NOT NULL,
-  `account_holder_id` int,
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`account_holder_id`) REFERENCES `account_holder` (`id`)
-)
-```
-
-### Expenses Table
-```sql
-CREATE TABLE `expenses` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `category` varchar(50) DEFAULT NULL,
-  `description` varchar(50) DEFAULT NULL,
-  `date` date DEFAULT NULL,
-  `amount` int NOT NULL,
-  `account_holder_id` int,
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`account_holder_id`) REFERENCES `account_holder` (`id`)
-)
-```
-
-### Budget Table
-```sql
-CREATE TABLE `budget` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `category` VARCHAR(50) NOT NULL,
-  `amount` int NOT NULL,
-  `start_date` DATE DEFAULT NULL,
-  `end_date` date DEFAULT NULL,
-  `account_holder_id` int,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `account_categerory_unique` (`account_holder_id`,`category`),
-  FOREIGN KEY (`account_holder_id`) REFERENCES `account_holder` (`id`)
-)
-```
 
 ## API Endpoints
 
@@ -127,104 +59,19 @@ CREATE TABLE `budget` (
 
 ## Entity Structure
 
-### AccountHolder
-- Core user entity implementing Spring Security's UserDetails
-- Stores basic user information:
-  - First name (varchar(50))
-  - Last name (varchar(50))
-  - Email (varchar(50), unique)
-  - Encrypted password (varchar(68))
-- Has one-to-many relationships with:
-  - Earnings
-  - Expenses
-  - Budgets
-  - Roles
-
-### Roles
-- Stores user roles for authorization
-- Fields:
-  - Role name (varchar(50))
-  - User ID reference
-- Unique constraint on user_id and role combination
-
-### Budget
-- Stores budget information per category
-- Fields:
-  - Category (varchar(50))
-  - Amount (integer)
-  - Start date (date)
-  - End date (date)
-  - Account holder reference
-- Unique constraint on account_holder_id and category combination
-
-### Categories
-Pre-defined expense and earning categories:
-
-Essential Categories:
-- Food
-- Housing
-- Transportation
-- Healthcare
-- Education
-- Insurance
-- Savings
-
-Luxury Categories:
-- Entertainment
-- Dining Out
-- Vacations/Travel
-- Personal Care
-- Technology
-- Fashion
-- Gifts
-
 ## Security Implementation
 
 ### Authentication Flow
 1. **JWT-Based Authentication** (Replaces Session-Based Security)
-   - Stateless authentication using JSON Web Tokens
-   - Tokens contain encrypted user information and permissions
-   - Client must include JWT in Authorization header for protected routes
-   - No server-side session storage required
-   - Token structure:
-     - Header: Algorithm and token type
-     - Payload: User ID, roles, and expiration time
-     - Signature: Ensures token integrity
-
-2. **Token Management**
-   - Access tokens valid for 24 hours
-   - Refresh token functionality for extended sessions
-   - Automatic token invalidation on logout
-   - Token blacklisting for compromised credentials
+ 
 
 ## Stock Market Integration
 
 ### Financial Modeling Prep API Integration
 The application uses Financial Modeling Prep API for real-time and historical stock data.
 
-#### Data Retrieved:
-- Real-time stock quotes
-- Historical price data
-- Company profiles and financials
-- Market news and updates
 
-#### API Rate Limits:
-- Free Tier: 250 requests/day
-- Premium Tier: 50,000 requests/day
-- Enterprise: Unlimited requests
 
-#### Sample API Response:
-```json
-{
-    "symbol": "AAPL",
-    "price": 178.72,
-    "change": 2.35,
-    "changesPercentage": 1.33,
-    "volume": 57612440,
-    "marketCap": 2800986542080,
-    "lastUpdated": "2024-02-06 16:00:00"
-}
-```
 
 ### Error Handling:
 - Automatic retry for failed API requests (max 3 attempts)
@@ -243,31 +90,6 @@ The budget system allows users to set and track spending limits across different
 - Real-time spending alerts
 - Budget vs. actual expense analysis
 
-#### Budget Creation Example:
-```json
-POST /api/{userid}/expenses/budget/set
-Content-Type: application/json
-
-{
-    "category": "Food",
-    "amount": 5000,
-    "start_date": "2025-01-01",
-    "end_date": "2025-01-31",
-    "alert_threshold": 80  // Optional: Alert when 80% of budget is used
-}
-```
-
-#### Budget Update Example:
-```json
-PUT /api/{userid}/expenses/budget/update/{budgetId}
-Content-Type: application/json
-
-{
-    "amount": 6000,
-    "end_date": "2025-02-28"  // Extend budget period
-}
-```
-
 ### Budget Analytics
 The system provides various analytical insights for budget management:
 
@@ -276,12 +98,7 @@ The system provides various analytical insights for budget management:
    - Budget utilization percentages
    - Trend analysis across periods
 
-2. **Alerts and Notifications**
-   - Threshold-based alerts (e.g., 80% of budget reached)
-   - Period-end summaries
-   - Overspending notifications
-
-3. **Budget Reports**
+2. **Budget Reports**
    - Monthly budget vs. actual comparison
    - Category-wise budget adherence
    - Savings recommendations based on spending patterns
