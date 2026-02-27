@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface EarningsRepository extends JpaRepository<Earnings,Integer>,EarningsCustomRepository{
@@ -53,5 +54,13 @@ public interface EarningsRepository extends JpaRepository<Earnings,Integer>,Earn
 """, nativeQuery = true)
 
     List<Object[]> getDynamicMonthlyEarnings(@Param("userId") long userId);
+
+    @Query("""
+            SELECT e
+            FROM Earnings e
+            WHERE e.accountHolder.id = :userid
+            and e.date BETWEEN :startDate and :endDate
+            """)
+    List<Earnings> getEarningsInDateRange(@Param("userid") long userid, @Param("startDate")LocalDate startDate,@Param("endDate")LocalDate endDate);
 
 }

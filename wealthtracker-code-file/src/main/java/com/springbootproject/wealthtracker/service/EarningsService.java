@@ -25,5 +25,5 @@ public interface EarningsService {
     Earnings convertInputToEarning(EarningsDTO earnings);
     List<MonthlyEarningsNExpensesDTO> getLastSixMonthsEarnings(int userid);
 
-
+    List<EarningsDTO> getEarningsWithDetails(int userid,LocalDate start,LocalDate end);
 }

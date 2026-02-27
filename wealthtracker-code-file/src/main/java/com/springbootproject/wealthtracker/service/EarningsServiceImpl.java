@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -18,13 +19,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-public class EarningsServiceImpl implements EarningsService{
+public class  EarningsServiceImpl implements EarningsService{
 
 
     AccountHolderRepository accountHolderRepository;
-    EarningsRepository earningsRepository;
+    EarningsRepository  earningsRepository;
     CategoryService categoryService;
     EarningsMapper earningsMapper;
 
@@ -213,5 +215,26 @@ public class EarningsServiceImpl implements EarningsService{
         }
 
         return monthWiseYearlyData;
+    }
+
+    @Override
+    public List<EarningsDTO> getEarningsWithDetails(int userid, LocalDate start, LocalDate end) {
+        LocalDate today= LocalDate.now();
+
+        if(end==null){
+            end=today;
+        }
+
+        if(start==null){
+            start=end.minusMonths(1);
+        }
+
+        if(start.isAfter(end)){
+            throw new IllegalArgumentException("Start Date cannot be after End Date.");
+        }
+
+        List<Earnings> earnings=earningsRepository.getEarningsInDateRange(userid,start,end);
+        List<EarningsDTO> earningsDTOS=earnings.stream().map(earningsMapper::toDTO).toList();
+        return earningsDTOS;
     }
 }
