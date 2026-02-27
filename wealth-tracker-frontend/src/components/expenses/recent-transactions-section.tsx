@@ -1,4 +1,6 @@
 "use client"
+import Divider from "../comman/ui/divider";
+import SectionCard from "../comman/ui/section-card";
 import { useNExpenses } from "./expenses-api-fetcher"
 import RecentTransactionRowTemplate from "./recent-transaction-row-template"
 
@@ -7,6 +9,7 @@ type NExpensesDataType={
     amount : number;
     date : string;
 }
+
 
 
 export default function RecentExpensesSection(){
@@ -30,25 +33,29 @@ export default function RecentExpensesSection(){
 
     if(loadingNExpenses){
         return(
-            <main className="w-[97.5%] h-[100%]   bg-black/25 backdrop-blur-xl rounded-2xl   flex 
-            p-5 border border-[1px] border-gray-600 shadow-2xl flex-col gap-3">
+           
+          <SectionCard className="w-full h-full">
+        
             <div className="h-[6%]">RECENT TRANSACTIONS</div>
-            
-            <section className="auto-hide-scrollbar overflow-y-scroll h-[94%] flex justify-center items-center" >
-                 Loading...
-            </section>
-        </main>
+        
+           
+
+        </SectionCard>
         )
     }
 
     return(
-        <main className="w-[100%] h-[100%]   bg-black/25 backdrop-blur-xl rounded-2xl   flex 
-            p-5 border border-[1 px] border-gray-800 shadow-2xl flex-col gap-3">
+        <SectionCard className="w-full h-full">
+        
             <div className="h-[6%]">RECENT TRANSACTIONS</div>
-            
-            <section className="auto-hide-scrollbar overflow-y-scroll h-[94%]" >
-                {expense}     
-            </section>
-        </main>
+            {loadingNExpenses &&  <section className="auto-hide-scrollbar overflow-y-scroll h-[94%]" >
+                Loading...    
+            </section>}
+            {!loadingNExpenses && <section className="auto-hide-scrollbar overflow-y-scroll h-[94%]" >
+               {expense}
+            </section>}
+           
+
+        </SectionCard>
     )
 }

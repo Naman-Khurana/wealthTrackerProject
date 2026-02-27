@@ -16,8 +16,7 @@ export default function MoneyStatCard({
 ) {
     return (
         <Card key={title} className={`h-[90%] w-[50%] flex flex-col justify-center  ${classname}` } >
-
-
+            
             <div className="text-white/70 text-[0.9rem] font-semibold  ">{title}</div>
             <div className="text-[1.7rem] flex flex-row gap-1 ">
                 <div className={` ${TEXT_COLOR_EMRALD_GREEN}`}>₹</div>

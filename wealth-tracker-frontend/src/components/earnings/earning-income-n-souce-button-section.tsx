@@ -26,7 +26,7 @@ const { openModal } = useModal()
             </div>
 
             <div className=" flex flex-col flex-1 gap-1 justify-center flex-1  ">
-                <ActionButton onClick={() => { }} className="h-[40%] w-full text-[0.8rem]  relative  ">
+                <ActionButton onClick={()=>openModal("addIncome")} className="h-[40%] w-full text-[0.8rem]  relative  ">
                     + Add Income
                 </ActionButton>
                 {/* <ActionButton onClick={() => { }} className="h-[40%] w-full text-[0.8rem] relative">

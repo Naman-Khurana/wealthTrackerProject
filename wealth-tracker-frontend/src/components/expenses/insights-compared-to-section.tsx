@@ -1,6 +1,7 @@
 import { useLastSixMonthlyExpenses } from "../dashboard/dashboard-api-fetcher";
 import { MoveDown ,MoveUp } from "lucide-react";
 import { useExpensesCategoryWithPercentageUsage,useAllBudgetCategoriesWithPercentageUsage } from "./expenses-api-fetcher";
+import SectionCard from "../comman/ui/section-card";
 export default function InsightsNCompareSection(){
 
     
@@ -79,15 +80,15 @@ export default function InsightsNCompareSection(){
     const lastMonthDailyAvg=(lastSixMonthsData[lastSixMonthsData.length-2].total)/lastMonthDays();
     const buttons = blocks.map((block) => { 
         return(
-            <div key={block.name} className=" w-full h-[90%] bg-black/25 rounded-2xl   flex flex-col  justify-center 
-            pl-[5%] border border-[1px] border-gray-600 shadow-2xl">
+            <SectionCard className="w-full h-full">
                 <h1 className=" ">{block.name.toUpperCase()}</h1>
                 <section className="text-white/50 flex flex-col">
                     <div>Your Avg daily Spending <span className="text-white">{currentMonthDailyAvg > lastMonthDailyAvg ? "Increased" : "decreased"}  </span> to <span className="text-white">₹{currentMonthDailyAvg.toFixed(2)} </span> from <span className="text-white">₹{lastMonthDailyAvg.toFixed(2)}</span> <span className="inline-flex">{currentMonthDailyAvg < lastMonthDailyAvg ? <MoveDown color="green" className="h-[15px]" strokeWidth={3}  /> : <MoveUp color="red" className="h-[15px] w-[5px]" strokeWidth={3} />} </span> </div>
                     <div>Highest Expense Category for this Month is <span className="text-white">{highest?.category} ⚠️</span>  </div>
                     <div>You have exceeded your budget in <span className="text-white">{overBudgetCategories.length}</span> Categories  { overBudgetCategories.length > 0 &&  <span className="text-white h-[20px]" >🔺</span>}</div>
                 </section>
-            </div>
+        
+            </SectionCard>
         )
     })
     return(

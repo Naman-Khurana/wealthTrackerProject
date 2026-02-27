@@ -1,6 +1,6 @@
 type SectionCardProps = {
     className?: string;
-    children: React.ReactNode;
+    children?: React.ReactNode;
 };
 
 export default function SectionCard({
@@ -18,7 +18,7 @@ export default function SectionCard({
         ${className}
       `}
         >
-            <div className="px-[2%] py-[2%]">
+            <div className="px-[1rem] py-[1rem]">
                 {children}
             </div>
 
