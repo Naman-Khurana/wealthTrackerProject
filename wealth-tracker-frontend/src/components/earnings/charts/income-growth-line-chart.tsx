@@ -1,15 +1,15 @@
 "use client"
 
 import React from "react"
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, scales } from "chart.js"
-import { Line } from "react-chartjs-2";
-import { useLastSixMonthlyEarnings, useLastSixMonthlyExpenses } from "../dashboard-api-fetcher";
+
+import { useLastSixMonthlyEarnings } from "@/components/dashboard/dashboard-api-fetcher";
 import LineChart from "@/components/comman/graphs/linechart";
 import { error } from "console";
 
-ChartJS.register(CategoryScale, LineElement, LinearScale, PointElement, Title, Tooltip, Legend, Filler);
 
-export default function LineChartTemplate() {
+
+
+export default function IncomeGrowthLineChart() {
 
     const {
         data: earnings,
@@ -17,16 +17,11 @@ export default function LineChartTemplate() {
         error: errorEarnings
     } = useLastSixMonthlyEarnings()
 
-    const {
-        data: expenses,
-        isLoading: loadingExpenses,
-        error: errorExpenses
-    } = useLastSixMonthlyExpenses()
-
-    if (loadingEarnings || loadingExpenses) {
+        
+    if (loadingEarnings) {
         return <div>Loading...</div>
     }
-    if (errorEarnings || errorExpenses) {
+    if (errorEarnings) {
         return (
             <main className="w-full flex flex-col items-center justify-center ">
                 <div className="">Error Loading Chart data...</div>
@@ -39,7 +34,7 @@ export default function LineChartTemplate() {
 
     const labels = earnings?.map(r => months[r.month - 1]) ?? []
 
-    const expenseData = expenses?.map(r => r.total) ?? []
+
     const earningsData = earnings?.map(r => r.total) ?? []
 
     return (
@@ -47,11 +42,7 @@ export default function LineChartTemplate() {
             labels={labels}
             yAxisLabel="INR"
             datasets={[
-                {
-                    label: "Expenses",
-                    data: expenseData,
-                    borderColor: "rgb(75,192,192)"
-                },
+            
                 {
                     label: "Earnings",
                     data: earningsData,

@@ -34,12 +34,12 @@ export default function RecentTransactionRowTemplate(props: NExpensesDataType){
                         <DropdownMenuContent className="bg-black text-white/60 transition duration-200">
                             <DropdownMenuItem className='transition duration-200' > 
                                 <Pencil />
-                                    <div> Edit Expense</div>
+                                    <div> Edit </div>
 
                                 </DropdownMenuItem>
                             <DropdownMenuItem className='transition duration-200'>
                                 <X />
-                                <div>Delete Expense</div>
+                                <div>Delete </div>
                                 </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>

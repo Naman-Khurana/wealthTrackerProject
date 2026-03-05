@@ -1,1 +1,5 @@
-export type IncomeTypeEnum = "RECURRING" | "ONE_TIME";
+export enum IncomeTypeEnum{
+    RECURRING="RECURRING" ,
+    ONE_TIME= "ONE_TIME"
+
+}

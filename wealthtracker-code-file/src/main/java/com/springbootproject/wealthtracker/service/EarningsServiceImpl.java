@@ -3,9 +3,11 @@ package com.springbootproject.wealthtracker.service;
 import com.springbootproject.wealthtracker.dao.AccountHolderRepository;
 import com.springbootproject.wealthtracker.dao.EarningsRepository;
 import com.springbootproject.wealthtracker.dto.*;
+import com.springbootproject.wealthtracker.dto.Earnings.EarningsIncomeTypeWiseDTO;
 import com.springbootproject.wealthtracker.dto.EarningsDTO;
 import com.springbootproject.wealthtracker.entity.AccountHolder;
 import com.springbootproject.wealthtracker.entity.Earnings;
+import com.springbootproject.wealthtracker.enums.IncomeTypeEnum;
 import com.springbootproject.wealthtracker.mapper.EarningsMapper;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -236,5 +238,24 @@ public class  EarningsServiceImpl implements EarningsService{
         List<Earnings> earnings=earningsRepository.getEarningsInDateRange(userid,start,end);
         List<EarningsDTO> earningsDTOS=earnings.stream().map(earningsMapper::toDTO).toList();
         return earningsDTOS;
+    }
+
+    @Override
+    public EarningsIncomeTypeWiseDTO getEarningsIncomeTypeWiseWithinARange(int userid, LocalDate start, LocalDate end) {
+        List<EarningsDTO> earningsWithDetails=getEarningsWithDetails(userid,start,end);
+        double totalEarnings=earningsWithDetails.stream().mapToDouble(EarningsDTO::getAmount).sum();
+        double recurringEarnings=earningsWithDetails.stream().filter(i->(i.getIncomeType()== IncomeTypeEnum.RECURRING)).mapToDouble(EarningsDTO::getAmount).sum();
+        double oneTimeEarnings=earningsWithDetails
+                .stream()
+                .filter(i->(i.getIncomeType()==IncomeTypeEnum.ONE_TIME))
+                .mapToDouble(EarningsDTO::getAmount)
+                .sum();
+
+        return  EarningsIncomeTypeWiseDTO.builder()
+                .totalEarnings(totalEarnings)
+                .recurringEarnings(recurringEarnings)
+                .oneTimeEarnings(oneTimeEarnings)
+                .build();
+
     }
 }

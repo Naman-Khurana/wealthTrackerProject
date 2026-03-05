@@ -133,5 +133,19 @@ public class EarningsController {
         return ResponseEntity.ok(results);
     }
 
+    @GetMapping("/income-type-wise")
+    public ResponseEntity<?> getEarningsTypeWiseForADateRange(@CookieValue(name="jwt",required = false) String token,
+                                                              @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE,pattern = "yyyy/MM/dd") LocalDate startDate,
+                                                              @RequestParam(required = false) @DateTimeFormat(iso=DateTimeFormat.ISO.DATE,pattern = "yyyy/MM/dd")LocalDate endDate){
+
+
+        AuthUtils.checkAuthToken(token);
+
+        String username=jwtUtil.extractUserName(token);
+        int userid=Integer.parseInt(username);
+        return ResponseEntity.ok(earningsService.getEarningsIncomeTypeWiseWithinARange(userid,startDate,endDate));
+    }
+
+
 
 }

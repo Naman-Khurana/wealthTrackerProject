@@ -3,12 +3,17 @@ import MoneyStatCard from "../comman/ui/money_stat_card"
 import CommanMoneyStatCardGroup from "../comman/ui/comman-money-stat-card-group"
 import Card from "../comman/ui/card"
 import EarningIncomeNSourceAddButtonSection from "./earning-income-n-souce-button-section"
+import { EarningsIncomeTypeWise } from "@/type/earnings"
 
-export default function EaringsTotalNRecurringNOneTime() {
+type Props = {
+  data: EarningsIncomeTypeWise
+}
+
+export default function EaringsTotalNRecurringNOneTime({data} :Props) {
     const typesOfEarnings = [
-        { title: "Total Income", amount: 0 },
-        { title: "Recurring Income", amount: 0 },
-        { title: "One-Time Income", amount: 0 }
+        { title: "Total Income", amount : data.totalEarnings },
+        { title: "Recurring Income", amount: data.recurringEarnings },
+        { title: "One-Time Income", amount: data.oneTimeEarnings }
     ]
 
     return (

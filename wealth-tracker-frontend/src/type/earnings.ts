@@ -8,3 +8,17 @@ export type Earnings = {
   amount: number;
   incomeType: IncomeTypeEnum;
 };
+
+export type AddIncomePayload = {
+  category: string;
+  incomeType: IncomeTypeEnum;
+  amount: number;
+  date: string;
+  description: string;
+};
+
+export type EarningsIncomeTypeWise={
+  totalEarnings: number;
+  oneTimeEarnings: number;
+  recurringEarnings: number;
+}

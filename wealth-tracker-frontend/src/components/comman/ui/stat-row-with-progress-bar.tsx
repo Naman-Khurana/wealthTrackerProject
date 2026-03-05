@@ -34,7 +34,11 @@ export default function StatRowWithProgressBar({
 
       {/* Value */}
       <div className="flex-1 text-[0.8rem] flex items-center gap-1">
-        {value}
+        <section className="flex flex-row">
+          <div className={`${TEXT_COLOR_EMRALD_GREEN}`}>₹</div>
+          <div>{value}</div>
+        </section>
+        
       </div>
 
       {/* Percentage */}

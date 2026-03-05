@@ -1,6 +1,7 @@
 package com.springbootproject.wealthtracker.service;
 
 import com.springbootproject.wealthtracker.dto.*;
+import com.springbootproject.wealthtracker.dto.Earnings.EarningsIncomeTypeWiseDTO;
 import com.springbootproject.wealthtracker.dto.EarningsDTO;
 import com.springbootproject.wealthtracker.entity.AccountHolder;
 import com.springbootproject.wealthtracker.entity.Budget;
@@ -26,4 +27,6 @@ public interface EarningsService {
     List<MonthlyEarningsNExpensesDTO> getLastSixMonthsEarnings(int userid);
 
     List<EarningsDTO> getEarningsWithDetails(int userid,LocalDate start,LocalDate end);
+
+    EarningsIncomeTypeWiseDTO getEarningsIncomeTypeWiseWithinARange(int userid,LocalDate start,LocalDate end);
 }
