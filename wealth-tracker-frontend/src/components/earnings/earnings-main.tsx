@@ -9,6 +9,7 @@ import IncomeDistributionSection from "./income-distribution-section";
 import IncomeGrowthSection from "./income-growth-section";
 import { useEarningsIncomeTypeWise, useEarningsWithDetails } from "./earnings-api-fetcher";
 import { rowTemplateContent } from "@/type/commman";
+import { useLastSixMonthlyEarnings } from "../dashboard/dashboard-api-fetcher";
 
 export default function EarningsComponent() {
     const {
@@ -24,6 +25,14 @@ export default function EarningsComponent() {
         error: errorTypeWise
     } = useEarningsIncomeTypeWise();
 
+    const {
+        data: lastSixMonthsEarningsData,
+        isLoading: isLoadingLastSixMonthsEarnings,
+        isError: isErrorLastSixMonthsEarnings,
+        error: errorLastSixMonthsEarnings
+    } = useLastSixMonthlyEarnings()
+    
+
     // if (isLoadingWithDetail || isLoadingTypeWise) return <div>Loading...</div>;
     // if (isError) return <div>Something went wrong</div>;
 
@@ -32,6 +41,7 @@ export default function EarningsComponent() {
         amount: e.amount,
         date: e.date,
     })) ?? [];
+    console.log(lastSixMonthsEarningsData)
     return (
         <main className=" w-full h-[99%] rounded-4xl text-white flex flex-col gap-3">
 
@@ -51,13 +61,13 @@ export default function EarningsComponent() {
                     {dataWithDetails && (<IncomeDistributionSection earnings={dataWithDetails} />)}
 
 
-                    
+
                 </div>
                 <div className="flex-3/7 w-full h-full">
-                     {isErrorWithDetail && (<div>Error</div>)}
+                    {isErrorWithDetail && (<div>Error</div>)}
 
-                    {dataWithDetails && ( <IncomeGrowthSection  />)}
-                
+                    {dataWithDetails && (<IncomeGrowthSection />)}
+
 
                 </div>
             </section>
@@ -71,10 +81,11 @@ export default function EarningsComponent() {
                 {dataWithDetails && (<RecentTransactionBlock title="Recent Earnings" transactionData={formattedData} />)}
             </section>
             <section className="w-full h-[20%] flex">
-                <div className="h-full w-full "><EarningsInsightsSection /><br />
+                 {(isLoadingWithDetail || isLoadingLastSixMonthsEarnings) && (<div>Loading...</div>)}
+                {(isErrorWithDetail || isErrorLastSixMonthsEarnings) && (<div>Error</div>)}
+              {(dataWithDetails && lastSixMonthsEarningsData) && (<EarningsInsightsSection dataWithDetails={dataWithDetails} lastSixMonthsEarningsData={lastSixMonthsEarningsData}/>)}
 
-                </div>
-
+              
             </section>
 
 

@@ -5,10 +5,17 @@ import { Earnings,EarningsIncomeTypeWise } from "@/type/earnings"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 import { AddIncomePayload } from "@/type/earnings"
+import { useEarningsFilter } from "@/context/earnings-filter-context"
 
-const fetchEarningsWithDetails=async()=>{
+const fetchEarningsWithDetails=async(startDate?: string,
+  endDate?: string)=>{
     const details=await axios.get( `${API_BASE_URL}/earnings/transactions`, 
     {
+        params: {
+        ...(startDate && { startDate }),
+        ...(endDate && { endDate }),
+      },
+
         withCredentials: true,    
     });
     return details.data;
@@ -35,9 +42,13 @@ export function useEarningsIncomeTypeWise(){
 
 
 export function useEarningsWithDetails(){
+    const { activeTab}=useEarningsFilter()
+
+    const { startDate,endDate}=getDateRange(activeTab)
+
     return useQuery<Earnings[]>({
-       queryKey: ["earningsWithDetails"],
-       queryFn: ()=> fetchEarningsWithDetails(),
+       queryKey: ["earningsWithDetails",startDate,endDate],
+       queryFn: ()=> fetchEarningsWithDetails(startDate,endDate),
        staleTime :Infinity, 
     });
 
@@ -60,4 +71,21 @@ export function useAddIncome(){
             });
         }
     });
+}
+
+
+function getDateRange(tab: string) {
+  const endDate = new Date()
+  const startDate = new Date()
+
+  if (tab === "Three Months") {
+    startDate.setMonth(startDate.getMonth() - 3)
+  } else {
+    startDate.setMonth(startDate.getMonth() - 1)
+  }
+
+  return {
+    startDate: startDate.toISOString().split("T")[0],
+    endDate: endDate.toISOString().split("T")[0]
+  }
 }

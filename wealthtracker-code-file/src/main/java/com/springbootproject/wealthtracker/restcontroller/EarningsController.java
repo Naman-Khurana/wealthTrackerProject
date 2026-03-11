@@ -40,8 +40,8 @@ public class EarningsController {
 
     @GetMapping("/transactions")
     public ResponseEntity<List<EarningsDTO>> getEarningsWithTransactions(@CookieValue(name="jwt",required = false) String token,
-                                                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE,pattern = "yyyy/MM/dd") LocalDate startDate,
-                                                   @RequestParam(required = false) @DateTimeFormat(iso=DateTimeFormat.ISO.DATE,pattern = "yyyy/MM/dd")LocalDate endDate){
+                                                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate endDate){
         AuthUtils.checkAuthToken(token);
 
         String username=jwtUtil.extractUserName(token);

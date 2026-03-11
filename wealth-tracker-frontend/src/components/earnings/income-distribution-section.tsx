@@ -10,50 +10,50 @@ type IncomeDistribution = {
     percentage: number
 }
 
-type Props={
-    earnings : Earnings[]
+type Props = {
+    earnings: Earnings[]
 }
-export default function IncomeDistributionSection({earnings} : Props) {
+export default function IncomeDistributionSection({ earnings }: Props) {
 
 
     const categoryTotals: Record<string, number> = {};
 
-  earnings.forEach((e) => {
-    categoryTotals[e.category] =
-      (categoryTotals[e.category] || 0) + e.amount;
-  });
+    earnings.forEach((e) => {
+        categoryTotals[e.category] =
+            (categoryTotals[e.category] || 0) + e.amount;
+    });
 
-  const total = earnings.reduce((sum, e) => sum + e.amount, 0);
+    const total = earnings.reduce((sum, e) => sum + e.amount, 0);
 
-  const data: IncomeDistribution[] = Object.entries(categoryTotals).map(
-    ([category, amount]) => ({
-      category,
-      amount,
-      percentage: total === 0 ? 0 : (amount / total) * 100
-    })
-  );
+    const data: IncomeDistribution[] = Object.entries(categoryTotals).map(
+        ([category, amount]) => ({
+            category,
+            amount,
+            percentage: total === 0 ? 0 : (amount / total) * 100
+        })
+    );
 
 
     return (
         <SectionCard className="w-full h-full flex flex-col ">
             {/* top section */}
             <section className="w-full h-[40%]"> Income Distribution</section>
-            <Divider className="w-full "/>
+            <Divider className="w-full " />
             <ScrollableArea>
                 {
                     data.map((row) => {
                         return (
-                            <StatRowWithProgressBar 
-                            key={row.category}
-                            label={row.category} 
-                            value={row.amount} 
-                            percentage={row.percentage} 
-                            progress={row.percentage} 
+                            <StatRowWithProgressBar
+                                key={row.category}
+                                label={row.category}
+                                value={row.amount}
+                                percentage={row.percentage}
+                                progress={row.percentage}
                             />
                         )
                     })
                 }
-            
+
 
             </ScrollableArea>
         </SectionCard>

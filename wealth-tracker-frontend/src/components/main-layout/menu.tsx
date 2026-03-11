@@ -1,47 +1,46 @@
 "use client"
 
+import Link from "next/link";
+import { AnimatedBackground } from "../../../components/motion-primitives/animated-background";
+import { usePathname } from "next/navigation";
 
-import { useRouter } from "next/navigation";
+export default function Menu() {
 
-export default function Menu(){
-    
-    const route=useRouter();
+  const pathname = usePathname();
 
-    
-    const menuFields = [
-    { 
-      name: "Dashboard" ,
-      route: "/dashboard/"
-    },
-    { 
-      name: "Expenses" ,
-      route: "/expenses"
-    },
-    
-    { 
-      name: "Earnings",
-      route: "/earnings"  
-     },
-    {
-       name: "Profile" ,
-        route: "/profile" 
-    },
-    
+  const menuFields = [
+    { name: "Dashboard", route: "/dashboard" },
+    { name: "Expenses", route: "/expenses" },
+    { name: "Earnings", route: "/earnings" },
+    { name: "Profile", route: "/profile" },
   ];
 
-  const menuButtons = menuFields.map((field) => (
-    <button
-      key={field.name}
-      className="text-white px-4 py-2 w-full text-left hover:bg-white/50 transition-all"
-      onClick={()=>route.push(field.route)}
-    >
-      {field.name}
-      
-    </button>
-  ));
-    return(
-        <div>
-            {menuButtons}
-        </div>
-    )
+  const activeRoute =
+    menuFields.find((field) => pathname.startsWith(field.route))?.route ??
+    menuFields[0].route;
+
+  return (
+    <div className="rounded-[8px] p-[2px] dark:bg-zinc-800 flex flex-col gap-2">
+      <AnimatedBackground
+        key={activeRoute}
+        defaultValue={activeRoute}
+        className="rounded-lg bg-white dark:bg-zinc-700"
+        transition={{
+          ease: "easeInOut",
+          duration: 0.2,
+        }}
+      >
+        {menuFields.map((field) => (
+          <Link
+            key={field.route}
+            href={field.route}
+            data-id={field.route}
+            className="inline-flex w-28 items-center justify-center text-center text-zinc-800 transition-transform active:scale-[0.98] dark:text-zinc-50"
+          >
+            {field.name}
+          </Link>
+        ))}
+      </AnimatedBackground>
+    </div>
+  );
 }

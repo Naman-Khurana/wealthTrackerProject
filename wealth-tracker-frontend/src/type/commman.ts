@@ -3,3 +3,10 @@ export type rowTemplateContent={
     amount : number;
     date : string;
 }
+
+
+export type lastSixMonthsData={
+    year : number;
+    month : number;
+    total : number;
+}
