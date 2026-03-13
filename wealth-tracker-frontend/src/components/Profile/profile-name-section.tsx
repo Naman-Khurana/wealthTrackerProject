@@ -1,6 +1,11 @@
 import { Button } from "@/components/ui/button";
 
-export default function ProfileNameSection(){
+import { User } from "@/type/commman";
+type prop={
+    user: User
+}
+export default function ProfileNameSection({user} :prop){
+
     return(
         <main>
             <section className="flex justify-between p-5 bg-black/30 rounded-lg items-center">
@@ -9,8 +14,8 @@ export default function ProfileNameSection(){
                         <div className="text-white text-4xl font-semibold ">N</div>
                     </section>
                     <section className="flex flex-col gap-2">
-                        <h1 className="text-white">Name</h1>
-                        <div className="text-white/30 text-xs">email</div>
+                        <h1 className="text-white">{(user?.firstName ?? " ") + (user?.lastName ?? "")}</h1>
+                        <div className="text-white/30 text-xs">{user?.email ?? "N/A"}</div>
                         <div className="text-blue-300 text-sm">role</div>
                     </section>
                 </section>

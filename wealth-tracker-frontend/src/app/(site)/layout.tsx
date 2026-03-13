@@ -37,7 +37,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  
+
   return (
     <html lang="en" className="h-full w-full">
       <body
@@ -48,7 +48,7 @@ export default function RootLayout({
         </div>
         <section className="h-[90%] w-full overflow-hidden flex gap-11">
           <div className="h-full w-[15%] bg-white/30 rounded-tr-3xl rounded-br-3xl flex flex-col items-start justify-start px-4 py-6 space-y-2">
-            <Menu/>
+            <Menu />
             {/* <section>
               <h1 className="bold underline">TO DO LIST</h1>
               <ol>
@@ -72,15 +72,15 @@ export default function RootLayout({
           </div>
           <div className="h-full w-[80%] overflow-auto">
             <ReactQueryProvider >
-               <ModalProvider>
-                      {children}
-                      <ModalRenderer/>
-                      </ModalProvider>
+                <ModalProvider>
+                  {children}
+                  <ModalRenderer />
+                </ModalProvider>
             </ReactQueryProvider>
-            
-            </div>
+
+          </div>
         </section>
-    
+
       </body>
     </html>
   );

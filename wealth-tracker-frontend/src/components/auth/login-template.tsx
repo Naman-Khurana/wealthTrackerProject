@@ -3,14 +3,15 @@
 import { useState,useRef } from "react"
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { useAuth } from "@/context/auth-context";
 
 export default function LoginTemplate(){
     const [rotate,setRotate]=useState(false);
     const [incorrectCredentials,setIncorrectCredentials]=useState(false);
     const [shake,setShake]=useState(false);
     const [showPassword,setShowPassword]=useState(false);
-    
 
+    const { setUser } = useAuth();
 
     const emailRef=useRef<HTMLInputElement>(null);
     const passwordRef=useRef<HTMLInputElement>(null);
@@ -36,8 +37,8 @@ export default function LoginTemplate(){
                 withCredentials: true
             })
             .then(response => {
+                setUser(response.data)
                 route.push('/dashboard');
-                console.log(response)
                 const test= axios.get("http://localhost:8080/api/"+ response.data.toString() + "/dashboard/",{
                     withCredentials:true
                 }).then(res=>{
