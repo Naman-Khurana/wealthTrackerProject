@@ -7,6 +7,7 @@ import com.springbootproject.wealthtracker.entity.Roles;
 import org.springframework.security.core.userdetails.User;
 
 import java.util.List;
+import java.util.Map;
 
 public interface AuthenticationService {
 
@@ -19,8 +20,10 @@ public interface AuthenticationService {
 
      public void checkEmailExistence(String email);
 
-     public AccountHolder authenticate(LoginUserDTO loginUserDTO);
+     public AccountHolder authenticate(LoginUserDTO loginUserDTO) throws Exception;
 
      public void logoutUser(String token);
+
+     public Map<String,Object> login(LoginUserDTO loginUserDTO) throws Exception;
 
 }

@@ -38,9 +38,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         else {
             accountHolder=accountHolderRepository.findById(Integer.parseInt(email)).orElseThrow(() -> new RuntimeException("USER NOT FOUND "));
         }
-        System.out.println("EMAIL IS : "+ email);
         if(accountHolder==null) {
-            System.out.println("Insdie");
             throw new NotFoundException("USER NOT FOUND  custom user details here");
         }
 

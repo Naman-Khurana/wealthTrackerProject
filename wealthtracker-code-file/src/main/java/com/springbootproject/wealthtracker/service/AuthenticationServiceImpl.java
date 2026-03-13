@@ -1,6 +1,8 @@
 package com.springbootproject.wealthtracker.service;
 
 
+import com.springbootproject.wealthtracker.Security.CustomUserDetailsService;
+import com.springbootproject.wealthtracker.Security.JWTUtil;
 import com.springbootproject.wealthtracker.Security.TokenBlackList;
 import com.springbootproject.wealthtracker.config.PasswordEncoderConfig;
 import com.springbootproject.wealthtracker.dao.AccountHolderRepository;
@@ -14,30 +16,42 @@ import com.springbootproject.wealthtracker.error.InvalidEmailFormatException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-    private AccountHolderRepository accountHolderRepository;
-    private RolesRepository rolesRepository;
-    private AuthenticationManager authenticationManager;
-    private PasswordEncoderConfig passwordEncoderConfig;
-    private TokenBlackList tokenBlackList;
+    public static String JWT="jwt";
+    public static String USER="user";
 
+    private final AccountHolderRepository accountHolderRepository;
+    private final RolesRepository rolesRepository;
+    private final AuthenticationManager authenticationManager;
+    private final PasswordEncoderConfig passwordEncoderConfig;
+    private final TokenBlackList tokenBlackList;
+    private final CustomUserDetailsService customUserDetailsService;
+    private final JWTUtil jwtUtil;
 
     @Autowired
-    public AuthenticationServiceImpl(AccountHolderRepository accountHolderRepository, RolesRepository rolesRepository, AuthenticationManager authenticationManager, PasswordEncoderConfig passwordEncoderConfig, TokenBlackList tokenBlackList) {
+    public AuthenticationServiceImpl(AccountHolderRepository accountHolderRepository, RolesRepository rolesRepository, AuthenticationManager authenticationManager, PasswordEncoderConfig passwordEncoderConfig, TokenBlackList tokenBlackList, CustomUserDetailsService customUserDetailsService, JWTUtil jwtUtil) {
         this.accountHolderRepository = accountHolderRepository;
         this.rolesRepository = rolesRepository;
         this.authenticationManager = authenticationManager;
         this.passwordEncoderConfig = passwordEncoderConfig;
         this.tokenBlackList = tokenBlackList;
+        this.customUserDetailsService = customUserDetailsService;
+        this.jwtUtil = jwtUtil;
     }
+
+
 
     @Override
     @Transactional
@@ -103,9 +117,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public AccountHolder authenticate(LoginUserDTO loginUserDTO) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUserDTO.getEmail(),loginUserDTO.getPassword()));
+    public AccountHolder authenticate(LoginUserDTO loginUserDTO) throws Exception{
+        try{
 
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUserDTO.getEmail(),loginUserDTO.getPassword()));
+
+        } catch (BadCredentialsException e){
+            throw new Exception("Incorrect email or password"+e);
+        }
         return accountHolderRepository.findByEmail(loginUserDTO.getEmail()).orElseThrow();
     }
 
@@ -126,6 +145,30 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw e;
         }
 
+
+    }
+
+    @Override
+    public Map<String,Object> login(LoginUserDTO loginUserDTO) throws Exception {
+        Map<String,Object> response= new HashMap<>();
+        AccountHolder authenticatedUser=authenticate(loginUserDTO);
+
+        UserDetails userDetails= customUserDetailsService.loadUserByUsername(loginUserDTO.getEmail());
+        //primary token
+        String jwt=jwtUtil.generateToken(userDetails);
+
+        //this features is still incomplete for now
+        //create refresh token value
+        String refreshToken=jwtUtil.generateCustomToken(userDetails,1000*60*60*24*7);
+        //for now adding refresh token as prt of login response since without frontend cookies can't be happened
+        //later use http cookie response
+
+
+        response.put(USER,authenticatedUser );
+        response.put(JWT,jwt);
+
+
+        return response;
 
     }
 }

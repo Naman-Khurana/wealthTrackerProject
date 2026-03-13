@@ -1,6 +1,7 @@
 package com.springbootproject.wealthtracker.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,7 +48,6 @@ public class AccountHolder implements UserDetails {
             cascade = {CascadeType.ALL}
     )
     private List<Expenses> expenses;
-    @JsonIgnore
     @OneToMany(mappedBy = "accountHolder",
             fetch = FetchType.EAGER,
             cascade = CascadeType.ALL

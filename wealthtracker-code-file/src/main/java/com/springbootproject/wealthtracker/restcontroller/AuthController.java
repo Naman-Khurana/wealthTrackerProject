@@ -23,6 +23,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -63,39 +64,21 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticate(@Valid @RequestBody LoginUserDTO loginUserDTO) throws Exception{
-        try{
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUserDTO.getEmail(),loginUserDTO.getPassword())) ;
-        }
-        catch (BadCredentialsException e){
-            throw new Exception("Incorrect email or password"+e);
-        }
-        UserDetails userDetails= customUserDetailsService.loadUserByUsername(loginUserDTO.getEmail());
-        String userId=userDetails.getUsername();
-        //primary token
-        String jwt=jwtUtil.generateToken(userDetails);
+
+        Map<String,Object> authenticatedUserDetails=authenticationService.login(loginUserDTO);
 
 
-        //this features is still incomplete for now
-        //create refresh token value
-        String refreshToken=jwtUtil.generateCustomToken(userDetails,1000*60*60*24*7);
-        //for now adding refresh token as prt of login response since without frontend cookies can't be happened
-        //later use http cookie response
-        ResponseCookie cookie=ResponseCookie.from("jwt",jwt)
+        ResponseCookie cookie=ResponseCookie.from("jwt",authenticatedUserDetails.get("jwt").toString())
                 .httpOnly(true)
                 .path("/")
                 .maxAge(Duration.ofHours(2))
                 .sameSite("Strict")
                 .build();
 
-//        LoginResponse loginResponse=new LoginResponse();
-//        loginResponse.setToken(jwt);
-//        loginResponse.setExpiresIn(jwtUtil.getExpirationTime());
-
-
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE,cookie.toString())
-                .body(userId );
+                .body(authenticatedUserDetails.get("user") );
     }
 
     @GetMapping("{userid}/logout")
