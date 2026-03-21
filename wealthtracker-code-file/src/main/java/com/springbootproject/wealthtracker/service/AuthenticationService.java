@@ -1,5 +1,6 @@
 package com.springbootproject.wealthtracker.service;
 
+import com.springbootproject.wealthtracker.dto.LoginResponseDTO;
 import com.springbootproject.wealthtracker.dto.LoginUserDTO;
 import com.springbootproject.wealthtracker.dto.RegisterUserDTO;
 import com.springbootproject.wealthtracker.entity.AccountHolder;
@@ -24,6 +25,6 @@ public interface AuthenticationService {
 
      public void logoutUser(String token);
 
-     public Map<String,Object> login(LoginUserDTO loginUserDTO) throws Exception;
+     public LoginResponseDTO login(LoginUserDTO loginUserDTO) throws Exception;
 
 }

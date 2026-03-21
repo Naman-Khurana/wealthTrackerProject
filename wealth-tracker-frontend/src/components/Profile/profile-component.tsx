@@ -1,4 +1,5 @@
 "use client"
+
 import ProfileNameSection from "./profile-name-section";
 import ProfilePersonalDetailsSection from "./profile-personal-details-section";
 import ProfileSubSectoinsTemplate from "./profile-subsections-template";
@@ -29,7 +30,8 @@ type ProfileSubsectionDateType = {
 
 
 export default function ProfileComponent() {
-    const { user } = useAuth();
+    const { user,userSettings,subscription } = useAuth();
+    console.log(`${user} - ${userSettings} - ${subscription}`)
 
     const personalDetails: ProfileSubsectionDateType = {
         heading: "Personal Details",
@@ -47,22 +49,22 @@ export default function ProfileComponent() {
 
     const financialPreferences: ProfileSubsectionDateType = {
         heading: "Financial Preferences",
-        attribute1: { key: "Default Currency", value: "₹ INR" },
+        attribute1: { key: "Default Currency", value: userSettings?.currency ?? "rfdhrINR" },
         attribute2: { key: "Budget Reset Day", value: "1st of Month" },
         attribute3: { key: "Category View", value: "All" }
     };
 
     const subscriptionInfo: ProfileSubsectionDateType = {
         heading: "Subscription Info",
-        attribute1: { key: "Current Plan", value: "Free" },
-        attribute2: { key: "Renewal Date", value: "N/A" },
-        attribute3: { key: "Billing History", value: "None" }
+        attribute1: { key: "Current Plan", value: (subscription?.active) ? subscription.planName : "Free" },
+        attribute2: { key: "Renewal Date", value: subscription?.active ? subscription.endDate :   "N/A" },
+        attribute3: { key: "Billing History", value: (subscription?.active?  `${subscription?.startDate} - 1100` : "N/A") }
     };
 
     return (
         <main className="flex flex-col gap-3 pt-5">
             
-            <ProfileNameSection user={user!} />
+            <ProfileNameSection user={user!} userSettings={userSettings!} subscription={subscription!} />
             <section className="grid grid-cols-2 gap-4">
                 <ProfileSubSectoinsTemplate {...personalDetails} />
                 <ProfileSubSectoinsTemplate {...securityDetails} />

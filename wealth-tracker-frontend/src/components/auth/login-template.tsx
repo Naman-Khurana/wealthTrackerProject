@@ -11,7 +11,7 @@ export default function LoginTemplate(){
     const [shake,setShake]=useState(false);
     const [showPassword,setShowPassword]=useState(false);
 
-    const { setUser } = useAuth();
+    const { setAuthData } = useAuth();
 
     const emailRef=useRef<HTMLInputElement>(null);
     const passwordRef=useRef<HTMLInputElement>(null);
@@ -37,15 +37,15 @@ export default function LoginTemplate(){
                 withCredentials: true
             })
             .then(response => {
-                setUser(response.data)
+                setAuthData(response.data)
                 router.push('/dashboard');
-                const test= axios.get("http://localhost:8080/api/"+ response.data.toString() + "/dashboard/",{
-                    withCredentials:true
-                }).then(res=>{
-                    console.log(res)
-                }).catch(res=> {
-                    console.log(res);
-                })
+                // const test= axios.get("http://localhost:8080/api/"+ response.data.toString() + "/dashboard/",{
+                //     withCredentials:true
+                // }).then(res=>{
+                //     console.log(res)
+                // }).catch(res=> {
+                //     console.log(res);
+                // })
 
             })
             .catch(error =>{

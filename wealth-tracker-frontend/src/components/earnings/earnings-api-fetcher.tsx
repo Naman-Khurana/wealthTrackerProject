@@ -7,6 +7,7 @@ import axios from "axios"
 import { AddIncomePayload } from "@/type/earnings"
 import { useEarningsFilter } from "@/context/earnings-filter-context"
 import { useRouter } from "next/navigation"
+import { useAuth } from "@/context/auth-context"
 
 const fetchEarningsWithDetails=async(startDate?: string,
   endDate?: string)=>{
@@ -78,6 +79,7 @@ export function useAddIncome(){
 export function useLogout(){
     const queryClient=useQueryClient();
     const router=useRouter();
+    const {logout} =useAuth();
     return useMutation({
         mutationFn:async() => {
             return axios.post(
@@ -88,8 +90,9 @@ export function useLogout(){
         },
 
         onSuccess:()=>{
-            queryClient.clear()
-            router.push("/login")
+            logout();
+            queryClient.clear();
+            router.push("/login");
         }
 
     });

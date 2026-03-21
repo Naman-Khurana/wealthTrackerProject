@@ -7,12 +7,19 @@ import com.springbootproject.wealthtracker.Security.TokenBlackList;
 import com.springbootproject.wealthtracker.config.PasswordEncoderConfig;
 import com.springbootproject.wealthtracker.dao.AccountHolderRepository;
 import com.springbootproject.wealthtracker.dao.RolesRepository;
+import com.springbootproject.wealthtracker.dto.LoginResponseDTO;
 import com.springbootproject.wealthtracker.dto.LoginUserDTO;
 import com.springbootproject.wealthtracker.dto.RegisterUserDTO;
+import com.springbootproject.wealthtracker.dto.entities.SubscriptionDTO;
 import com.springbootproject.wealthtracker.entity.AccountHolder;
 import com.springbootproject.wealthtracker.entity.Roles;
+import com.springbootproject.wealthtracker.entity.Subscription;
+import com.springbootproject.wealthtracker.entity.UserSettings;
 import com.springbootproject.wealthtracker.error.AlreadyExistsException;
 import com.springbootproject.wealthtracker.error.InvalidEmailFormatException;
+import com.springbootproject.wealthtracker.mapper.AccountHolderMapper;
+import com.springbootproject.wealthtracker.mapper.SubscriptionMapper;
+import com.springbootproject.wealthtracker.mapper.UserSettingsMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,10 +28,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -39,9 +44,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final TokenBlackList tokenBlackList;
     private final CustomUserDetailsService customUserDetailsService;
     private final JWTUtil jwtUtil;
+    private final AccountHolderMapper accountHolderMapper;
+    private final SubscriptionService subscriptionService;
+    private final UserSettingsMapper userSettingsMapper;
+    private final SubscriptionMapper subscriptionMapper;
+
 
     @Autowired
-    public AuthenticationServiceImpl(AccountHolderRepository accountHolderRepository, RolesRepository rolesRepository, AuthenticationManager authenticationManager, PasswordEncoderConfig passwordEncoderConfig, TokenBlackList tokenBlackList, CustomUserDetailsService customUserDetailsService, JWTUtil jwtUtil) {
+    public AuthenticationServiceImpl(AccountHolderRepository accountHolderRepository, RolesRepository rolesRepository, AuthenticationManager authenticationManager, PasswordEncoderConfig passwordEncoderConfig, TokenBlackList tokenBlackList, CustomUserDetailsService customUserDetailsService, JWTUtil jwtUtil, AccountHolderMapper accountHolderMapper, SubscriptionService subscriptionService, UserSettingsMapper userSettingsMapper, SubscriptionMapper subscriptionMapper) {
         this.accountHolderRepository = accountHolderRepository;
         this.rolesRepository = rolesRepository;
         this.authenticationManager = authenticationManager;
@@ -49,9 +59,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         this.tokenBlackList = tokenBlackList;
         this.customUserDetailsService = customUserDetailsService;
         this.jwtUtil = jwtUtil;
+        this.accountHolderMapper = accountHolderMapper;
+        this.subscriptionService = subscriptionService;
+        this.userSettingsMapper = userSettingsMapper;
+        this.subscriptionMapper = subscriptionMapper;
     }
-
-
 
     @Override
     @Transactional
@@ -125,7 +137,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         } catch (BadCredentialsException e){
             throw new Exception("Incorrect email or password"+e);
         }
-        return accountHolderRepository.findByEmail(loginUserDTO.getEmail()).orElseThrow();
+        return accountHolderRepository.findUserForLogin(loginUserDTO.getEmail()).orElse(null);
     }
 
 
@@ -149,9 +161,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public Map<String,Object> login(LoginUserDTO loginUserDTO) throws Exception {
+    public LoginResponseDTO login(LoginUserDTO loginUserDTO) throws Exception {
         Map<String,Object> response= new HashMap<>();
-        AccountHolder authenticatedUser=authenticate(loginUserDTO); 
+        AccountHolder authenticatedUser=authenticate(loginUserDTO);
+
+        UserSettings userSettings=authenticatedUser.getUserSettings();
+        Set<Subscription> subscriptions= authenticatedUser.getSubscriptions();
+        List<Roles> roles= authenticatedUser.getRoles();
+
+        Subscription activeSubscription = subscriptionService.findActiveSubscription(subscriptions);
 
         UserDetails userDetails= customUserDetailsService.loadUserByUsername(loginUserDTO.getEmail());
         //primary token
@@ -163,12 +181,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         //for now adding refresh token as prt of login response since without frontend cookies can't be happened
         //later use http cookie response
 
+        LoginResponseDTO loginResponseDTO=LoginResponseDTO.builder()
+                .user(accountHolderMapper.toDTO(authenticatedUser))
+                .jwt(jwt)
+                .userSettings(userSettingsMapper.toDTO(userSettings))
+                .subscription(subscriptionMapper.toDTO(activeSubscription))
+                .refreshToken(refreshToken)
+                .build();
 
-        response.put(USER,authenticatedUser );
-        response.put(JWT,jwt);
 
 
-        return response;
+
+
+        return loginResponseDTO;
 
     }
 }

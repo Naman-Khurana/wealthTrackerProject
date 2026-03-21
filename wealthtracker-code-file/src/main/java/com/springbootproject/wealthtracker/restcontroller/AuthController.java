@@ -2,12 +2,14 @@ package com.springbootproject.wealthtracker.restcontroller;
 
 import com.springbootproject.wealthtracker.Security.CustomUserDetailsService;
 import com.springbootproject.wealthtracker.Security.JWTUtil;
-import com.springbootproject.wealthtracker.dto.LoginResponse;
+
+import com.springbootproject.wealthtracker.dto.LoginResponseDTO;
 import com.springbootproject.wealthtracker.dto.LoginUserDTO;
 import com.springbootproject.wealthtracker.dto.RegisterUserDTO;
 import com.springbootproject.wealthtracker.entity.AccountHolder;
 import com.springbootproject.wealthtracker.service.AuthenticationService;
 import jakarta.validation.Valid;
+import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -65,20 +67,30 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> authenticate(@Valid @RequestBody LoginUserDTO loginUserDTO) throws Exception{
 
-        Map<String,Object> authenticatedUserDetails=authenticationService.login(loginUserDTO);
+        LoginResponseDTO authenticatedUserDetails=authenticationService.login(loginUserDTO);
 
 
-        ResponseCookie cookie=ResponseCookie.from("jwt",authenticatedUserDetails.get("jwt").toString())
+        ResponseCookie jwtCookie=ResponseCookie.from("jwt",authenticatedUserDetails.getJwt())
                 .httpOnly(true)
                 .path("/")
                 .maxAge(Duration.ofHours(2))
                 .sameSite("Strict")
                 .build();
 
+        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", authenticatedUserDetails.getRefreshToken())
+                .httpOnly(true)
+                .path("/")
+                .maxAge(Duration.ofDays(7))
+                .sameSite("Strict")
+                .build();
+
+        authenticatedUserDetails.setJwt(null);
+        authenticatedUserDetails.setRefreshToken(null);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE,cookie.toString())
-                .body(authenticatedUserDetails.get("user") );
+                .header(HttpHeaders.SET_COOKIE,jwtCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                .body(authenticatedUserDetails );
     }
 
     @PostMapping("/logout")

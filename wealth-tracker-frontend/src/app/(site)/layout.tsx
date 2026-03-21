@@ -48,19 +48,16 @@ export default function RootLayout({
         </div>
         <div className="h-[2%]"></div>
         <section className="h-[90%] w-full overflow-hidden flex gap-11">
-        
+
           <div className="h-full w-[12%] bg-black/1    rounded-br-3xl flex flex-col items-start justify-start px-4 py-6 space-y-2">
-      
+
             <Menu />
-      
+
           </div>
           <div className="h-full w-[80%] overflow-auto">
-            <ReactQueryProvider >
-                <ModalProvider>
-                  {children}
-                  <ModalRenderer />
-                </ModalProvider>
-            </ReactQueryProvider>
+
+            {children}
+
 
           </div>
         </section>
