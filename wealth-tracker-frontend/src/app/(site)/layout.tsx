@@ -43,32 +43,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${archivo.variable} antialiased bg-black h-full flex flex-col m-0 p-0`}
       >
-        <div className="h-[10%] w-full">
+        <div className="h-[8%] w-full">
           <Navbar />
         </div>
+        <div className="h-[2%]"></div>
         <section className="h-[90%] w-full overflow-hidden flex gap-11">
-          <div className="h-full w-[15%] bg-white/30 rounded-tr-3xl rounded-br-3xl flex flex-col items-start justify-start px-4 py-6 space-y-2">
+        
+          <div className="h-full w-[12%] bg-black/1    rounded-br-3xl flex flex-col items-start justify-start px-4 py-6 space-y-2">
+      
             <Menu />
-            {/* <section>
-              <h1 className="bold underline">TO DO LIST</h1>
-              <ol>
-                <li>modify recent transaction to sort the recent transactions by time of adding rather than value</li>
-                <br />
-                <li>add the basic ui to the structure of expenses</li>
-                <br />
-                <li>make the backend connections to the  expenses page</li>
-                <br />
-                <li>add coming soon to plus card dashboard</li>
-                <br />
-                <li>polist the ui of the dashboard</li>
-                <br />
-                <li>Customize the dashboard to show data specific to i.yearly ii.half-yearly iii.querterly iv. monthly</li>
-                <br />
-                
-                
-
-              </ol>
-            </section> */}
+      
           </div>
           <div className="h-full w-[80%] overflow-auto">
             <ReactQueryProvider >

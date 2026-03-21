@@ -11,6 +11,7 @@ import {
   Legend,
   Filler
 } from "chart.js"
+import { X } from "lucide-react"
 
 import { Line } from "react-chartjs-2"
 
@@ -50,16 +51,20 @@ export default function LineChart({ labels, datasets, yAxisLabel }: Props) {
 
   const options = {
     responsive: true,
-     maintainAspectRatio: false,
-     tension: 0.35,
-pointRadius: 3,
+    maintainAspectRatio: false,
+    tension: 0.35,
+    pointRadius: 3,
     scales: {
       y: {
         title: {
           display: !!yAxisLabel,
-          text: yAxisLabel
+          text: yAxisLabel,
+          grid: { display: false },
         },
         min: 0
+      },
+      x: {
+        grid: { display: false },
       }
     }
   }

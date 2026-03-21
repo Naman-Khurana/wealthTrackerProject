@@ -2,10 +2,10 @@
 import LineChartTemplate from "./charts/line-chart-template"
 import BarChartTemplate from "./charts/bar-chart-template"
 import CustomDoughnutChart from "./charts/customized-doughnut-chart"
-
 import TotalEarningNExpensesButtonTemplate from "./total-earning-expenses-button"
 import DashBoardFetch from "./dashboard-fetch-details"
 import DashBoardBudgetSection from "./dashboard-budget-section"
+import SectionCard from "../comman/ui/section-card"
 export default function DashBoardComponent(){
     const upperSectionFields=[
         {
@@ -26,17 +26,18 @@ export default function DashBoardComponent(){
     return(
 
             <section className="flex flex-col  justify-between items-center w-full h-[99%] gap-4 text-white ">
-                <section className="h-[65%] w-full bg-black/50 border border-[1px] border-gray-600 shadow-2xl flex items-center justify-center rounded-4xl" >
-                    <div className="p-2 h-full w-1/4 flex flex-col gap-2">
+                <section className="h-[60%] w-full    shadow-2xl flex items-center justify-center rounded-4xl" >
+                    <div className="p-2 h-full w-2/6 flex flex-col gap-2">
                         {upperSection}
                     </div>
-                    <div className="h-full w-3/4 flex ">
-                        
+                    <div className="h-full w-4/6 flex ">
+                       
                         <BarChartTemplate/>
+                       
                     </div>                   
                     {/* Section Upper */}
                 </section>
-                <section className="h-[35%] w-full bg-black/50 border border-[1px] border-gray-600 shadow-2xl rounded-4xl text-center flex justify-between items-center gap-5 pl-3 pt-1 overflow-hidden">
+                <section className="h-[40%] w-full bg-black/50 border border-[1px] border-gray-600 shadow-2xl rounded-4xl text-center flex justify-between items-center gap-5 pl-3 pt-1 overflow-hidden">
                     {/* Section Lower */}
                         <button  className="relative w-[25%] h-[90%] bg-black/50 border border-gray-600 shadow-2xl rounded-4xl text-[50px] transition-all duration-200 hover:scale-[1.02] hover:bg-gray-800/50">
                             +

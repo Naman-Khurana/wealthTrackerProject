@@ -1,5 +1,6 @@
 "use client"
 import { useTotalExpensesNEarnings } from "./dashboard-api-fetcher"
+import Card from "../comman/ui/card"
 
 type inputs = {
     title: string;
@@ -32,14 +33,15 @@ export default function TotalEarningNExpensesButtonTemplate(props: inputs) {
 
 
     return (
-        <button key={props.title} className="flex  justify-center h-1/2 items-center w-[100%]  rounded-4xl bg-gray-500/20 shadow-lg shadow-black/40 border-[1px] border-white/5 transition-all duration-200 hover:bg-gray-500/30">
-            <div className="w-[30%] h-full flex justify-center items-center">
+
+        <Card key={props.title} className="flex  flex-row justify-around item-center  h-1/2 items-center rounded-4xl  transition-all duration-200 hover:bg-gray-500/30 ">
+            <div className=" h-full flex justify-center  items-center">
                 image
             </div>
-            <div className="flex flex-col w-[70%] h-full justify-center">
+            <div className="flex flex-col  h-full justify-center ">
                 <h1>{props.title} </h1>
                 <h3>Rs.{valueToDisplay}</h3>
             </div>
-        </button>
+        </Card>
     )
 }

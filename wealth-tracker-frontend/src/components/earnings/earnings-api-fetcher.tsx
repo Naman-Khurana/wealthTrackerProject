@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 import { AddIncomePayload } from "@/type/earnings"
 import { useEarningsFilter } from "@/context/earnings-filter-context"
+import { useRouter } from "next/navigation"
 
 const fetchEarningsWithDetails=async(startDate?: string,
   endDate?: string)=>{
@@ -55,6 +56,7 @@ export function useEarningsWithDetails(){
 }
 
 
+
 export function useAddIncome(){
     const queryClient=useQueryClient();
 
@@ -70,6 +72,26 @@ export function useAddIncome(){
 
             });
         }
+    });
+}
+
+export function useLogout(){
+    const queryClient=useQueryClient();
+    const router=useRouter();
+    return useMutation({
+        mutationFn:async() => {
+            return axios.post(
+                `${API_BASE_URL}/auth/logout`,
+                {},
+                {withCredentials: true}
+            );
+        },
+
+        onSuccess:()=>{
+            queryClient.clear()
+            router.push("/login")
+        }
+
     });
 }
 

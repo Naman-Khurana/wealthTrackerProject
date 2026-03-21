@@ -24,22 +24,27 @@ export default function Menu() {
       <AnimatedBackground
         key={activeRoute}
         defaultValue={activeRoute}
-        className="rounded-lg bg-white dark:bg-zinc-700"
+        className="rounded-lg bg-white"
         transition={{
           ease: "easeInOut",
           duration: 0.2,
         }}
       >
-        {menuFields.map((field) => (
-          <Link
-            key={field.route}
-            href={field.route}
-            data-id={field.route}
-            className="inline-flex w-28 items-center justify-center text-center text-zinc-800 transition-transform active:scale-[0.98] dark:text-zinc-50"
-          >
-            {field.name}
-          </Link>
-        ))}
+        {menuFields.map((field) => {
+          const isActive = activeRoute === field.route;
+
+          return (
+            <Link
+              key={field.route}
+              href={field.route}
+              data-id={field.route}
+              className={`inline-flex w-28 items-center justify-center text-center transition-transform active:scale-[0.98]
+      ${isActive ? "text-black" : "text-white dark:text-zinc-50"}`}
+            >
+              {field.name}
+            </Link>
+          );
+        })}
       </AnimatedBackground>
     </div>
   );

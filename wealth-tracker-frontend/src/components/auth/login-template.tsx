@@ -16,7 +16,7 @@ export default function LoginTemplate(){
     const emailRef=useRef<HTMLInputElement>(null);
     const passwordRef=useRef<HTMLInputElement>(null);
     
-    const route= useRouter();
+    const router= useRouter();
 
     const handleLogin=(e: React.FormEvent<HTMLFormElement>)=>{
         e.preventDefault();
@@ -38,7 +38,7 @@ export default function LoginTemplate(){
             })
             .then(response => {
                 setUser(response.data)
-                route.push('/dashboard');
+                router.push('/dashboard');
                 const test= axios.get("http://localhost:8080/api/"+ response.data.toString() + "/dashboard/",{
                     withCredentials:true
                 }).then(res=>{
@@ -75,7 +75,7 @@ export default function LoginTemplate(){
     const handleRotateAndRedirect=()=>{
         setRotate(true);
         setTimeout(() =>{
-            route.push('/register')
+            router.push('/register')
         },400);
     }
 

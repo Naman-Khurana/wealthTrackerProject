@@ -61,7 +61,7 @@ export default function ProfileComponent() {
 
     return (
         <main className="flex flex-col gap-3 pt-5">
-            <div className="text-2xl font-semibold text-white">Profile</div>
+            
             <ProfileNameSection user={user!} />
             <section className="grid grid-cols-2 gap-4">
                 <ProfileSubSectoinsTemplate {...personalDetails} />

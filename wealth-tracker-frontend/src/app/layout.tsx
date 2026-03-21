@@ -4,6 +4,7 @@ import "./globals.css";
 import { ModalProvider } from "@/context/model-context";
 import ModalRenderer from "@/components/global/modal-renderer";
 import { AuthProvider } from "@/context/auth-context";
+import ReactQueryProvider from "@/components/provider/ReactQueryProvider";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -34,12 +35,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider>
-          <ModalProvider>
-            {children}
-            <ModalRenderer />
-          </ModalProvider>
-        </AuthProvider>
+
+        <ReactQueryProvider >
+          <AuthProvider>
+
+            <ModalProvider>
+              {children}
+              <ModalRenderer />
+            </ModalProvider>
+          </AuthProvider>
+        </ReactQueryProvider>
       </body>
     </html>
   );

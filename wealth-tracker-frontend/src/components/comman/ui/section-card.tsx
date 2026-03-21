@@ -18,7 +18,7 @@ export default function SectionCard({
         ${className}
       `}
         >
-            <div className="px-[1rem] py-[1rem]">
+            <div className="px-[1rem] py-[1rem] w-full h-full">
                 {children}
             </div>
 
