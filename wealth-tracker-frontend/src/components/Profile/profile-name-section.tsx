@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
 
-import { User } from "@/type/commman";
+import { Subscription, User, UserSettings } from "@/type/commman";
 type prop={
-    user: User
+    user: User;
+    subscription : Subscription;
+    userSettings: UserSettings;
 }
-export default function ProfileNameSection({user} :prop){
+export default function ProfileNameSection({user,subscription,userSettings} :prop){
 
     return(
         <main>
@@ -16,7 +18,7 @@ export default function ProfileNameSection({user} :prop){
                     <section className="flex flex-col gap-2">
                         <h1 className="text-white">{(user?.firstName ?? " ") + (user?.lastName ?? "")}</h1>
                         <div className="text-white/30 text-xs">{user?.email ?? "N/A"}</div>
-                        <div className="text-blue-300 text-sm">role</div>
+                        <div className="text-blue-300 text-sm">{subscription?.active ? "Premium" : 'Free'}</div>
                     </section>
                 </section>
                 <section className="flex gap-2 items-center">

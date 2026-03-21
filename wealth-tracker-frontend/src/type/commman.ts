@@ -32,3 +32,24 @@ export type User = {
   authorities: any[];
   username: string;
 };
+
+export type UserSettings = {
+  userId: number;
+  currency: string;
+  theme?: string;
+};
+
+export type Subscription = {
+  planName: string;
+  startDate: string;
+  endDate: string;
+  active: boolean;
+};
+
+export type LoginResponse = {
+  user: User;
+  userSettings: UserSettings;
+  subscription: Subscription | null;
+  jwt?: string;
+  refreshToken?: string;
+};

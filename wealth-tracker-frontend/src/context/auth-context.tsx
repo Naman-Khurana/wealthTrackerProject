@@ -1,20 +1,63 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
-import { User } from "@/type/commman";
-type AuthContextType = {
+import { createContext, useContext, useEffect, useState } from "react";
+import { User, UserSettings, Subscription, LoginResponse } from "@/type/commman";
+
+const AUTH_STORAGE_KEY = "wealth-tracker-auth";
+export type AuthContextType = {
   user: User | null;
-  setUser: (user: User | null) => void;
+  userSettings: UserSettings | null;
+  subscription: Subscription | null;
+  isLoggedIn: boolean;
+  setAuthData: (data: LoginResponse) => void;
+  logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
+  const [subscription, setSubscription] = useState<Subscription | null>(null);
 
   const [user, setUser] = useState<User | null>(null);
 
+  useEffect(() => {
+    const savedAuth = window.localStorage.getItem(AUTH_STORAGE_KEY);
+    if (!savedAuth) return;
+
+    try {
+      const parsed: LoginResponse = JSON.parse(savedAuth);
+      setUser(parsed.user ?? null);
+      setUserSettings(parsed.userSettings ?? null);
+      setSubscription(parsed.subscription ?? null);
+    } catch {
+      window.localStorage.removeItem(AUTH_STORAGE_KEY);
+    }
+  }, []);
+
+  const setAuthData = (data: LoginResponse) => {
+    setUser(data.user);
+    setUserSettings(data.userSettings);
+    setSubscription(data.subscription);
+    window.localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(data));
+  };
+
+  const logout = () => {
+    setUser(null);
+    setUserSettings(null);
+    setSubscription(null);
+    window.localStorage.removeItem(AUTH_STORAGE_KEY);
+  };
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
+    <AuthContext.Provider value={{
+      user,
+      userSettings,
+      subscription,
+      isLoggedIn: !!user,
+      setAuthData,
+      logout,
+    }}>
       {children}
     </AuthContext.Provider>
   );
