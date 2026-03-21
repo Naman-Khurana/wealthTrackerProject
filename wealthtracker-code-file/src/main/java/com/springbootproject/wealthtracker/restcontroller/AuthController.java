@@ -81,8 +81,8 @@ public class AuthController {
                 .body(authenticatedUserDetails.get("user") );
     }
 
-    @GetMapping("{userid}/logout")
-    public ResponseEntity<String> logoutUser(@PathVariable("userid") int userid,@RequestHeader("Authorization") String token){
+    @PostMapping("/logout")
+    public ResponseEntity<String> logoutUser(){
 
 //        authenticationService.logoutUser(token);
         ResponseCookie cookie=ResponseCookie.from("jwt","")

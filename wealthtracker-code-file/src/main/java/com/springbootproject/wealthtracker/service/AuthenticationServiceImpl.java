@@ -151,7 +151,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public Map<String,Object> login(LoginUserDTO loginUserDTO) throws Exception {
         Map<String,Object> response= new HashMap<>();
-        AccountHolder authenticatedUser=authenticate(loginUserDTO);
+        AccountHolder authenticatedUser=authenticate(loginUserDTO); 
 
         UserDetails userDetails= customUserDetailsService.loadUserByUsername(loginUserDTO.getEmail());
         //primary token

@@ -61,6 +61,18 @@ public class AccountHolder implements UserDetails {
     )
     private List<Budget> budgets;
 
+    @JsonIgnore
+    @OneToOne(mappedBy = "accountHolder",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY)
+    private UserSettings userSettings;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "accountHolder",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY)
+    private List<Subscription> subscriptions;
+
 
     //constructors
 
