@@ -7,6 +7,7 @@ import com.springbootproject.wealthtracker.dto.LoginResponseDTO;
 import com.springbootproject.wealthtracker.dto.LoginUserDTO;
 import com.springbootproject.wealthtracker.dto.RegisterUserDTO;
 import com.springbootproject.wealthtracker.entity.AccountHolder;
+import com.springbootproject.wealthtracker.error.UnauthorizedException;
 import com.springbootproject.wealthtracker.service.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.extern.java.Log;
@@ -110,14 +111,35 @@ public class AuthController {
 
     }
 
-//    @PostMapping("/refresh-token")
-//    public ResponseEntity<?> refreshToken(@RequestBody String refreshToken ){
-//        //call the auth service function for refreshing the token
-//
-//        //if successful return response entiyt sucess
-//
-//        //otherwise return unauthorized error
-//    }
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(@CookieValue(value = "refreshToken",required = false) String refreshToken ) throws Exception{
+        //call the auth service function for refreshing the token
+        if(refreshToken == null){
+            throw new UnauthorizedException("Refresh token missing");
+        }
+        LoginResponseDTO responseDTO=authenticationService.authenticationWithRefreshToken(refreshToken);
+
+        ResponseCookie jwtCookie=ResponseCookie.from("jwt",responseDTO.getJwt())
+                .httpOnly(true)
+                .path("/")
+                .maxAge(Duration.ofMinutes(30))
+                .sameSite("Strict")
+                .build();
+
+        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", responseDTO.getRefreshToken())
+                .httpOnly(true)
+                .path("/")
+                .maxAge(Duration.ofDays(1))
+                .sameSite("Strict")
+                .build();
+        //if successful return response entiyt sucess
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE,jwtCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                .body("Authenticated");
+        //otherwise return unauthorized error
+    }
 
 
 }

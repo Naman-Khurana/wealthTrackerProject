@@ -32,7 +32,7 @@ public class BudgetController {
             throw new RuntimeException("Unauthorized - JWT token missing");
         }
 
-        String username = jwtUtil.extractUserName(token);
+        String username = jwtUtil.extractUserIdFromToken(token);
         int userid=Integer.parseInt(username);
         System.out.println("Adding Budget for User ID : " + userid);
 
@@ -48,7 +48,7 @@ public class BudgetController {
             throw new RuntimeException("Unauthorized - JWT token missing");
         }
 
-        String username = jwtUtil.extractUserName(token);
+        String username = jwtUtil.extractUserIdFromToken(token);
         int userid=Integer.parseInt(username);
 
         List<Budget> listOfBudgets=budgetService.getUserBudget(userid);
@@ -81,7 +81,7 @@ public class BudgetController {
             throw new RuntimeException("Unauthorized - JWT token missing");
         }
 
-        String username = jwtUtil.extractUserName(token);
+        String username = jwtUtil.extractUserIdFromToken(token);
         int userid=Integer.parseInt(username);
 
         BudgetUsageResponseDTO percentageBudgetUsed=budgetService.getPercentageExpensesBudgetUsedByCategory(userid,budgetRangeCategory,expenseCategory);
@@ -99,7 +99,7 @@ public class BudgetController {
             throw new RuntimeException("Unauthorized - JWT token missing");
         }
 
-        String username = jwtUtil.extractUserName(token);
+        String username = jwtUtil.extractUserIdFromToken(token);
         int userid=Integer.parseInt(username);
 
         Map<String,BudgetUsageResponseDTO> result =budgetService.getPercentageExpenseBudgetUsedbyAllCategoriesForRangeCategory(userid,budgetRangeCategory);

@@ -11,14 +11,11 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/expenses")
@@ -50,7 +47,7 @@ public class ExpensesController {
         if (token == null) {
             throw new RuntimeException("Unauthorized - JWT token missing");
         }
-        String username = jwtUtil.extractUserName(token);
+        String username = jwtUtil.extractUserIdFromToken(token);
         int userid=Integer.parseInt(username);
         //if param exists get results accordingly
         if(startDate==null || endDate==null){
@@ -70,7 +67,7 @@ public class ExpensesController {
         if (token == null) {
             throw new RuntimeException("Unauthorized - JWT token missing");
         }
-        String username = jwtUtil.extractUserName(token);
+        String username = jwtUtil.extractUserIdFromToken(token);
         int userid=Integer.parseInt(username);
         //call the add new expense service
 
@@ -86,7 +83,7 @@ public class ExpensesController {
         if (token == null) {
             throw new RuntimeException("Unauthorized - JWT token missing");
         }
-        String username = jwtUtil.extractUserName(token);
+        String username = jwtUtil.extractUserIdFromToken(token);
         int userid=Integer.parseInt(username);
         //call the add new expense service
 
@@ -103,7 +100,7 @@ public class ExpensesController {
         if (token == null) {
             throw new RuntimeException("Unauthorized - JWT token missing");
         }
-        String username = jwtUtil.extractUserName(token);
+        String username = jwtUtil.extractUserIdFromToken(token);
         int userid=Integer.parseInt(username);
         System.out.println("Removing Expense id : " + expenseid + " from user id : " + userid);
 
@@ -124,7 +121,7 @@ public class ExpensesController {
         if (token == null) {
             throw new RuntimeException("Unauthorized - JWT token missing");
         }
-        String username = jwtUtil.extractUserName(token);
+        String username = jwtUtil.extractUserIdFromToken(token);
         int userid=Integer.parseInt(username);
         ExpenseOrEarningInDetailDTO tempExpense= expensesService.getExpenseWithIdFromAccountHolderId(userid,expenseid);
 
@@ -139,7 +136,7 @@ public class ExpensesController {
         if (token == null) {
             throw new RuntimeException("Unauthorized - JWT token missing");
         }
-        String username = jwtUtil.extractUserName(token);
+        String username = jwtUtil.extractUserIdFromToken(token);
         int userid=Integer.parseInt(username);
         return ResponseEntity.ok(expensesService.getSubCategoryExpensesTotal(userid,"essential"));
 
@@ -151,7 +148,7 @@ public class ExpensesController {
         if (token == null) {
             throw new RuntimeException("Unauthorized - JWT token missing");
         }
-        String username = jwtUtil.extractUserName(token);
+        String username = jwtUtil.extractUserIdFromToken(token);
         int userid=Integer.parseInt(username);
         return ResponseEntity.ok(expensesService.getSubCategoryExpensesTotal(userid,"luxury"));
 
@@ -163,7 +160,7 @@ public class ExpensesController {
         if (token == null) {
             throw new RuntimeException("Unauthorized - JWT token missing");
         }
-        String username = jwtUtil.extractUserName(token);
+        String username = jwtUtil.extractUserIdFromToken(token);
         int userid=Integer.parseInt(username);
         List<MonthlyEarningsNExpensesDTO> results=expensesService.getMonthWiseExpenses(userid);
         return ResponseEntity.ok(results);
@@ -174,7 +171,7 @@ public class ExpensesController {
         if (token == null) {
             throw new RuntimeException("Unauthorized - JWT token missing");
         }
-        String username = jwtUtil.extractUserName(token);
+        String username = jwtUtil.extractUserIdFromToken(token);
         int userid=Integer.parseInt(username);
         return ResponseEntity.ok(expensesService.getRecentNTranscations(userid,n));
     }

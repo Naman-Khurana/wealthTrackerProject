@@ -15,8 +15,10 @@ import com.springbootproject.wealthtracker.entity.AccountHolder;
 import com.springbootproject.wealthtracker.entity.Roles;
 import com.springbootproject.wealthtracker.entity.Subscription;
 import com.springbootproject.wealthtracker.entity.UserSettings;
+import com.springbootproject.wealthtracker.enums.TokenType;
 import com.springbootproject.wealthtracker.error.AlreadyExistsException;
 import com.springbootproject.wealthtracker.error.InvalidEmailFormatException;
+import com.springbootproject.wealthtracker.error.UnauthorizedException;
 import com.springbootproject.wealthtracker.mapper.AccountHolderMapper;
 import com.springbootproject.wealthtracker.mapper.SubscriptionMapper;
 import com.springbootproject.wealthtracker.mapper.UserSettingsMapper;
@@ -25,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -173,15 +176,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         UserDetails userDetails= customUserDetailsService.loadUserByUsername(loginUserDTO.getEmail());
         //primary token
-        String jwt=jwtUtil.generateToken(userDetails);
+        String jwt=jwtUtil.generateToken(userDetails,TokenType.ACCESS_TOKEN);
 
-        //this features is still incomplete for now
-        //create refresh token value
-        String refreshToken=jwtUtil.generateCustomToken(userDetails,1000*60*60*24*7);
-        //for now adding refresh token as prt of login response since without frontend cookies can't be happened
-        //later use http cookie response
+        String refreshToken=jwtUtil.generateToken(userDetails, TokenType.REFRESH_TOKEN);
 
-        LoginResponseDTO loginResponseDTO=LoginResponseDTO.builder()
+
+        return LoginResponseDTO.builder()
                 .user(accountHolderMapper.toDTO(authenticatedUser))
                 .jwt(jwt)
                 .userSettings(userSettingsMapper.toDTO(userSettings))
@@ -189,11 +189,25 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .refreshToken(refreshToken)
                 .build();
 
+    }
 
+    @Override
+    public LoginResponseDTO authenticationWithRefreshToken(String refreshToken) throws Exception {
+        jwtUtil.validateToken(refreshToken);
 
+        if(!jwtUtil.isRefreshToken(refreshToken)){
+            throw new UnauthorizedException("Invalid refresh token");
+        }
 
+        String  userid=jwtUtil.extractUserIdFromToken(refreshToken);
 
-        return loginResponseDTO;
+        UserDetails userDetails=customUserDetailsService.loadUserByUsername(userid);
 
+        String newAccessToken=jwtUtil.generateToken(userDetails,TokenType.ACCESS_TOKEN);
+
+        return LoginResponseDTO.builder()
+                .jwt(newAccessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 }

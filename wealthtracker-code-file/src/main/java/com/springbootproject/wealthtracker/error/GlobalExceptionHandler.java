@@ -115,22 +115,15 @@ public class GlobalExceptionHandler {
         response.setPath(request.getDescription(false));
         return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
     }
-//    @ExceptionHandler(HttpServerErrorException.InternalServerError.class)
-//    public ResponseEntity<ErrorResponseDTO> InternalServerError(HttpServerErrorException.InternalServerError e,HttpServletRequest request){
-//        ErrorResponseDTO response=new ErrorResponseDTO();
-//        response.setStatus(HttpStatus.FORBIDDEN.value());
-//        response.setMessage("You are not allowed to access this page's content due to internal server error.");
-//        response.setTimestamp(LocalDateTime.now().format(formatter));
-//        response.setPath(request.getRequestURI());
-//        return new ResponseEntity<>(response,HttpStatus.FORBIDDEN);    }
-//
- /*   @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponseDTO> handleGeneralExceptions(Exception e, WebRequest request){
+
+    @ExceptionHandler(io.jsonwebtoken.JwtException.class)
+    public ResponseEntity<ErrorResponseDTO> handleInvalidJwt(io.jsonwebtoken.JwtException e, WebRequest request){
         ErrorResponseDTO response=new ErrorResponseDTO();
-        response.setStatus(HttpStatus.FORBIDDEN.value());
-        response.setMessage(e.getMessage());
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setMessage("Invalid JWT Token");
         response.setTimestamp(LocalDateTime.now().format(formatter));
         response.setPath(request.getDescription(false));
-        return new ResponseEntity<>(response,HttpStatus.FORBIDDEN);
-    }*/
+        return new ResponseEntity<>(response,HttpStatus.UNAUTHORIZED);
+    }
+
 }

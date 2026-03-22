@@ -35,11 +35,14 @@ export default function IncomeDistributionSection({ earnings }: Props) {
 
 
     return (
-        <SectionCard className="w-full h-full flex flex-col ">
-            {/* top section */}
-            <section className="w-full h-[40%]"> Income Distribution</section>
-            <Divider className="w-full " />
-            <ScrollableArea>
+
+        <SectionCard className="w-full h-full flex flex-col">
+            {/* Top section */}
+            <section className="w-full flex items-center h-auto py-2">
+                <h3 className="text-lg font-semibold text-white">Income Distribution</h3>
+            </section>
+            <Divider className="w-full" />
+            <ScrollableArea className="flex flex-col gap-3 pt-3">
                 {
                     data.map((row) => {
                         return (
@@ -53,9 +56,8 @@ export default function IncomeDistributionSection({ earnings }: Props) {
                         )
                     })
                 }
-
-
             </ScrollableArea>
         </SectionCard>
+
     )
 }

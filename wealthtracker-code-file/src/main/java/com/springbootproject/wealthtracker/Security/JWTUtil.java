@@ -1,16 +1,11 @@
 package com.springbootproject.wealthtracker.Security;
 
-import com.springbootproject.wealthtracker.entity.AccountHolder;
+import com.springbootproject.wealthtracker.enums.TokenType;
 import com.springbootproject.wealthtracker.error.UnauthorizedException;
-import com.springbootproject.wealthtracker.error.jwtTokenExpirationException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +24,9 @@ public class JWTUtil {
     @Value("${security-jwt.expiration-time}")
     private long jwtExpiration;
 
+    @Value("${security-jwt.refresh-token-expiration-time}")
+    private long refreshTokenExpiration;
+
 
     private Key getSigningKey(){
         byte[] keyBytes= Decoders.BASE64.decode(SECRET_KEY);
@@ -36,13 +34,17 @@ public class JWTUtil {
 
     }
 
-    public String extractUserName(String token ){
+    public String extractUserIdFromToken(String token ){
         return extractClaim(token, Claims::getSubject);
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimResolver){
         Claims claims=extractAllClaims(token);
         return claimResolver.apply(claims);
+    }
+
+    public String extractTokenType(String token){
+        return extractClaim(token, claims -> claims.get("type", String.class));
     }
 
     public long getExpirationTime(){
@@ -65,40 +67,63 @@ public class JWTUtil {
     }
 
 
-    public String generateToken(Map<String,Object> extraClaims,UserDetails userDetails){
-        return buildToken(userDetails,jwtExpiration);
+    public String generateToken(UserDetails userDetails, TokenType tokenType){
+        Map<String, Object> claims = new HashMap<>();
+
+
+        if(tokenType==TokenType.ACCESS_TOKEN){
+            claims.put("type",tokenType.name());
+            return generateCustomToken(claims,userDetails,jwtExpiration);
+        }else{
+            claims.put("type",tokenType.name());
+            return generateCustomToken(claims,userDetails,refreshTokenExpiration);
+        }
     }
+
+    public String generateToken(Map<String,Object> extraClaims,UserDetails userDetails){
+        return buildToken(userDetails,jwtExpiration,null);
+    }
+
 
     //for custom expiration time
+    public String generateCustomToken(Map<String,Object> extraClaims,UserDetails userDetails,long customExpirationTime){
 
+        return buildToken(userDetails,customExpirationTime,extraClaims);
+    }
     public String generateCustomToken(UserDetails userDetails,int customExpirationTime){
-        return buildToken(userDetails,customExpirationTime);
+        return buildToken(userDetails,customExpirationTime,null);
     }
 
 
 
-    private String buildToken( UserDetails userDetails, long expiration){
-        System.out.println("UserName of the user is : " + userDetails.getUsername());
-        return Jwts
-                .builder()
-                .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date((System.currentTimeMillis()+expiration)))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-                .compact();
+    private String buildToken( UserDetails userDetails, long expiration,Map<String,Object> extraClaims){
+        JwtBuilder builder= Jwts.builder();
+        if(extraClaims!=null){
+            builder.claims(extraClaims);
+        }
+
+        return builder
+            .subject(userDetails.getUsername())
+            .issuedAt(new Date(System.currentTimeMillis()))
+            .expiration(new Date((System.currentTimeMillis()+expiration)))
+            .signWith(getSigningKey())
+            .compact();
     }
+
+
 
     public boolean isTokenExpired(String token){
         System.out.println("started istokenvalid");
-        boolean expired=extractExpiration(token).before(new Date());
 
-        return expired;
+        return extractExpiration(token).before(new Date());
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails){
-        final String username=extractUserName(token);
+        final String username= extractUserIdFromToken(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
+
+//    public boolean isTokenValid
 
     public int extractUserId(String token) {
 
@@ -106,10 +131,33 @@ public class JWTUtil {
             throw new UnauthorizedException("JWT token missing");
         }
 
-        String username =extractUserName(token);
+        String username = extractUserIdFromToken(token);
 
         return Integer.parseInt(username);
     }
+
+
+    public boolean isRefreshToken(String token){
+        return TokenType.REFRESH_TOKEN.name().equals(extractTokenType(token));
+    }
+
+    public boolean isAccessToken(String token){
+        return TokenType.ACCESS_TOKEN.name().equals(extractTokenType(token));
+    }
+
+    public void validateToken(String token){
+        try{
+            extractAllClaims(token);
+        }
+        catch (ExpiredJwtException e){
+            throw new UnauthorizedException("Token Expired");
+        }
+        catch(JwtException e){
+            throw new UnauthorizedException("Invalid Token");
+        }
+    }
+
+
 
 }
 

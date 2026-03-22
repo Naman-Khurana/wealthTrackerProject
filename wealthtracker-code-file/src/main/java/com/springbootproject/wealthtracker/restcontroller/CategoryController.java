@@ -48,7 +48,7 @@ public class CategoryController {
             throw new RuntimeException("Unauthorized - JWT token missing");
         }
 
-        String username = jwtUtil.extractUserName(token);
+        String username = jwtUtil.extractUserIdFromToken(token);
         int userid=Integer.parseInt(username);
         List<ExpensesCategoryWithPercentageUsageDTO> list=expensesService.getExpensesCategoriesPercentageUsageWise(userid);
         return ResponseEntity.ok(list);

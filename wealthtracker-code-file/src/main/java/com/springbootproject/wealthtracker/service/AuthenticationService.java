@@ -27,4 +27,5 @@ public interface AuthenticationService {
 
      public LoginResponseDTO login(LoginUserDTO loginUserDTO) throws Exception;
 
+     public LoginResponseDTO authenticationWithRefreshToken(String refreshToken) throws Exception;
 }

@@ -17,33 +17,30 @@ export default function StatRowWithProgressBar({
 }: StatRowWithProgressBarProps) {
   return (
     <section
-      className={`flex items-center gap-3 ${className}`}
+      className={`flex items-center gap-4 py-2 ${className}`}
     >
       {/* Label */}
-      <div className="flex-2 text-white text-sm">
+      <div className="w-24 text-white text-xs font-medium truncate">
         {label}
       </div>
 
       {/* Progress Bar */}
-      <div className="flex-8 h-3 bg-gray-500/30 rounded overflow-hidden">
+      <div className="flex-1 h-2.5 bg-zinc-700/50 rounded-full overflow-hidden shadow-inner border border-zinc-600/30">
         <div
-          className={`h-full ${BACKGROUND_COLOR_EMRALD_GREEN} transition-all duration-300`}
+          className={`h-full ${BACKGROUND_COLOR_EMRALD_GREEN} transition-all duration-500 rounded-full shadow-lg`}
           style={{ width: `${progress}%` }}
         />
       </div>
 
       {/* Value */}
-      <div className="flex-1 text-[0.8rem] flex items-center gap-1">
-        <section className="flex flex-row">
-          <div className={`${TEXT_COLOR_EMRALD_GREEN}`}>₹</div>
-          <div>{value}</div>
-        </section>
-        
+      <div className="w-20 text-left text-xs font-medium flex items-center justify-start gap-0.5 text-white">
+        <div className={`${TEXT_COLOR_EMRALD_GREEN}`}>₹</div>
+        <div className="truncate">{value}</div>
       </div>
 
       {/* Percentage */}
-      <div className={`flex-1 text-[0.8rem] ${TEXT_COLOR_EMRALD_GREEN}`}>
-        {percentage}%
+      <div className={`w-12 text-left text-xs font-semibold ${TEXT_COLOR_EMRALD_GREEN}`}>
+        {typeof percentage === 'number' ? Math.round(percentage) : percentage}%
       </div>
     </section>
   );

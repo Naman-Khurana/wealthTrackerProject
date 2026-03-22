@@ -4,9 +4,6 @@ import com.springbootproject.wealthtracker.Security.JWTUtil;
 import com.springbootproject.wealthtracker.dto.DashBoardHomeDTO;
 import com.springbootproject.wealthtracker.service.DashBoardService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,13 +25,12 @@ public class DashBoardController {
         if (token == null) {
             throw new RuntimeException("Unauthorized - JWT token missing");
         }
-        String username = jwtUtil.extractUserName(token);
+        String userid = jwtUtil.extractUserIdFromToken(token);
 
-        System.out.println("Authenticated as: " + username);
+        System.out.println("Authenticated as: " + userid);
 
-        DashBoardHomeDTO tempDispalay=theDashBoardService.getDashBoardData(Integer.parseInt(username));
+        return theDashBoardService.getDashBoardData(Integer.parseInt(userid));
 
 
-        return tempDispalay;
     }
 }

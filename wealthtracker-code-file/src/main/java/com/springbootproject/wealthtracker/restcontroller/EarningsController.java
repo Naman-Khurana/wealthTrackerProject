@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,7 +43,7 @@ public class EarningsController {
                                                    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate endDate){
         AuthUtils.checkAuthToken(token);
 
-        String username=jwtUtil.extractUserName(token);
+        String username=jwtUtil.extractUserIdFromToken(token);
         int userid=Integer.parseInt(username);
         return ResponseEntity.ok(earningsService.getEarningsWithDetails(userid,startDate,endDate));
     }
@@ -59,7 +58,7 @@ public class EarningsController {
         //create a variable of type expensesdatadto
         AuthUtils.checkAuthToken(token);
 
-        String username = jwtUtil.extractUserName(token);
+        String username = jwtUtil.extractUserIdFromToken(token);
         int userid=Integer.parseInt(username);
         EarningsHomeDataDTO tempEarningsHomeData = earningsService.getEarningsHomeData(userid,startDate,endDate);
         //return the required data
@@ -95,7 +94,7 @@ public class EarningsController {
             throw new RuntimeException("Unauthorized - JWT token missing");
         }
 
-        String username = jwtUtil.extractUserName(token);
+        String username = jwtUtil.extractUserIdFromToken(token);
         int userid=Integer.parseInt(username);
         //call service function for deletion
         System.out.println("DELETING EARNING WITH ID : " + earningid);
@@ -115,7 +114,7 @@ public class EarningsController {
             throw new RuntimeException("Unauthorized - JWT token missing");
         }
 
-        String username = jwtUtil.extractUserName(token);
+        String username = jwtUtil.extractUserIdFromToken(token);
         int userid=Integer.parseInt(username);
         EarningsDTO tempEarning= earningsService.getEarningWithIdFromAccountHolderId(   userid,earningid);
 
@@ -128,7 +127,7 @@ public class EarningsController {
         if (token == null) {
             throw new RuntimeException("Unauthorized - JWT token missing");
         }
-        String username = jwtUtil.extractUserName(token);
+        String username = jwtUtil.extractUserIdFromToken(token);
         List<MonthlyEarningsNExpensesDTO> results=earningsService.getLastSixMonthsEarnings(Integer.parseInt(username));
         return ResponseEntity.ok(results);
     }
@@ -141,7 +140,7 @@ public class EarningsController {
 
         AuthUtils.checkAuthToken(token);
 
-        String username=jwtUtil.extractUserName(token);
+        String username=jwtUtil.extractUserIdFromToken(token);
         int userid=Integer.parseInt(username);
         return ResponseEntity.ok(earningsService.getEarningsIncomeTypeWiseWithinARange(userid,startDate,endDate));
     }
