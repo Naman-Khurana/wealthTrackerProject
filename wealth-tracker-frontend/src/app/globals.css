@@ -75,7 +75,7 @@
 } */
  html,body{
   height: 100%;
-  background-color: #171717;
+  background-color: #141414;
  }
 
  /* Custom scrollbar for all scrollable divs */
@@ -147,7 +147,7 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
+  --background: oklch(0.125 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);

@@ -1,6 +1,6 @@
 "use client";
 
-import { BACKGROUND_COLOR_EMRALD_GREEN } from "@/constants/ui.constants";
+import { Plus } from "lucide-react";
 
 type ActionButtonProps = {
   onClick?: () => void;
@@ -17,19 +17,24 @@ export default function ActionButton({
     <button
       onClick={onClick}
       className={`
-        bg-black/50
-        rounded-lg
-        border border-gray-600
-        shadow-2xl
-        shadow-green-500/20
+        flex items-center gap-2.5
+        px-4 py-2.5
+        rounded-2xl
+        bg-emerald-950
+        border border-emerald-700/50
+        text-emerald-300 text-sm font-medium tracking-wide
         transition-all duration-200
-        hover:scale-[1.02]
-        active:scale-[0.98]
-        ${BACKGROUND_COLOR_EMRALD_GREEN}
+        hover:bg-emerald-900
+        hover:border-emerald-500/70
+        hover:text-emerald-100
+        // active:scale-[0.97]
         ${className}
       `}
     >
-      {children}
+      <span className="flex items-center justify-center w-5 h-5 rounded-full bg-emerald-600/40 border border-emerald-500/50 text-emerald-300">
+        <Plus size={12} strokeWidth={2.5} />
+      </span>
+      <span>{children}</span>
     </button>
   );
 }

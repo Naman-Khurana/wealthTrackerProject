@@ -141,7 +141,7 @@ export default function BarChartTemplate() {
     return (
 
         <main className="w-full h-full">
-            <SectionCard className="w-full h-full ">
+            <SectionCard className="w-full h-full border-none  bg-zinc-800/30 ">
                 {/* //by default data is default to string[] so for typescirpt we specify the data tyep to be of number[] for bar chart */}
                 <Bar key={1} data={data as ChartData<"bar", number[], string>} options={options} />
             </SectionCard>

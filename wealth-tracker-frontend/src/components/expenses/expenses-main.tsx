@@ -30,11 +30,11 @@ export default function ExpensesComponent(){
 
             
             <section className="h-full w-[70%]  flex flex-col ">
-                <section className="w-full h-[25%]  flex">
+                <section className="w-full h-[25%] flex items-center gap-2">
                 
                     <TotalLuxuryEssentialExpensesBlock/>
         
-                    <div className="h-full w-[20%]  flex flex-col">
+                    <div className="h-full w-[20%] flex items-center justify-center">
                         <AddExpensesNBudgetButton openAddExpenses={openAddExpensesButton} openAddBudget={openAddBudgetButton}/>
                     </div>
 

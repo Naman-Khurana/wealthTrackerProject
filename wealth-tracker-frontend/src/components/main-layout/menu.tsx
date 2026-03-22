@@ -20,32 +20,35 @@ export default function Menu() {
     menuFields[0].route;
 
   return (
-    <div className="rounded-[8px] p-[2px] dark:bg-zinc-800 flex flex-col gap-2">
-      <AnimatedBackground
-        key={activeRoute}
-        defaultValue={activeRoute}
-        className="rounded-lg bg-white"
-        transition={{
-          ease: "easeInOut",
-          duration: 0.2,
-        }}
-      >
-        {menuFields.map((field) => {
-          const isActive = activeRoute === field.route;
+    <main className="w-full h-full ">
+      <div className="h-[5%]"></div>
+      <div className="rounded-[8px]  h-[95%] w-full flex flex-col gap-2 items-center py-[5%]">
+        <AnimatedBackground
+          key={activeRoute}
+          defaultValue={activeRoute}
+          className="rounded-2xl bg-white p-[2px]"
+          transition={{
+            ease: "easeInOut",
+            duration: 0.2,
+          }}
+        >
+          {menuFields.map((field) => {
+            const isActive = activeRoute === field.route;
 
-          return (
-            <Link
-              key={field.route}
-              href={field.route}
-              data-id={field.route}
-              className={`inline-flex w-28 items-center justify-center text-center transition-transform active:scale-[0.98]
+            return (
+              <Link
+                key={field.route}
+                href={field.route}
+                data-id={field.route}
+                className={`inline-flex w-35 h-10 items-center justify-center text-center transition-transform active:scale-[0.98]
       ${isActive ? "text-black" : "text-white dark:text-zinc-50"}`}
-            >
-              {field.name}
-            </Link>
-          );
-        })}
-      </AnimatedBackground>
-    </div>
+              >
+                {field.name}
+              </Link>
+            );
+          })}
+        </AnimatedBackground>
+      </div>
+    </main>
   );
 }

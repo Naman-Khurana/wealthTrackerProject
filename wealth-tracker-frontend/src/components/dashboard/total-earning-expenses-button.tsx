@@ -5,6 +5,7 @@ import Card from "../comman/ui/card"
 type inputs = {
     title: string;
     value: string;
+    image: string;
 }
 
 type DashBoardDataDTO = {
@@ -34,14 +35,27 @@ export default function TotalEarningNExpensesButtonTemplate(props: inputs) {
 
     return (
 
-        <Card key={props.title} className="flex  flex-row justify-around item-center  h-1/2 items-center rounded-4xl  transition-all duration-200 hover:bg-gray-500/30 ">
-            <div className=" h-full flex justify-center  items-center">
-                image
+        <Card key={props.title} className="flex  flex-row justify-around item-center  h-1/2 items-center   transition-all duration-200 hover:bg-gray-500/30 ">
+            <div className="h-full flex justify-center items-center">
+                <div className="bg-gray-600/40 p-6 rounded-3xl shadow-inner">
+                    <img
+                        src={props.image}
+                        className="filter invert opacity-90"
+                        height={10}
+                        width={100}
+                        alt=""
+                    />
+                </div>
             </div>
-            <div className="flex flex-col  h-full justify-center ">
-                <h1>{props.title} </h1>
-                <h3>Rs.{valueToDisplay}</h3>
+            <div className="flex flex-col items-end gap-1">
+                <h2 className="text-gray-400 text-lg capitalize">
+                    {props.title}
+                </h2>
+                <h1 className="text-2xl font-bold text-white">
+                    Rs.{valueToDisplay}
+                </h1>
             </div>
+
         </Card>
     )
 }

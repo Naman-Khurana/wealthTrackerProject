@@ -46,18 +46,19 @@ export default function RootLayout({
         <div className="h-[8%] w-full">
           <Navbar />
         </div>
-        <div className="h-[2%]"></div>
-        <section className="h-[90%] w-full overflow-hidden flex gap-11">
 
-          <div className="h-full w-[12%] bg-black/1    rounded-br-3xl flex flex-col items-start justify-start px-4 py-6 space-y-2">
+        <section className="h-[92%] w-full overflow-hidden flex gap-11">
+
+          <div className="h-full w-[12%] bg-zinc-950/50 border-r border-zinc-800/70 flex flex-col items-start justify-start">
 
             <Menu />
 
           </div>
-          <div className="h-full w-[80%] overflow-auto">
-
-            {children}
-
+          <div className="h-full w-[80%] overflow-auto flex flex-col">
+            <div className="h-[2%] w-full"></div>
+            <div className="h-[98%] w-full">
+              {children}
+            </div>
 
           </div>
         </section>
