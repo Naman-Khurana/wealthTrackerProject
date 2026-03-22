@@ -7,6 +7,7 @@ import com.springbootproject.wealthtracker.dto.LoginResponseDTO;
 import com.springbootproject.wealthtracker.dto.LoginUserDTO;
 import com.springbootproject.wealthtracker.dto.RegisterUserDTO;
 import com.springbootproject.wealthtracker.entity.AccountHolder;
+import com.springbootproject.wealthtracker.enums.AuthCookieType;
 import com.springbootproject.wealthtracker.error.UnauthorizedException;
 import com.springbootproject.wealthtracker.service.AuthenticationService;
 import jakarta.validation.Valid;
@@ -98,7 +99,14 @@ public class AuthController {
     public ResponseEntity<String> logoutUser(){
 
 //        authenticationService.logoutUser(token);
-        ResponseCookie cookie=ResponseCookie.from("jwt","")
+        ResponseCookie cookie=ResponseCookie.from(AuthCookieType.JWT.getValue(),"")
+                .httpOnly(true)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Strict")
+                .build();
+
+        ResponseCookie refreshCookie=ResponseCookie.from(AuthCookieType.REFRESH.getValue(),"")
                 .httpOnly(true)
                 .path("/")
                 .maxAge(0)
@@ -107,6 +115,7 @@ public class AuthController {
         //return response entity showing logout successful
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE,cookie.toString())
+                .header(HttpHeaders.SET_COOKIE,refreshCookie.toString())
                 .body("Logged Out");
 
     }
