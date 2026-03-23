@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 export function middleware(request: NextRequest){
-    const token =request.cookies.get('jwt');
+    const token =request.cookies.get('jwt')?.value;
     const { pathname }=request.nextUrl
 
-    const isAuthPage=pathname=='/login' || pathname=='register' 
+    const isAuthPage=pathname=='/login' || pathname=='/register' 
 
     if(!token && !isAuthPage){
         return NextResponse.redirect(new URL('/login',request.url));

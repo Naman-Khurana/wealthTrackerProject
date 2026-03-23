@@ -22,7 +22,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
-import axios from "axios";
+import axiosInstance from "@/lib/axios_instance";
 import { useState, useRef } from "react";
 import { useAllEssentialExpensesWithDetails, useAllLuxuryExpensesWithDetails } from "./expenses-api-fetcher";
 import Modal from "../comman/ui/modal";
@@ -123,15 +123,13 @@ export default function AddBudgetSection({closeAddBudget,isOpen} : props) {
         console.log("amout value  : " + amountValue);
         console.log("category : " + categoryValue);
         console.log("date category : " + budgetRangeCategoryValue());
-        axios.post('http://localhost:8080/api/expenses/budget/set', {    
+        axiosInstance.post('/expenses/budget/set', {    
                   category : categoryValue,
                   startDate : startDate?.toISOString().split('T')[0],
                   endDate : endDate?.toISOString().split('T')[0],
                   amount : amountValue, 
                   budgetRangeCategory : budgetRangeCategoryValue(),
-              },{
-                  withCredentials: true
-        })
+              })
         .then(response=>{
           console.log("New Budget Added.")
           closeAddBudget();

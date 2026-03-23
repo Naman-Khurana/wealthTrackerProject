@@ -1,8 +1,8 @@
 "use client"
-import axios from "axios";
 import { useState,useRef } from "react"
 import { useRouter } from "next/navigation"
 import { ifError } from "assert";
+import axiosInstance from "@/lib/axios_instance";
 
 export default function RegisterUserTemplate(){
     const [rotate,setRotate]=useState(false);
@@ -78,7 +78,7 @@ export default function RegisterUserTemplate(){
             setTimeout(() => setShake(false),400);
             setErrorMessage("Fill All Details!!");
         }else{
-            axios.post('http://localhost:8080/api/auth/register', {    
+            axiosInstance.post('/auth/register', {    
                 firstName : firstName,
                 lastName : lastName,
                 email : email,

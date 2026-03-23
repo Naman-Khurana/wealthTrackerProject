@@ -49,6 +49,7 @@ public class SecurityConfig  {
                 .authorizeHttpRequests(configurer  ->
                         configurer
                                 .requestMatchers("/api/auth/login").permitAll()
+                                .requestMatchers("/api/auth/refresh-token").permitAll()
                                 .requestMatchers("/api/auth/register").permitAll()
                                 .requestMatchers("/api/users/**").hasRole("ADMIN")
                                 .requestMatchers("/ws-notifications/**").permitAll()

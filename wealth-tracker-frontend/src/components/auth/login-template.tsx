@@ -2,7 +2,7 @@
 
 import { useState,useRef } from "react"
 import { useRouter } from "next/navigation";
-import axios from "axios";
+import axiosInstance from "@/lib/axios_instance";
 import { useAuth } from "@/context/auth-context";
 
 export default function LoginTemplate(){
@@ -30,22 +30,13 @@ export default function LoginTemplate(){
             setTimeout(() => setShake(false),400);
         }
         else{
-            axios.post('http://localhost:8080/api/auth/login', {    
+            axiosInstance.post('/auth/login', {    
                 email : email,
                 password : password
-            },{
-                withCredentials: true
             })
             .then(response => {
                 setAuthData(response.data)
                 router.push('/dashboard');
-                // const test= axios.get("http://localhost:8080/api/"+ response.data.toString() + "/dashboard/",{
-                //     withCredentials:true
-                // }).then(res=>{
-                //     console.log(res)
-                // }).catch(res=> {
-                //     console.log(res);
-                // })
 
             })
             .catch(error =>{

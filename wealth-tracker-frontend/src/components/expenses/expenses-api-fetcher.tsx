@@ -1,131 +1,121 @@
 "use client"
-import { API_BASE_URL } from "@/constants/api.constants";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+
+
+import axiosInstance from "@/lib/axios_instance";
 
 
 
-type NExpensesDataType={
-    category : string;
-    amount : number;
-    date : string;
+type NExpensesDataType = {
+    category: string;
+    amount: number;
+    date: string;
 }
 
-type essentialExpensesDataType={
-    TotalessentialExpenses : number;
+type essentialExpensesDataType = {
+    TotalessentialExpenses: number;
     essentialCategories: string[];
     essentialExpenses: NExpensesDataType[];
 }
 
-type luxuryExpensesDataType={
+type luxuryExpensesDataType = {
     luxuryCategories: string[];
     LuxuryExpenses: NExpensesDataType[],
     TotalluxuryExpenses: number;
 
 }
 
-type ExpensesCategoryWithPercentageUsageDataType={
-    category : string;
-    percentageUsed : number;
+type ExpensesCategoryWithPercentageUsageDataType = {
+    category: string;
+    percentageUsed: number;
 }
 
 type BudgetUsageResponseDTO = {
-  budgetExists: boolean;
-  percentageUsed: number;
+    budgetExists: boolean;
+    percentageUsed: number;
 };
 
 type AllCategoriesBudgetUsageResponseMapDTO = Record<string, BudgetUsageResponseDTO>;
 
 
 
-const fetchNExpenses=async(n : number)=>{
-    const details=await axios.get( `${API_BASE_URL}/expenses/recentExpenses`, 
-    {
-        params:{
-            n: n,
-        },
-        withCredentials: true,    
-    });
+const fetchNExpenses = async (n: number) => {
+    const details = await axiosInstance.get(`/expenses/recentExpenses`,
+        {
+            params: {
+                n: n,
+            },
+        });
     return details.data;
 }
 
-const fetchEssentialExpensesDetailWithDetails=async()=>{
-    const details=await axios.get(`${API_BASE_URL}/expenses/essential`, 
-    {
-        withCredentials: true,    
-    });
+const fetchEssentialExpensesDetailWithDetails = async () => {
+    const details = await axiosInstance.get(`/expenses/essential`);
     return details.data.body;
-} 
+}
 
-const fetchLuxuryExpensesDetailWithDetails=async()=>{
-    const details=await axios.get(`${API_BASE_URL}/expenses/luxury`, 
-    {
-        withCredentials: true,    
-    });
+const fetchLuxuryExpensesDetailWithDetails = async () => {
+    const details = await axiosInstance.get(`/expenses/luxury`);
     return details.data.body;
-} 
+}
 
-const fetchExpensesCategoryWithPercentageUsage=async()=>{
-    const details=await axios.get( `${API_BASE_URL}/category/getAllExpensesCategoriesWithPercentageWiseUsage`, 
-    {
-        withCredentials: true,    
-    });
+const fetchExpensesCategoryWithPercentageUsage = async () => {
+    const details = await axiosInstance.get(`/category/getAllExpensesCategoriesWithPercentageWiseUsage`);
     return details.data
 }
 
-const fetchAllBudgetCategoriesWithPercentageUsage=async()=>{
-    const details=await axios.get(`${API_BASE_URL}/expenses/budget/percentageAllCategoriesBudgetUsedBudgetRangeCategoryWise`, 
+const fetchAllBudgetCategoriesWithPercentageUsage = async () => {
+    const details = await axiosInstance.get(`/expenses/budget/percentageAllCategoriesBudgetUsedBudgetRangeCategoryWise`,
         {
-            params:{
+            params: {
                 //for now implementation is only availabel for montly criterias 
-                budgetRangeCategory : "MONTHLY"
+                budgetRangeCategory: "MONTHLY"
             },
-        withCredentials: true,    
-    });
+        });
     return details.data;
 }
 
 
 
 
-export function useNExpenses(n : number){
+export function useNExpenses(n: number) {
     return useQuery<NExpensesDataType[]>({
-       queryKey: ["nExpenses"],
-       queryFn: ()=> fetchNExpenses(n),
-       staleTime :Infinity, 
+        queryKey: ["nExpenses"],
+        queryFn: () => fetchNExpenses(n),
+        staleTime: Infinity,
     });
 
 }
 
-export function useAllEssentialExpensesWithDetails(){
+export function useAllEssentialExpensesWithDetails() {
     return useQuery<essentialExpensesDataType>({
-       queryKey: ["allEssentailExpensesWithDetails"],
-       queryFn: fetchEssentialExpensesDetailWithDetails,
-       staleTime :Infinity, 
+        queryKey: ["allEssentailExpensesWithDetails"],
+        queryFn: fetchEssentialExpensesDetailWithDetails,
+        staleTime: Infinity,
     });
 
 }
 
-export function useAllLuxuryExpensesWithDetails(){
+export function useAllLuxuryExpensesWithDetails() {
     return useQuery<luxuryExpensesDataType>({
-       queryKey: ["allLuxuryExpensesWithDetails"],
-       queryFn: fetchLuxuryExpensesDetailWithDetails,
-       staleTime :Infinity, 
+        queryKey: ["allLuxuryExpensesWithDetails"],
+        queryFn: fetchLuxuryExpensesDetailWithDetails,
+        staleTime: Infinity,
     });
 
 }
-export function useExpensesCategoryWithPercentageUsage(){
+export function useExpensesCategoryWithPercentageUsage() {
     return useQuery<ExpensesCategoryWithPercentageUsageDataType[]>({
         queryKey: ["expensesCategoryWithPercentageUsage"],
         queryFn: fetchExpensesCategoryWithPercentageUsage,
-        staleTime : Infinity,
+        staleTime: Infinity,
     });
 }
-export function useAllBudgetCategoriesWithPercentageUsage(){
+export function useAllBudgetCategoriesWithPercentageUsage() {
     return useQuery<AllCategoriesBudgetUsageResponseMapDTO>({
         queryKey: ["allBudgetCategoriesWithPercentageUsage"],
         queryFn: fetchAllBudgetCategoriesWithPercentageUsage,
-        staleTime : Infinity,
+        staleTime: Infinity,
     });
 }
 

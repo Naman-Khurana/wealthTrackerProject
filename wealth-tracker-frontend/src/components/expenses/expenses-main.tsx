@@ -29,7 +29,7 @@ export default function ExpensesComponent(){
             
 
             
-            <section className="h-full w-[70%]  flex flex-col ">
+            <section className="h-full w-[70%]  flex flex-col gap-3">
                 <section className="w-full h-[25%] flex items-center gap-2">
                 
                     <TotalLuxuryEssentialExpensesBlock/>
@@ -49,14 +49,14 @@ export default function ExpensesComponent(){
 
 
 
-            <section className="h-[97%] w-[30%]  flex flex-col jusitfy-center items-center gap-5">
-                <div className="w-full h-[40%]  flex   bg-black/50 rounded-4xl justify-between items-center 
-                    pl-[5%] border border-[1px] border-gray-600 shadow-2xl">
+            <section className="h-[100%] w-[30%]  flex flex-col jusitfy-center items-center gap-5 ">
+                <div className="w-full h-[40%]  flex   bg-black/50 rounded-2xl justify-between items-center 
+                    pl-[5%] border border-[1px] border-gray-600 shadow-2xl mt-2" >
                     <section className="w-[100%] h-full"> 
                         <ExpensesCategoriesPercentageUsageSection />
                     </section>
                 </div>
-                <div className="w-full h-[60%]  flex p-2  bg-black/50 rounded-4xl justify-between 
+                <div className="w-full h-[60%]  flex p-2  bg-black/50 rounded-2xl justify-between 
                      border border-[1px] border-gray-600 shadow-2xl">
                     <BudgetByCategory/>
                 </div>

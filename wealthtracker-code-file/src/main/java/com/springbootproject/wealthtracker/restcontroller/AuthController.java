@@ -126,6 +126,7 @@ public class AuthController {
         if(refreshToken == null){
             throw new UnauthorizedException("Refresh token missing");
         }
+
         LoginResponseDTO responseDTO=authenticationService.authenticationWithRefreshToken(refreshToken);
 
         ResponseCookie jwtCookie=ResponseCookie.from("jwt",responseDTO.getJwt())

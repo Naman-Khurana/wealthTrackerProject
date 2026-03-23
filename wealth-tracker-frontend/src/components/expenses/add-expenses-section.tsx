@@ -24,7 +24,7 @@ import {
 import { Calendar } from "@/components/ui/calendar"
 import { useState, useRef } from "react";
 import { useAllEssentialExpensesWithDetails, useAllLuxuryExpensesWithDetails } from "./expenses-api-fetcher";
-import axios from "axios";
+import axiosInstance from "@/lib/axios_instance";
 import Modal from "../comman/ui/modal";
 
 type props ={
@@ -93,14 +93,12 @@ export default function AddExpensesSection({closeAddExpenses ,isOpen} : props) {
         )
       }else{
 
-        axios.post('http://localhost:8080/api/expenses/add', {    
+        axiosInstance.post('/expenses/add', {    
                   category : categoryValue,
                   date : date?.toISOString().split('T')[0],
                   amount : amountValue, 
                   description : descValue
-              },{
-                  withCredentials: true
-        })
+              })
         .then(response=>{
           console.log("New Expense Added.")
           closeAddExpenses();
