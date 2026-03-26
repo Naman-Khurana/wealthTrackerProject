@@ -3,6 +3,7 @@ package com.springbootproject.wealthtracker.service;
 import com.springbootproject.wealthtracker.dto.LoginResponseDTO;
 import com.springbootproject.wealthtracker.dto.LoginUserDTO;
 import com.springbootproject.wealthtracker.dto.RegisterUserDTO;
+import com.springbootproject.wealthtracker.dto.entities.ChangePasswordDTO;
 import com.springbootproject.wealthtracker.entity.AccountHolder;
 import com.springbootproject.wealthtracker.entity.Roles;
 import org.springframework.security.core.userdetails.User;
@@ -28,4 +29,6 @@ public interface AuthenticationService {
      public LoginResponseDTO login(LoginUserDTO loginUserDTO) throws Exception;
 
      public LoginResponseDTO authenticationWithRefreshToken(String refreshToken) throws Exception;
+
+     public void changePassword(String userid, ChangePasswordDTO dto);
 }

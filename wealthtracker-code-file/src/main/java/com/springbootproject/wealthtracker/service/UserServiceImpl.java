@@ -13,7 +13,7 @@ import java.util.List;
 
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements AdminService {
     private AccountHolderRepository accountHolderRepository;
     private RolesRepository rolesRepository;
 

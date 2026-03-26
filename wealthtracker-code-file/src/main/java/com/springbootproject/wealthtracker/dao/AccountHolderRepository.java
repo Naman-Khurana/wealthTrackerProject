@@ -19,4 +19,6 @@ public interface AccountHolderRepository extends JpaRepository<AccountHolder,Int
             WHERE a.email = :email
             """)
     Optional<AccountHolder> findUserForLogin(@Param("email") String email);
+
+
 }

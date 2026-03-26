@@ -58,8 +58,7 @@ public class EarningsController {
         //create a variable of type expensesdatadto
         AuthUtils.checkAuthToken(token);
 
-        String username = jwtUtil.extractUserIdFromToken(token);
-        int userid=Integer.parseInt(username);
+        int userid=Integer.parseInt(jwtUtil.extractUserIdFromToken(token));
         EarningsHomeDataDTO tempEarningsHomeData = earningsService.getEarningsHomeData(userid,startDate,endDate);
         //return the required data
         return tempEarningsHomeData;

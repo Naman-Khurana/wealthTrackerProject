@@ -6,10 +6,12 @@ import com.springbootproject.wealthtracker.Security.JWTUtil;
 import com.springbootproject.wealthtracker.dto.LoginResponseDTO;
 import com.springbootproject.wealthtracker.dto.LoginUserDTO;
 import com.springbootproject.wealthtracker.dto.RegisterUserDTO;
+import com.springbootproject.wealthtracker.dto.entities.ChangePasswordDTO;
 import com.springbootproject.wealthtracker.entity.AccountHolder;
 import com.springbootproject.wealthtracker.enums.AuthCookieType;
 import com.springbootproject.wealthtracker.error.UnauthorizedException;
 import com.springbootproject.wealthtracker.service.AuthenticationService;
+import com.springbootproject.wealthtracker.utils.AuthUtils;
 import jakarta.validation.Valid;
 import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
@@ -37,14 +39,19 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
     private CustomUserDetailsService customUserDetailsService;
     private JWTUtil jwtUtil;
+    private final AuthUtils authUtils;
+
 
     @Autowired
-    public AuthController(AuthenticationService authenticationService, AuthenticationManager authenticationManager, CustomUserDetailsService customUserDetailsService, JWTUtil jwtUtil) {
-        this.authenticationService = authenticationService;
-        this.authenticationManager = authenticationManager;
-        this.customUserDetailsService = customUserDetailsService;
+    public AuthController(AuthUtils authUtils, JWTUtil jwtUtil, CustomUserDetailsService customUserDetailsService, AuthenticationManager authenticationManager, AuthenticationService authenticationService) {
+        this.authUtils = authUtils;
         this.jwtUtil = jwtUtil;
+        this.customUserDetailsService = customUserDetailsService;
+        this.authenticationManager = authenticationManager;
+        this.authenticationService = authenticationService;
     }
+
+
 
     //register new user
     @PostMapping("/register")
@@ -123,9 +130,7 @@ public class AuthController {
     @PostMapping("/refresh-token")
     public ResponseEntity<?> refreshToken(@CookieValue(value = "refreshToken",required = false) String refreshToken ) throws Exception{
         //call the auth service function for refreshing the token
-        if(refreshToken == null){
-            throw new UnauthorizedException("Refresh token missing");
-        }
+
 
         LoginResponseDTO responseDTO=authenticationService.authenticationWithRefreshToken(refreshToken);
 
@@ -150,6 +155,27 @@ public class AuthController {
                 .body("Authenticated");
         //otherwise return unauthorized error
     }
+
+
+    @PostMapping
+    public ResponseEntity<?> changePassword(@CookieValue(value = "jwt", required = false) String token, @RequestBody ChangePasswordDTO changePasswordDTO){
+
+        AuthUtils.checkAuthToken(token);
+
+        int userid=Integer.parseInt(jwtUtil.extractUserIdFromToken(token));
+
+        authenticationService.changePassword(token,changePasswordDTO);
+
+//        TODO :     Implement Black listing invalid jwt,refresh tokens
+//        authenticationService.logoutUser(token);
+
+        return logoutUser();
+
+
+
+
+    }
+
 
 
 }

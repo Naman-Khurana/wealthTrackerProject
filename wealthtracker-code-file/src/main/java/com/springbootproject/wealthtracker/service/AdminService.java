@@ -5,7 +5,7 @@ import com.springbootproject.wealthtracker.entity.Roles;
 
 import java.util.List;
 
-public interface UserService {
+public interface AdminService {
 
     public AccountHolder getUserbyEmail(String email);
 

@@ -6,6 +6,9 @@ type ModalType =
   | "addIncome"
   | "addExpense"
   | "addBudget"
+  | "editProfile"
+  | "changePassword"
+  
 //   | "upgradePlan"
   | null
 

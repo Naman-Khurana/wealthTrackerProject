@@ -10,6 +10,7 @@ import com.springbootproject.wealthtracker.dao.RolesRepository;
 import com.springbootproject.wealthtracker.dto.LoginResponseDTO;
 import com.springbootproject.wealthtracker.dto.LoginUserDTO;
 import com.springbootproject.wealthtracker.dto.RegisterUserDTO;
+import com.springbootproject.wealthtracker.dto.entities.ChangePasswordDTO;
 import com.springbootproject.wealthtracker.dto.entities.SubscriptionDTO;
 import com.springbootproject.wealthtracker.entity.AccountHolder;
 import com.springbootproject.wealthtracker.entity.Roles;
@@ -18,17 +19,21 @@ import com.springbootproject.wealthtracker.entity.UserSettings;
 import com.springbootproject.wealthtracker.enums.TokenType;
 import com.springbootproject.wealthtracker.error.AlreadyExistsException;
 import com.springbootproject.wealthtracker.error.InvalidEmailFormatException;
+import com.springbootproject.wealthtracker.error.NotFoundException;
 import com.springbootproject.wealthtracker.error.UnauthorizedException;
 import com.springbootproject.wealthtracker.mapper.AccountHolderMapper;
 import com.springbootproject.wealthtracker.mapper.SubscriptionMapper;
 import com.springbootproject.wealthtracker.mapper.UserSettingsMapper;
 import jakarta.transaction.Transactional;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -53,8 +58,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final SubscriptionMapper subscriptionMapper;
 
 
+
     @Autowired
-    public AuthenticationServiceImpl(AccountHolderRepository accountHolderRepository, RolesRepository rolesRepository, AuthenticationManager authenticationManager, PasswordEncoderConfig passwordEncoderConfig, TokenBlackList tokenBlackList, CustomUserDetailsService customUserDetailsService, JWTUtil jwtUtil, AccountHolderMapper accountHolderMapper, SubscriptionService subscriptionService, UserSettingsMapper userSettingsMapper, SubscriptionMapper subscriptionMapper) {
+    public AuthenticationServiceImpl(AccountHolderRepository accountHolderRepository, RolesRepository rolesRepository, AuthenticationManager authenticationManager, PasswordEncoderConfig passwordEncoderConfig, TokenBlackList tokenBlackList, CustomUserDetailsService customUserDetailsService, JWTUtil jwtUtil, AccountHolderMapper accountHolderMapper, SubscriptionService subscriptionService, UserSettingsMapper userSettingsMapper, SubscriptionMapper subscriptionMapper, PasswordEncoder passwordEncoder) {
         this.accountHolderRepository = accountHolderRepository;
         this.rolesRepository = rolesRepository;
         this.authenticationManager = authenticationManager;
@@ -67,6 +73,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         this.userSettingsMapper = userSettingsMapper;
         this.subscriptionMapper = subscriptionMapper;
     }
+
+
 
     @Override
     @Transactional
@@ -209,5 +217,32 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .jwt(newAccessToken)
                 .refreshToken(refreshToken)
                 .build();
+    }
+
+    @Transactional
+    @Override
+    public void changePassword(String userid, ChangePasswordDTO dto) {
+
+        UserDetails userDetails=customUserDetailsService.loadUserByUsername(userid);
+        if(!passwordEncoderConfig.passwordEncoder().matches(dto.getOldPassword(), userDetails.getPassword())){
+                throw new BadCredentialsException("Invalid Old Password");
+        }
+
+        AccountHolder user= accountHolderRepository.findUserForLogin(userDetails.getUsername()).orElse(null);
+        if(user==null){
+            throw new NotFoundException("User Not Found");
+        }
+
+        String encodedNewPassword=passwordEncoderConfig.passwordEncoder().encode(dto.getNewPassword());
+
+        user.setPassword(encodedNewPassword);
+
+        accountHolderRepository.save(user);
+
+
+
+
+
+
     }
 }

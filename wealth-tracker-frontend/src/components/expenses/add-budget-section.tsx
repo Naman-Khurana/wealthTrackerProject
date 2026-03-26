@@ -1,270 +1,293 @@
 "use client";
 
-
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input";
-import { format, set } from "date-fns"
-import { Calendar as CalendarIcon , X} from "lucide-react"
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { Calendar } from "@/components/ui/calendar"
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
 import axiosInstance from "@/lib/axios_instance";
 import { useState, useRef } from "react";
-import { useAllEssentialExpensesWithDetails, useAllLuxuryExpensesWithDetails } from "./expenses-api-fetcher";
+import {
+  useAllEssentialExpensesWithDetails,
+  useAllLuxuryExpensesWithDetails,
+} from "./expenses-api-fetcher";
 import Modal from "../comman/ui/modal";
 
-
-type props ={
-    closeAddBudget : ()=> void;
-    isOpen: boolean
-}
-
-export default function AddBudgetSection({closeAddBudget,isOpen} : props) {
-    const [open ,setOpen]=useState(true);
-    const [selected,setSelected]=useState<string>("");
-    const [startDate, setStartDate] = useState<Date>();
-    const [endDate,setEndDate] =useState<Date>();
-    const [category,setCategory] =useState<string>("");
-    const [dateCategory,setDateCategory]=useState("custom");
-
-    const amountRef=useRef<HTMLInputElement>(null);
-    
-
-    const{
-        data:allEssentialExpensesData,
-        isLoading:loadingAllEssentialExpenses,
-        isError:errorAllEssentialExpenses,
-        error: allEssentialExpensesError,
-    }=useAllEssentialExpensesWithDetails()
-
-
-    const{
-        data:allLuxuryExpensesData,
-        isLoading:loadingAllLuxuryExpenses,
-        isError:errorAllLuxuryExpenses,
-        error: allLuxuryExpensesError,
-    }=useAllLuxuryExpensesWithDetails()
-  
-    
-    // console.log("All luxury expenses categories are  ;  ",allLuxuryExpensesData?.luxuryCategories ?? []);
-    const categoryList=["Total Expenses","Luxury","Essential",...allEssentialExpensesData?.essentialCategories ?? [], ...allLuxuryExpensesData?.luxuryCategories ?? []]
-    // console.log(categoryList);
-    const categoryfields=categoryList.map((ctg) =>{
-        return(
-            <SelectItem value={ctg} className="z-[9999] text-black/60" >{ctg}</SelectItem>
-        )
-    })
-
-    const handleCategoryChange=(category : string) => {
-        setCategory(category);
-        console.log(category);
-    }
-
-
-    const handleDateCategoryChange=(dateCategoryType : string)=>{
-        setDateCategory(dateCategoryType);
-        // console.log(dateCategorytype)
-        if(dateCategoryType==="current-month"){
-            const today =new Date();
-            setStartDate(new Date(today.getFullYear(),today.getMonth(),1));
-            setEndDate(new Date(today.getFullYear(),today.getMonth()+1,0 ));
-        }else if(dateCategoryType==="current-year"){
-            const today=new Date();
-            setStartDate(new Date(today.getFullYear(),0,1));
-            setEndDate(new Date(today.getFullYear()+1,0,0))
-        }else{
-            setStartDate(undefined);
-            setEndDate(undefined);
-        }
-
-    }
-
-    const handleSubmit=(e :React.FormEvent<HTMLFormElement>)=>{
-      e.preventDefault();
-      const amountValue =amountRef.current?.value;
-
-      const categoryValue=category;
-      
-      const startDateValue= startDate;  
-      const endDateValue= endDate;
-
-      const dateCategoryValue=dateCategory;
-      const budgetRangeCategoryValue = () => {
-  if (dateCategory === "current-year")
-    return "YEARLY";
-  else if (dateCategory === "current-month")
-    return "MONTHLY";
-  else
-    return "CUSTOM";
+type Props = {
+  closeAddBudget: () => void;
+  isOpen: boolean;
 };
 
-      if(startDateValue===null || endDateValue===null || amountValue===null || category===""){
-        console.log(
-          "Incomplete details filled"
-        )
-      }else{
+export default function AddBudgetSection({ closeAddBudget, isOpen }: Props) {
+  const [startDate, setStartDate] = useState<Date>();
+  const [endDate, setEndDate] = useState<Date>();
+  const [category, setCategory] = useState<string>("");
+  const [dateCategory, setDateCategory] = useState("custom");
+  const amountRef = useRef<HTMLInputElement>(null);
 
-        console.log("start date : " + startDateValue);
-        console.log("end date : " + endDateValue);
-        console.log("amout value  : " + amountValue);
-        console.log("category : " + categoryValue);
-        console.log("date category : " + budgetRangeCategoryValue());
-        axiosInstance.post('/expenses/budget/set', {    
-                  category : categoryValue,
-                  startDate : startDate?.toISOString().split('T')[0],
-                  endDate : endDate?.toISOString().split('T')[0],
-                  amount : amountValue, 
-                  budgetRangeCategory : budgetRangeCategoryValue(),
-              })
-        .then(response=>{
-          console.log("New Budget Added.")
-          closeAddBudget();
-        })
-        .catch(error =>{
-                console.log("error : ", error);})
-            
-      }
+  const { data: allEssentialExpensesData } = useAllEssentialExpensesWithDetails();
+  const { data: allLuxuryExpensesData } = useAllLuxuryExpensesWithDetails();
+
+  const categoryList = [
+    "Total Expenses",
+    "Luxury",
+    "Essential",
+    ...(allEssentialExpensesData?.essentialCategories ?? []),
+    ...(allLuxuryExpensesData?.luxuryCategories ?? []),
+  ];
+
+  const handleDateCategoryChange = (type: string) => {
+    setDateCategory(type);
+    if (type === "current-month") {
+      const today = new Date();
+      setStartDate(new Date(today.getFullYear(), today.getMonth(), 1));
+      setEndDate(new Date(today.getFullYear(), today.getMonth() + 1, 0));
+    } else if (type === "current-year") {
+      const today = new Date();
+      setStartDate(new Date(today.getFullYear(), 0, 1));
+      setEndDate(new Date(today.getFullYear() + 1, 0, 0));
+    } else {
+      setStartDate(undefined);
+      setEndDate(undefined);
     }
+  };
 
+  const getBudgetRangeCategory = () => {
+    if (dateCategory === "current-year") return "YEARLY";
+    if (dateCategory === "current-month") return "MONTHLY";
+    return "CUSTOM";
+  };
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const amountValue = amountRef.current?.value;
+    if (!startDate || !endDate || !amountValue || !category) return;
 
+    axiosInstance
+      .post("/expenses/budget/set", {
+        category,
+        startDate: startDate.toISOString().split("T")[0],
+        endDate: endDate.toISOString().split("T")[0],
+        amount: amountValue,
+        budgetRangeCategory: getBudgetRangeCategory(),
+      })
+      .then(() => closeAddBudget())
+      .catch((error) => console.error("error:", error));
+  };
 
-
+  // ── shared styled classes ────────────────────────────────────────────────
+  const inputBase: React.CSSProperties = {
+    background: "rgba(255,255,255,0.05)",
+    border: "1px solid rgba(255,255,255,0.1)",
+    borderRadius: "1rem",
+    color: "rgba(255,255,255,0.9)",
+    fontFamily: "'Sora', sans-serif",
+    fontSize: "0.875rem",
+    padding: "0.625rem 1rem",
+    width: "100%",
+    outline: "none",
+    transition: "all 0.2s",
+  };
 
   return (
-    <Modal onClose={closeAddBudget} isOpen={isOpen}>
-        <form className="relative flex flex-col items-center  h-full w-full p-0 m-0 text-black" onSubmit={(e)=> handleSubmit(e)}>
-        <Button onClick={()=>closeAddBudget()} variant="ghost" className="absolute  right-3  top-5 w-[20%] text-white/50 hover:bg-black/50 hover:scale-[110%] transition-easy-inout "> <X /></Button>
-        <div className="h-[2%]"></div>
-        <h1 className="h-[10%] text-2xl flex items-center text-white">ADD BUDGET</h1>
+    <Modal
+      isOpen={isOpen}
+      onClose={closeAddBudget}
+      title="Add Budget"
+      subtitle="Budget"
+      width="max-w-md"
+    >
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
 
-        
-        <section className="h-[80%] flex flex-col gap-8 w-[80%] z-[999] items-center justify-center">
+        {/* Amount */}
+        <input
+          ref={amountRef}
+          type="number"
+          placeholder="Enter amount"
+          required
+          style={inputBase}
+          onFocus={(e) => {
+            e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+            e.currentTarget.style.borderColor = "rgba(255,255,255,0.22)";
+            e.currentTarget.style.boxShadow = "0 0 0 3px rgba(255,255,255,0.04)";
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+            e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
+            e.currentTarget.style.boxShadow = "none";
+          }}
+        />
 
-          <section className="flex w-full ">
-            <Input
-              type="text"
-              placeholder= "Enter amount "
-              className="bg-white"
-              ref={amountRef}
-            />
-          </section>
-
-            <section className="w-full ">
-        
-
-            <Select onValueChange={handleCategoryChange} >
-            <SelectTrigger className="w-full h-8 bg-white text-black/60 ">
-                    
-                    <SelectValue placeholder="Select Category"  />
-                </SelectTrigger>
-
-                <SelectContent className="z-[9999] text-black">
-                <SelectGroup >
-                    <SelectLabel className="flex flex-col">
-                       
-                        
-                    </SelectLabel>
-
-                    {categoryfields}
-                    
-                </SelectGroup>
-            
-                </SelectContent>
-            </Select>
-        </section>
-        <section className="flex w-full gap-4 ">
-
-            <section className="flex flex-col w-[70%] gap-4">
-            <div className="w-full " >
-                <Popover>
-                    <PopoverTrigger asChild>
-                        <Button
-                        variant="outline"
-                        disabled={dateCategory!=="custom" }
-                        data-empty={!startDate}
-                        className="data-[empty=true]:text-muted-foreground w-full justify-start  text-left font-normal"
-                        >
-                        <CalendarIcon />
-                        {startDate ? format(startDate, "PPP") : <span>Start date</span>}
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-full  z-[9999]">
-                        <Calendar mode="single" selected={startDate} onSelect={setStartDate} />
-                    </PopoverContent>
-                </Popover>
-            </div>
-
-            <div className="w-full" >
-                <Popover>
-                    <PopoverTrigger asChild>
-                        <Button
-                        variant="outline"
-                        disabled={dateCategory!=="custom" }
-                        data-empty={!endDate}
-                        className="data-[empty=true]:text-muted-foreground w-full justify-start  text-left font-normal"
-                        >
-                        <CalendarIcon />
-                        {endDate ? format(endDate, "PPP") : <span>End date</span>}
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-full  z-[9999]">
-                        <Calendar mode="single" selected={endDate} onSelect={setEndDate} />
-                    </PopoverContent>
-                </Popover>
-            </div>
-            </section>
-            <div className=" text-white flex justify-center items-center w-[25%] h-full text-nowrap">
-                <RadioGroup 
-                    defaultValue="custom" 
-                    className="w-full " 
-                    onValueChange={handleDateCategoryChange}    
+        {/* Category Select */}
+        <Select onValueChange={setCategory}>
+          <SelectTrigger
+            className="w-full rounded-2xl text-sm"
+            style={{
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              color: category ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.35)",
+              fontFamily: "'Sora', sans-serif",
+              height: "2.6rem",
+            }}
+          >
+            <SelectValue placeholder="Select Category" />
+          </SelectTrigger>
+          <SelectContent
+            className="rounded-2xl border"
+            style={{
+              background: "#1c1c1e",
+              border: "1px solid rgba(255,255,255,0.1)",
+              color: "rgba(255,255,255,0.85)",
+              fontFamily: "'Sora', sans-serif",
+              zIndex: 9999,
+            }}
+          >
+            <SelectGroup>
+              {categoryList.map((ctg) => (
+                <SelectItem
+                  key={ctg}
+                  value={ctg}
+                  className="text-sm focus:bg-white/10 focus:text-white"
                 >
-                    <div className="flex items-center space-x-2">
-                        <RadioGroupItem   value="custom" id="custom"        
-                        className="w-[8%] h-[50%] border-gray-400 data-[state=checked]:bg-red-800 data-[state=checked]:border-white "
-                    />
-                        <Label htmlFor="custom" className="text-xs">Custom</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="current-month" id="current-month" 
-                        className="w-[8%] h-[50%] border-gray-400 data-[state=checked]:bg-white data-[state=checked]:border-white"
+                  {ctg}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
 
-                    />
-                        <Label htmlFor="current-month" className="text-xs">Current Month</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="current-year" id="current-year" 
-                        className="w-[8%] h-[50%] border-gray-400 data-[state=checked]:bg-white data-[state=checked]:border-white"
+        {/* Date range + radio */}
+        <div className="flex gap-4">
 
-                    />
-                        <Label htmlFor="current-year" className="text-xs">Current Year</Label>
-                    </div>
-                </RadioGroup>
-            </div>
+          {/* Date pickers */}
+          <div className="flex flex-col gap-3 flex-1">
+            {[
+              { label: "Start date", date: startDate, setDate: setStartDate },
+              { label: "End date",   date: endDate,   setDate: setEndDate   },
+            ].map(({ label, date, setDate }) => (
+              <Popover key={label}>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    disabled={dateCategory !== "custom"}
+                    className="flex items-center gap-2 w-full rounded-2xl px-4 py-2.5 text-sm transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                    style={{
+                      background: "rgba(255,255,255,0.05)",
+                      border: "1px solid rgba(255,255,255,0.1)",
+                      color: date ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.35)",
+                      fontFamily: "'Sora', sans-serif",
+                    }}
+                  >
+                    <CalendarIcon size={14} style={{ color: "rgba(255,255,255,0.4)" }} />
+                    {date ? format(date, "PPP") : label}
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-auto p-0 rounded-2xl border"
+                  style={{
+                    background: "#1c1c1e",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    zIndex: 9999,
+                  }}
+                >
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    className="text-white"
+                  />
+                </PopoverContent>
+              </Popover>
+            ))}
+          </div>
 
-        
-        </section>
+          {/* Radio group */}
+          <div className="flex items-center">
+            <RadioGroup
+              defaultValue="custom"
+              onValueChange={handleDateCategoryChange}
+              className="flex flex-col gap-3"
+            >
+              {[
+                { value: "custom",        label: "Custom"        },
+                { value: "current-month", label: "Current Month" },
+                { value: "current-year",  label: "Current Year"  },
+              ].map(({ value, label }) => (
+                <div key={value} className="flex items-center gap-2">
+                  <RadioGroupItem
+                    value={value}
+                    id={value}
+                    className="border-white/20 data-[state=checked]:bg-white data-[state=checked]:border-white"
+                  />
+                  <Label
+                    htmlFor={value}
+                    className="text-xs text-nowrap cursor-pointer"
+                    style={{ color: "rgba(255,255,255,0.6)", fontFamily: "'Sora', sans-serif" }}
+                  >
+                    {label}
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
+        </div>
 
-        
-        
-        </section>
-        <div className="h-[12%]">
-            <Button variant="secondary">Submit</Button>
+        {/* Submit row */}
+        <div className="flex gap-3 mt-1">
+          <button
+            type="button"
+            onClick={closeAddBudget}
+            className="flex-1 rounded-2xl py-3 text-sm font-medium transition-all duration-200"
+            style={{
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              color: "rgba(255,255,255,0.5)",
+              fontFamily: "'Sora', sans-serif",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+              e.currentTarget.style.color = "rgba(255,255,255,0.8)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+              e.currentTarget.style.color = "rgba(255,255,255,0.5)";
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="flex-1 rounded-2xl py-3 text-sm font-semibold text-white transition-all duration-200"
+            style={{
+              background: "rgba(255,255,255,0.12)",
+              border: "1px solid rgba(255,255,255,0.18)",
+              boxShadow: "0 8px 24px -8px rgba(0,0,0,0.4)",
+              fontFamily: "'Sora', sans-serif",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.17)";
+              e.currentTarget.style.borderColor = "rgba(255,255,255,0.28)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.12)";
+              e.currentTarget.style.borderColor = "rgba(255,255,255,0.18)";
+            }}
+          >
+            Submit
+          </button>
         </div>
       </form>
     </Modal>

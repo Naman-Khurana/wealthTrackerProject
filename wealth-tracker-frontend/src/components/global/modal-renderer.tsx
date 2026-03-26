@@ -5,18 +5,16 @@ import { useModal } from "@/context/model-context"
 import AddExpensesSection from "@/components/expenses/add-expenses-section"
 import AddBudgetSection from "../expenses/add-budget-section"
 import AddIncomeModal from "../earnings/add-income-modal-screen"
+import EditProfileModal from "../Profile/edit-profile-modal"
+import { tr } from "date-fns/locale"
+import ChangePasswordModal from "../Profile/change-password-modal"
 
 export default function ModalRenderer() {
   const { activeModal, closeModal } = useModal()
 
   return (
     <>
-      {/* {activeModal === "addIncome" && (
-        <AddIncomeSection
-          isOpen={true}
-          closeAddIncome={closeModal}
-        />
-      )} */}
+
 
       {activeModal === "addExpense" && (
         <AddExpensesSection
@@ -33,7 +31,7 @@ export default function ModalRenderer() {
       )}
 
 
-      
+
       {activeModal === "addIncome" && (
         <AddIncomeModal
           isOpen={true}
@@ -41,8 +39,23 @@ export default function ModalRenderer() {
         />
       )}
 
-    
-      
+      {activeModal === "editProfile" && (
+        <EditProfileModal
+          isOpen={true}
+          closeEditProfileModal={closeModal}
+        />
+      )}
+
+
+      {activeModal === "changePassword" && (
+        <ChangePasswordModal
+          isOpen={true}
+          closeChangePasswordModal={closeModal}
+        />
+      )}
+
+
+
     </>
   )
 }
