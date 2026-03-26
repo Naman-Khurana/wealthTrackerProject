@@ -1,183 +1,246 @@
 "use client";
 
-
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea"
-import { format } from "date-fns"
-import { Calendar as CalendarIcon , X} from "lucide-react"
+} from "@/components/ui/select";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { Calendar } from "@/components/ui/calendar"
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
 import { useState, useRef } from "react";
-import { useAllEssentialExpensesWithDetails, useAllLuxuryExpensesWithDetails } from "./expenses-api-fetcher";
+import {
+  useAllEssentialExpensesWithDetails,
+  useAllLuxuryExpensesWithDetails,
+} from "./expenses-api-fetcher";
 import axiosInstance from "@/lib/axios_instance";
 import Modal from "../comman/ui/modal";
 
-type props ={
-    closeAddExpenses : ()=> void;
-    isOpen: boolean
-}
+type Props = {
+  closeAddExpenses: () => void;
+  isOpen: boolean;
+};
 
+// ── Shared input style ───────────────────────────────────────────────────────
+const inputBase: React.CSSProperties = {
+  background: "rgba(255,255,255,0.05)",
+  border: "1px solid rgba(255,255,255,0.1)",
+  borderRadius: "1rem",
+  color: "rgba(255,255,255,0.9)",
+  fontFamily: "'Sora', sans-serif",
+  fontSize: "0.875rem",
+  padding: "0.625rem 1rem",
+  width: "100%",
+  outline: "none",
+  transition: "all 0.2s",
+};
 
+const focusStyle = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+  e.currentTarget.style.borderColor = "rgba(255,255,255,0.22)";
+  e.currentTarget.style.boxShadow = "0 0 0 3px rgba(255,255,255,0.04)";
+};
 
-export default function AddExpensesSection({closeAddExpenses ,isOpen} : props) {
-    const [open ,setOpen]=useState(false);
-    const [selected,setSelected]=useState<string>("");
-    const [date, setDate] = useState<Date>()
-    const [category, setCategory] =useState<string>("");
-    
+const blurStyle = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+  e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
+  e.currentTarget.style.boxShadow = "none";
+};
 
-    const amountRef=useRef<HTMLInputElement>(null);
-    const descriptionRef=useRef<HTMLTextAreaElement>(null);
-    
+export default function AddExpensesSection({ closeAddExpenses, isOpen }: Props) {
+  const [open, setOpen] = useState(false);
+  const [date, setDate] = useState<Date>();
+  const [category, setCategory] = useState<string>("");
 
-    const{
-        data:allEssentialExpensesData,
-        isLoading:loadingAllEssentialExpenses,
-        isError:errorAllEssentialExpenses,
-        error: allEssentialExpensesError,
-    }=useAllEssentialExpensesWithDetails()
+  const amountRef = useRef<HTMLInputElement>(null);
+  const descriptionRef = useRef<HTMLTextAreaElement>(null);
 
+  const { data: allEssentialExpensesData } = useAllEssentialExpensesWithDetails();
+  const { data: allLuxuryExpensesData } = useAllLuxuryExpensesWithDetails();
 
-    const{
-        data:allLuxuryExpensesData,
-        isLoading:loadingAllLuxuryExpenses,
-        isError:errorAllLuxuryExpenses,
-        error: allLuxuryExpensesError,
-    }=useAllLuxuryExpensesWithDetails()
-  
-    
-    const categoryList=[...allEssentialExpensesData?.essentialCategories ?? [], ...allLuxuryExpensesData?.luxuryCategories ?? []]
-    
-    const categoryfields=categoryList.map((ctg) =>{
-        return(
-            <SelectItem value={ctg} className="z-[9999]" >{ctg}</SelectItem>
-        )
-    })
+  const categoryList = [
+    ...(allEssentialExpensesData?.essentialCategories ?? []),
+    ...(allLuxuryExpensesData?.luxuryCategories ?? []),
+  ];
 
-    const handleCategoryChange=(category : string) =>{
-      setCategory(category);
-      console.log(category);
-    };
+  const handleCalendarPop = (selectedDate: Date | undefined) => {
+    setDate(selectedDate);
+    setOpen(false);
+  };
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const amountValue = amountRef.current?.value;
+    const descValue = descriptionRef.current?.value;
+    if (!date || !amountValue || !category) return;
 
-    const handleSubmit=(e :React.FormEvent<HTMLFormElement>)=>{
-      e.preventDefault();
-      const amountValue =amountRef.current?.value;
+    axiosInstance
+      .post("/expenses/add", {
+        category,
+        date: date.toISOString().split("T")[0],
+        amount: amountValue,
+        description: descValue,
+      })
+      .then(() => closeAddExpenses())
+      .catch((error) => console.error("error:", error));
+  };
 
-      const descValue=descriptionRef.current?.value;
-      const categoryValue=category;
-      if(date===null){
-        setDate(new Date());
-      }
-      const dateValue= date;  
-
-
-      if(date===null || amountValue===null || category===""){
-        console.log(
-          "Incomplete details filled"
-        )
-      }else{
-
-        axiosInstance.post('/expenses/add', {    
-                  category : categoryValue,
-                  date : date?.toISOString().split('T')[0],
-                  amount : amountValue, 
-                  description : descValue
-              })
-        .then(response=>{
-          console.log("New Expense Added.")
-          closeAddExpenses();
-        })
-        .catch(error =>{
-                console.log("error : ", error);})
-            
-      }
-    }
-
-    const handleCalenderPop= (selectedDate : Date | undefined) =>{
-      setDate(selectedDate);
-      setOpen(false);
-    }
- return (
-  <Modal
-    isOpen={isOpen}
-    onClose={closeAddExpenses}
-    title="Add Expense"
-    width="max-w-xl"
-  >
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col gap-6"
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={closeAddExpenses}
+      title="Add Expense"
+      subtitle="Expenses"
+      width="max-w-md"
     >
-      {/* Amount */}
-      <Input
-        type="number"
-        placeholder="Enter amount"
-        ref={amountRef}
-      />
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
-      {/* Category */}
-      <Select onValueChange={handleCategoryChange}>
-        <SelectTrigger className="w-full">
-          <SelectValue placeholder="Select Category" />
-        </SelectTrigger>
+        {/* Amount */}
+        <input
+          ref={amountRef}
+          type="number"
+          placeholder="Enter amount"
+          required
+          style={inputBase}
+          onFocus={focusStyle}
+          onBlur={blurStyle}
+        />
 
-        <SelectContent className="z-[9999]">
-          <SelectGroup>
-            {categoryfields}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-
-      {/* Date Picker */}
-      <Popover open={open} onOpenChange={setOpen} >
-        <PopoverTrigger asChild >
-          <Button
-            variant="outline"
-            className="justify-start text-left"
+        {/* Category */}
+        <Select onValueChange={setCategory}>
+          <SelectTrigger
+            className="w-full rounded-2xl text-sm"
+            style={{
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              color: category ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.35)",
+              fontFamily: "'Sora', sans-serif",
+              height: "2.6rem",
+            }}
           >
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {date ? format(date, "PPP") : "Pick a date"}
-          </Button>
-        </PopoverTrigger>
+            <SelectValue placeholder="Select Category" />
+          </SelectTrigger>
+          <SelectContent
+            className="rounded-2xl"
+            style={{
+              background: "#1c1c1e",
+              border: "1px solid rgba(255,255,255,0.1)",
+              color: "rgba(255,255,255,0.85)",
+              fontFamily: "'Sora', sans-serif",
+              zIndex: 9999,
+            }}
+          >
+            <SelectGroup>
+              {categoryList.map((ctg) => (
+                <SelectItem
+                  key={ctg}
+                  value={ctg}
+                  className="text-sm focus:bg-white/10 focus:text-white"
+                >
+                  {ctg}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
 
-        <PopoverContent className="z-[9999]">
-          <Calendar
-            mode="single"
-            selected={date}
-            onSelect={handleCalenderPop}
-          />
-        </PopoverContent>
-      </Popover>
+        {/* Date Picker */}
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              className="flex items-center gap-2 w-full rounded-2xl px-4 py-2.5 text-sm transition-all duration-200"
+              style={{
+                background: "rgba(255,255,255,0.05)",
+                border: "1px solid rgba(255,255,255,0.1)",
+                color: date ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.35)",
+                fontFamily: "'Sora', sans-serif",
+              }}
+            >
+              <CalendarIcon size={14} style={{ color: "rgba(255,255,255,0.4)" }} />
+              {date ? format(date, "PPP") : "Pick a date"}
+            </button>
+          </PopoverTrigger>
+          <PopoverContent
+            className="w-auto p-0 rounded-2xl"
+            style={{
+              background: "#1c1c1e",
+              border: "1px solid rgba(255,255,255,0.1)",
+              zIndex: 9999,
+            }}
+          >
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={handleCalendarPop}
+              className="text-white"
+            />
+          </PopoverContent>
+        </Popover>
 
-      {/* Description */}
-      <Textarea
-        placeholder="Enter expense description"
-        ref={descriptionRef}
-      />
+        {/* Description */}
+        <textarea
+          ref={descriptionRef}
+          placeholder="Enter expense description"
+          rows={3}
+          style={{ ...inputBase, resize: "none" }}
+          onFocus={focusStyle}
+          onBlur={blurStyle}
+        />
 
-      {/* Submit */}
-      <div className="flex justify-end">
-        <Button type="submit">
-          Submit
-        </Button>
-      </div>
-    </form>
-  </Modal>
-);
+        {/* Buttons */}
+        <div className="flex gap-3 mt-1">
+          <button
+            type="button"
+            onClick={closeAddExpenses}
+            className="flex-1 rounded-2xl py-3 text-sm font-medium transition-all duration-200"
+            style={{
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              color: "rgba(255,255,255,0.5)",
+              fontFamily: "'Sora', sans-serif",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+              e.currentTarget.style.color = "rgba(255,255,255,0.8)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+              e.currentTarget.style.color = "rgba(255,255,255,0.5)";
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="flex-1 rounded-2xl py-3 text-sm font-semibold text-white transition-all duration-200"
+            style={{
+              background: "rgba(255,255,255,0.12)",
+              border: "1px solid rgba(255,255,255,0.18)",
+              boxShadow: "0 8px 24px -8px rgba(0,0,0,0.4)",
+              fontFamily: "'Sora', sans-serif",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.17)";
+              e.currentTarget.style.borderColor = "rgba(255,255,255,0.28)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.12)";
+              e.currentTarget.style.borderColor = "rgba(255,255,255,0.18)";
+            }}
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </Modal>
+  );
 }

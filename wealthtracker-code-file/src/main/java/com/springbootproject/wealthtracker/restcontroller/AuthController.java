@@ -39,12 +39,10 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
     private CustomUserDetailsService customUserDetailsService;
     private JWTUtil jwtUtil;
-    private final AuthUtils authUtils;
-
 
     @Autowired
-    public AuthController(AuthUtils authUtils, JWTUtil jwtUtil, CustomUserDetailsService customUserDetailsService, AuthenticationManager authenticationManager, AuthenticationService authenticationService) {
-        this.authUtils = authUtils;
+    public AuthController(JWTUtil jwtUtil, CustomUserDetailsService customUserDetailsService, AuthenticationManager authenticationManager, AuthenticationService authenticationService) {
+
         this.jwtUtil = jwtUtil;
         this.customUserDetailsService = customUserDetailsService;
         this.authenticationManager = authenticationManager;
