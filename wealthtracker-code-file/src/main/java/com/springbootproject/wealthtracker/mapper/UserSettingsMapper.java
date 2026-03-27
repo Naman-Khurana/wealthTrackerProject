@@ -2,12 +2,9 @@ package com.springbootproject.wealthtracker.mapper;
 
 import com.springbootproject.wealthtracker.dto.entities.UserSettingsDTO;
 import com.springbootproject.wealthtracker.entity.UserSettings;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface UserSettingsMapper {
 
     UserSettingsDTO toDTO(UserSettings userSettings);

@@ -2,12 +2,10 @@ package com.springbootproject.wealthtracker.mapper;
 
 import com.springbootproject.wealthtracker.dto.entities.SubscriptionDTO;
 import com.springbootproject.wealthtracker.entity.Subscription;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+
 public interface SubscriptionMapper {
 
     @Mapping(target = "planName", source = "plan.name")

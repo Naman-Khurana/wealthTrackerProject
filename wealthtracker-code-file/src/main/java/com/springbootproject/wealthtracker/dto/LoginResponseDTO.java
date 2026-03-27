@@ -14,7 +14,7 @@ public class LoginResponseDTO {
 
     private String jwt;
     private String refreshToken;
-        private UserDTO user;
+    private UserDTO user;
     private UserSettingsDTO userSettings;
     private SubscriptionDTO subscription;
 
