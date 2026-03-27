@@ -8,7 +8,11 @@ type ModalType =
   | "addBudget"
   | "editProfile"
   | "changePassword"
-  
+  | "passwordChangedSuccess"
+  | "passwordChangedError"
+  | "upgradePlan"
+
+
 //   | "upgradePlan"
   | null
 

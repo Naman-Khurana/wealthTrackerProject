@@ -49,10 +49,12 @@ public class UserServiceImpl implements UserService{
     public LoginResponseDTO updateAndSaveUserProfile(int userid,LoginResponseDTO updatedDetails) {
        UserDTO userDTO= updateUserProfile(userid,updatedDetails.getUser());
        UserSettingsDTO userSettingsDTO=updateUserSettings(userid,updatedDetails.getUserSettings());
+       SubscriptionDTO subscriptionDTO=updateSubscription(userid,updatedDetails.getSubscription());
        return LoginResponseDTO
                .builder()
                .user(userDTO)
                .userSettings(userSettingsDTO)
+               .subscription(subscriptionDTO)
                .build();
 
 
@@ -89,14 +91,17 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public SubscriptionDTO updateSubscription(int subscriptionId, SubscriptionDTO dto) {
-        Subscription subscription = subscriptionRepository.findById(subscriptionId)
-                .orElseThrow(() -> new RuntimeException("Subscription not found"));
+    public SubscriptionDTO updateSubscription(int userid, SubscriptionDTO dto) {
+        Subscription subscription = subscriptionRepository.findTopByAccountHolderIdOrderByStartDateDesc(userid)
+                        .orElse(null);
 
-        subscriptionMapper.updateEntityFromDto(dto, subscription);
 
-        subscriptionRepository.save(subscription);
+        if(subscription!=null) {
+            subscriptionMapper.updateEntityFromDto(dto, subscription);
 
-        return subscriptionMapper.toDTO(subscription);
+            subscriptionRepository.save(subscription);
+            return subscriptionMapper.toDTO(subscription);
+        }
+        return null;
     }
 }

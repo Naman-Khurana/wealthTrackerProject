@@ -228,7 +228,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 throw new BadCredentialsException("Invalid Old Password");
         }
 
-        AccountHolder user= accountHolderRepository.findUserForLogin(userDetails.getUsername()).orElse(null);
+        AccountHolder user= accountHolderRepository.findById(Integer.parseInt(userDetails.getUsername())).orElse(null);
         if(user==null){
             throw new NotFoundException("User Not Found");
         }

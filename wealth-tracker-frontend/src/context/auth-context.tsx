@@ -2,8 +2,8 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { User, UserSettings, Subscription, LoginResponse } from "@/type/commman";
+import { AUTH_STORAGE_KEY } from "@/constants/app.constants";
 
-const AUTH_STORAGE_KEY = "wealth-tracker-auth";
 export type AuthContextType = {
   user: User | null;
   userSettings: UserSettings | null;

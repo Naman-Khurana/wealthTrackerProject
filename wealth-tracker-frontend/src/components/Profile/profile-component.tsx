@@ -37,7 +37,7 @@ export default function ProfileComponent() {
         heading: "Personal Details",
         attribute1: { key: "First Name", value: user?.firstName ?? "N/A" },
         attribute2: { key: "Last Name", value: user?.lastName ?? "N/A" },
-        attribute3: { key: "Phone", value: "N/A" }
+        attribute3: { key: "Phone", value: user?.phoneNumber ??  " N/A" }
     };
 
     const securityDetails: ProfileSubsectionDateType = {

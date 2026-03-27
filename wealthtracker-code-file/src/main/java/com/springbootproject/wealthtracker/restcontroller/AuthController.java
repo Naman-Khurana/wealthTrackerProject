@@ -155,14 +155,14 @@ public class AuthController {
     }
 
 
-    @PostMapping
+    @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(@CookieValue(value = "jwt", required = false) String token, @RequestBody ChangePasswordDTO changePasswordDTO){
 
         AuthUtils.checkAuthToken(token);
 
-        int userid=Integer.parseInt(jwtUtil.extractUserIdFromToken(token));
+        String userid=jwtUtil.extractUserIdFromToken(token);
 
-        authenticationService.changePassword(token,changePasswordDTO);
+            authenticationService.changePassword(userid,changePasswordDTO);
 
 //        TODO :     Implement Black listing invalid jwt,refresh tokens
 //        authenticationService.logoutUser(token);

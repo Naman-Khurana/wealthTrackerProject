@@ -72,6 +72,7 @@ export default function AddIncomeModal({ closeAddIncome, isOpen }: props) {
     isOpen={isOpen}
     onClose={closeAddIncome}
     title="Add Income"
+    subtitle="Income"
     width="max-w-xl"
   >
     <form

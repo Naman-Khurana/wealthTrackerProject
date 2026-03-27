@@ -23,6 +23,7 @@ export type User = {
   email: string;
   password: string;
   roles: Role[];
+  phoneNumber: string;
 
   enabled: boolean;
   accountNonLocked: boolean;
@@ -53,3 +54,8 @@ export type LoginResponse = {
   jwt?: string;
   refreshToken?: string;
 };
+
+export type ChangePasswordPayload={
+  oldPassword: string;
+  newPassword: string;
+}

@@ -24,7 +24,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PutMapping
+    @PutMapping("/edit-profile")
     public ResponseEntity<?> updateUserProfile(@CookieValue(value = "jwt") String token,@RequestBody LoginResponseDTO updatedUserDetails){
         AuthUtils.checkAuthToken(token);
 

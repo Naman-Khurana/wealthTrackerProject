@@ -6,8 +6,9 @@ import AddExpensesSection from "@/components/expenses/add-expenses-section"
 import AddBudgetSection from "../expenses/add-budget-section"
 import AddIncomeModal from "../earnings/add-income-modal-screen"
 import EditProfileModal from "../Profile/edit-profile-modal"
-import { tr } from "date-fns/locale"
 import ChangePasswordModal from "../Profile/change-password-modal"
+import PasswordChangedModal from "../Profile/password-changed-modal"
+import UpgradePlanModal from "../Profile/upgrade-plan-modal"
 
 export default function ModalRenderer() {
   const { activeModal, closeModal } = useModal()
@@ -53,8 +54,33 @@ export default function ModalRenderer() {
           closeChangePasswordModal={closeModal}
         />
       )}
+      {activeModal === "passwordChangedSuccess" && (
+        <PasswordChangedModal
+          isOpen={true}
+          closePasswordChangedModal={closeModal}
+          title="Password Changed"
+          message="Please log in again to continue using your account."
+          variant="success"
+        />
+      )}
 
 
+      {activeModal === "passwordChangedError" && (
+        <PasswordChangedModal
+          isOpen={true}
+          closePasswordChangedModal={closeModal}
+          title="Password Not Changed"
+          message="Current password is incorrect or the request failed. Please try again."
+          variant="error"
+        />
+      )}
+
+      {activeModal === "upgradePlan" && (
+        <UpgradePlanModal
+          isOpen={true}
+          onClose={closeModal}
+        />
+      )}
 
     </>
   )

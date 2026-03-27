@@ -3,11 +3,11 @@ import { capitalize } from "@/lib/utils";
 
 import { Subscription, User, UserSettings } from "@/type/commman";
 import { useModal } from "@/context/model-context";
-type prop = {
-    user: User;
-    subscription: Subscription;
-    userSettings: UserSettings;
-}
+    type prop = {
+        user: User;
+        subscription: Subscription;
+        userSettings: UserSettings;
+    }
 export default function ProfileNameSection({ user, subscription, userSettings }: prop) {
 
     const { openModal } = useModal()
@@ -32,7 +32,7 @@ export default function ProfileNameSection({ user, subscription, userSettings }:
 
                     <Button variant="secondary" className="text-xs text-white font-normal h-6 bg-white/20" onClick={() => openModal("editProfile")}>Edit Profile</Button>
                     <Button variant="secondary" className="text-xs text-white font-normal bg-white/20 h-6" onClick={() => openModal("changePassword")}>Change Password</Button>
-                    <Button className="bg-blue-600 h-6 text-xs font-normal">Upgrade Plan</Button>
+                    <Button className="bg-blue-600 h-6 text-xs font-normal" onClick={() => openModal("upgradePlan")}>Upgrade Plan</Button>
                 </section>
             </section>
         </main>

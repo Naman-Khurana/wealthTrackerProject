@@ -36,6 +36,9 @@ public class AccountHolder implements UserDetails {
     @Column(name="password")
     private String password;
 
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
 
     @JsonIgnore
     @OneToMany(mappedBy = "accountHolder",

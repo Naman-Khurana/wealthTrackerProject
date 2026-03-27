@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { User, Mail, Phone, Pencil, KeyRound, Key } from "lucide-react";
+import { useRef, useState } from "react";
+import { KeyRound, Key } from "lucide-react";
 import Modal from "../comman/ui/modal"; // shared modal
+import { useModal } from "@/context/model-context";
+import { useChangePassword } from "./profile-api-section";
 
 // ── Field Input ──────────────────────────────────────────────────────────────
 function FieldInput({
@@ -56,12 +58,11 @@ function FieldInput({
   );
 }
 
-// ── Edit Profile Modal ───────────────────────────────────────────────────────
+
 type FormState = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
+  oldPassword: string;
+  newPassword: string;
+  confirmPassword: string;
 };
 
 type Props = {
@@ -69,26 +70,62 @@ type Props = {
   isOpen: boolean;
 };
 
+
 export default function ChangePasswordModal({ closeChangePasswordModal: closeChangePasswordModal, isOpen }: Props) {
+  const changePasswordMutation= useChangePassword();
+  const submitLockRef = useRef(false);
   const [isPending, setIsPending] = useState(false);
   const [form, setForm] = useState<FormState>({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
   });
+
+
+  const { openModal } = useModal()
 
   const handleChange = (field: keyof FormState, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (submitLockRef.current || isPending || changePasswordMutation.isPending) {
+      return;
+    }
+
+
+    // check empty
+    if (!form.oldPassword || !form.newPassword || !form.confirmPassword) {
+      alert("Please fill all password fields");
+      return;
+    }
+
+    // check new passwords match
+    if (form.newPassword !== form.confirmPassword) {
+      alert("New password and confirm password do not match");
+      return;
+    }
+
+    submitLockRef.current = true;
     setIsPending(true);
-    setTimeout(() => {
-      setIsPending(false);
+
+    try {
+      await changePasswordMutation.mutateAsync({
+        oldPassword: form.oldPassword,
+        newPassword: form.newPassword,
+      });
+
       closeChangePasswordModal();
-    }, 1200);
+      openModal("passwordChangedSuccess");
+    } catch {
+      closeChangePasswordModal();
+      openModal("passwordChangedError");
+    } finally {
+      submitLockRef.current = false;
+      setIsPending(false);
+    }
   };
 
   return (
@@ -100,29 +137,29 @@ export default function ChangePasswordModal({ closeChangePasswordModal: closeCha
       width="max-w-md"
     >
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-    
+
         <FieldInput
           icon={KeyRound}
           placeholder="Old Password"
           type="password"
-          value={form.email}
-          onChange={(v) => handleChange("email", v)}
-        />
-
-         <FieldInput
-          icon={Key}
-          placeholder="New Password"
-          type="password"
-          value={form.email}
-          onChange={(v) => handleChange("email", v)}
+          value={form.oldPassword}
+          onChange={(v) => handleChange("oldPassword", v)}
         />
 
         <FieldInput
           icon={Key}
           placeholder="New Password"
+          type="password"
+          value={form.newPassword}
+          onChange={(v) => handleChange("newPassword", v)}
+        />
+
+        <FieldInput
+          icon={Key}
+          placeholder="Confirm Password"
           type="text"
-          value={form.phone}
-          onChange={(v) => handleChange("phone", v)}
+          value={form.confirmPassword}
+          onChange={(v) => handleChange("confirmPassword", v)}
         />
 
         <div className="flex gap-3 mt-3">

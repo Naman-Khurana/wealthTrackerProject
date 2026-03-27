@@ -1,8 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { User, Mail, Phone, Pencil } from "lucide-react";
 import Modal from "../comman/ui/modal"; // shared modal
+import { useAuth } from "@/context/auth-context";
+import { LoginResponse } from "@/type/commman";
+import { AUTH_STORAGE_KEY } from "@/constants/app.constants";
+import { useUpdateProfile } from "./profile-api-section";
 
 // ── Field Input ──────────────────────────────────────────────────────────────
 function FieldInput({
@@ -69,14 +73,33 @@ type Props = {
   isOpen: boolean;
 };
 
+
 export default function EditProfileModal({ closeEditProfileModal, isOpen }: Props) {
-  const [isPending, setIsPending] = useState(false);
+
+  const updateProfileMutation = useUpdateProfile();
+  const [isPending, setIsPending] = useState(false);  
+  const { user, userSettings, subscription } = useAuth();
+
   const [form, setForm] = useState<FormState>({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
+    firstName: user?.firstName ?? "",
+    lastName: user?.lastName ?? "",
+    email: user?.email ?? "",
+    phone: user?.phoneNumber ?? "",
   });
+
+  useEffect(() => {
+    const data = window.localStorage.getItem(AUTH_STORAGE_KEY);
+    if (data) {
+      const auth: LoginResponse = JSON.parse(data);
+
+      setForm({
+        firstName: auth.user.firstName || "",
+        lastName: auth.user.lastName || "",
+        email: auth.user.email || "",
+        phone: auth.user.phoneNumber || "",
+      });
+    }
+  }, []);
 
   const handleChange = (field: keyof FormState, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -84,11 +107,27 @@ export default function EditProfileModal({ closeEditProfileModal, isOpen }: Prop
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsPending(true);
-    setTimeout(() => {
-      setIsPending(false);
-      closeEditProfileModal();
-    }, 1200);
+
+    updateProfileMutation.mutate({
+      user: {
+        ...user!,
+        firstName: form.firstName,
+        lastName: form.lastName,
+        email: form.email,
+        phoneNumber: form.phone
+      },
+      userSettings: userSettings!,
+      subscription: subscription,
+    }, {
+      onSuccess: () => {
+        closeEditProfileModal();
+      }
+    });
+
+
+
+
+
   };
 
   return (
