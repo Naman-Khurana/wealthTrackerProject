@@ -37,26 +37,30 @@ export default function IncomeDistributionSection({ earnings }: Props) {
     return (
 
         <SectionCard className="w-full h-full flex flex-col">
-            {/* Top section */}
-            <section className="w-full flex items-center h-auto py-2">
-                <h3 className="text-lg font-semibold text-white">Income Distribution</h3>
-            </section>
-            <Divider className="w-full" />
-            <ScrollableArea className="flex flex-col gap-3 pt-3">
-                {
-                    data.map((row) => {
-                        return (
-                            <StatRowWithProgressBar
-                                key={row.category}
-                                label={row.category}
-                                value={row.amount}
-                                percentage={row.percentage}
-                                progress={row.percentage}
-                            />
-                        )
-                    })
-                }
-            </ScrollableArea>
+            <div className="h-[30%] ">
+                {/* Top section */}
+                <section className="w-full flex items-center jusitfy-center py-2">
+                    <h3 className="text-lg font-semibold text-white">Income Distribution</h3>
+                </section>
+                <Divider className="w-full " />
+            </div>
+            <div className="h-[70%] w-full">
+                <ScrollableArea className="flex flex-col gap-3 h-full overflow:hidden">
+                    {
+                        data.map((row) => {
+                            return (
+                                <StatRowWithProgressBar
+                                    key={row.category}
+                                    label={row.category}
+                                    value={row.amount}
+                                    percentage={row.percentage}
+                                    progress={row.percentage}
+                                />
+                            )
+                        })
+                    }
+                </ScrollableArea>
+            </div>
         </SectionCard>
 
     )

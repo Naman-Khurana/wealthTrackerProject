@@ -84,7 +84,7 @@ export default function CustomDoughnutChart(props : Prop){
   const budgetExists=percentageBudgetUsedData?.budgetExists;
   
   console.log(budgetExists)
-  const budgetUsedPercentage=percentageBudgetUsedData?.percentageUsed ?? 0;
+  const budgetUsedPercentage = (percentageBudgetUsedData?.percentageUsed ?? 0) * 100;
   const remaining = Math.max(100 - budgetUsedPercentage, 0);
   const needlePercentageDisplay=Math.min(100,budgetUsedPercentage);
   // console.log(validBudget);
@@ -93,15 +93,8 @@ export default function CustomDoughnutChart(props : Prop){
       {
         data: [needlePercentageDisplay, remaining],
         backgroundColor: [
-          budgetUsedPercentage < 50
-            ? "#4ade80" // green
-            : budgetUsedPercentage < 75
-            ? "#facc15" // yellow
-            : budgetUsedPercentage < 100 
-            ? "#f87171"  // red
-            :budgetUsedPercentage >100
-            ? "#fa0404ff" :
-          "#1f2937", // dark background
+          "#ef4444", // red for used percentage
+          "#1f2937", // dark background for remaining
         ],
         borderWidth: 0,
         circumference:360,
@@ -127,9 +120,9 @@ export default function CustomDoughnutChart(props : Prop){
   };
 
   return (
-    <div className="relative w-full ">
+    <div className="relative w-66 mx-auto">
       <Doughnut data={data} options={options} />
-      <div className="absolute top-3/5 left-1/2 -translate-x-1/2 -translate-y-[20%] text-white text-xl font-semibold flex flex-col items-center justify-center text-nowrap">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-xl font-semibold flex flex-col items-center justify-center text-nowrap">
         {budgetExists ?<div> {budgetUsedPercentage.toFixed(2)}% <br/>Budget Used</div> : <div>No Valid Budget Exists</div>}
       </div>
       {budgetUsedPercentage > 100 && (
