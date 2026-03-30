@@ -26,6 +26,8 @@ import com.springbootproject.wealthtracker.mapper.SubscriptionMapper;
 import com.springbootproject.wealthtracker.mapper.UserSettingsMapper;
 import jakarta.transaction.Transactional;
 import lombok.val;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -44,6 +46,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     public static String JWT="jwt";
     public static String USER="user";
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     private final AccountHolderRepository accountHolderRepository;
     private final RolesRepository rolesRepository;
@@ -81,8 +84,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void registerUser(RegisterUserDTO registerUserDTO) {
         Optional<AccountHolder> existingUser=accountHolderRepository.findByEmail(registerUserDTO.getEmail());
         if(existingUser.isPresent()){
-
-            System.out.println(accountHolderRepository.findByEmail(registerUserDTO.getEmail()));
             throw new RuntimeException("User with this email already exists ! ");
         }
 
@@ -100,10 +101,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         //create the role you want to add the to the user
         Roles role=new Roles("ROLE_USER");
+        UserSettings userSettings=new UserSettings();
 
         //Associate the user with role
         // .add() is a bi-directional convenience method
         newUser.add(role);
+        newUser.add(userSettings);
 
         //save the user( and thererfore automatically role)
         accountHolderRepository.save(newUser);
@@ -213,9 +216,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         String newAccessToken=jwtUtil.generateToken(userDetails,TokenType.ACCESS_TOKEN);
 
+        // TODO : In production systems the older refresh token is blacklisted via db storing blacklisted tokens
+        String newRefreshToken=jwtUtil.generateToken(userDetails,TokenType.REFRESH_TOKEN);
+
+
         return LoginResponseDTO.builder()
                 .jwt(newAccessToken)
-                .refreshToken(refreshToken)
+                .refreshToken(newRefreshToken)
                 .build();
     }
 

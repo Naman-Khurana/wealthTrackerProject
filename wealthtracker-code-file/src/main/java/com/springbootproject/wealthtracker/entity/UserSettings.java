@@ -1,5 +1,7 @@
 package com.springbootproject.wealthtracker.entity;
 
+import com.springbootproject.wealthtracker.enums.CurrencyEnum;
+import com.springbootproject.wealthtracker.enums.TimeZoneEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,8 +17,8 @@ public class UserSettings {
     @Column(name = "user_id")
     private int userId;
 
-    private String currency;
-    private String timezone;
+    private String currency= CurrencyEnum.INR.getValue();
+    private String timezone= TimeZoneEnum.ASIA_KOLKATA.getValue();
 
     @OneToOne
     @MapsId

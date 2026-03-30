@@ -163,6 +163,13 @@ public class AccountHolder implements UserDetails {
         budget.setAccountHolder(this);
     }
 
+    public void add(UserSettings userSettings){
+        this.userSettings=userSettings;
+        if(userSettings!=null){
+            userSettings.setAccountHolder(this);
+        }
+    }
+
     @Override
     public boolean isAccountNonLocked() {
         return true;
