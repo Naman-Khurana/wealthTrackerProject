@@ -79,13 +79,16 @@ public class UserServiceImpl implements UserService{
         AccountHolder user = accountHolderRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+
         UserSettings settings = user.getUserSettings();
+        if(settings!=null) {
+            userSettingsMapper.updateEntityFromDto(dto, settings);
 
-        userSettingsMapper.updateEntityFromDto(dto, settings);
+            userSettingsRepository.save(settings);
 
-        userSettingsRepository.save(settings);
-
-        return userSettingsMapper.toDTO(settings);
+            return userSettingsMapper.toDTO(settings);
+        }
+        return null;
     }
 
 
