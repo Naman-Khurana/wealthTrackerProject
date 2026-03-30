@@ -1,0 +1,47 @@
+version: "3.8"
+services:
+  mysql:
+    image: mysql:8
+    container_name: wealth_tracker_db_container
+    environment:
+      MYSQL_ROOT_PASSWORD: naman1234
+      MYSQL_DATABASE: wealthtracker
+      MYSQL_USER: springstudent
+      MYSQL_PASSWORD: springstudent
+
+    networks:
+      - wealth_tracker_network
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  backend:
+    build: ./wealthtracker-code-file
+    container_name: wealth_tracker_backend_container
+    environment:
+      MYSQL_URL: jdbc:mysql://wealth_tracker_db_container:3306/wealthtracker
+      MYSQL_USER: springstudent
+      MYSQL_PASSWORD: springstudent
+    ports: 
+      - "8080:8080"
+    networks:
+      - wealth_tracker_network
+    depends_on:
+      - mysql
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+  frontend:
+    build: ./wealth-tracker-frontend
+    container_name: wealth_tracker_frontend_container
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
+networks:
+  wealth_tracker_network:
