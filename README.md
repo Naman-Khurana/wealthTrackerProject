@@ -79,7 +79,7 @@
 - **Budget usage indicators** — Visual progress bars for budget consumption
 - **Total earnings & expenses summary** — Quick financial health snapshot
 
-### 📉 Stock Market Integration (Premium Feature)
+### 📉 Stock Market Integration (Premium Feature - Frontend Integration Coming Soon)
 - **Real-time stock price data** — Fetch live stock prices via external API integration
 - **Company search** — Look up stock info by company name using Tradable Search API
 - **Stock listing** — Browse available stocks and their current prices
