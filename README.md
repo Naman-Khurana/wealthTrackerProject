@@ -377,10 +377,13 @@ WealthTracker/
 - **Bean Validation** — Server-side input validation with custom validators and global exception handling
 - **WebSocket Support** — Real-time notification infrastructure ready
 
+## Author & Contact
+
+**Naman Khurana**  
+ Software Engineer | Java
+
+📧 Email: namankhurana.dev@gmail.com  
+🔗 LinkedIn: https://www.linkedin.com/in/naman-khurana-a444a6204  
+💻 GitHub: https://github.com/Naman-Khurana
+
 ---
-
-<div align="center">
-
-**Built with ❤️ by Naman Khurana**
-
-</div>
