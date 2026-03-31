@@ -1,21 +1,13 @@
 "use client"
 
 import React from "react"
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, BarElement, Title, Tooltip, Legend, Filler, scales, ChartData, } from "chart.js";
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, BarElement, Title, Tooltip, Legend, Filler,  ChartData, } from "chart.js";
 import { Bar } from "react-chartjs-2"
-import { title } from "process";
-import axios from "axios";
-import { useState, useEffect } from "react";
 import { useLastSixMonthlyEarnings, useLastSixMonthlyExpenses } from "../dashboard-api-fetcher";
 import SectionCard from "@/components/comman/ui/section-card";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, BarElement, Title, Tooltip, Legend, Filler);
 
-type fetchedDataType = {
-    year: number;
-    month: number;
-    total: number;
-}
 
 
 export default function BarChartTemplate() {
@@ -25,14 +17,14 @@ export default function BarChartTemplate() {
         data: lastSixMonthsEarningsData,
         isLoading: loadingEarnings,
         isError: errorEarnings,
-        error: earningsError,
+    
     } = useLastSixMonthlyEarnings();
 
     const {
         data: lastSixMonthsExpensesData,
         isLoading: loadingExpenses,
         isError: errorExpenses,
-        error: expensesError,
+       
     } = useLastSixMonthlyExpenses();
 
     if (loadingEarnings || loadingExpenses) {

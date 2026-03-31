@@ -115,8 +115,7 @@ export default function InsightsNCompareSection() {
         lastSixMonthsData[lastSixMonthsData.length - 2].total / lastMonthDays();
 
     const dailyIncreased = currentMonthDailyAvg > lastMonthDailyAvg;
-    const dailyDiff = Math.abs(currentMonthDailyAvg - lastMonthDailyAvg).toFixed(2);
-
+    
     const highest = expensesCategoryWithPercentageUsageData?.reduce((max, item) =>
         item.percentageUsed > max.percentageUsed ? item : max
     );

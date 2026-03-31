@@ -11,7 +11,6 @@ import {
   Legend,
   Filler
 } from "chart.js"
-import { X } from "lucide-react"
 
 import { Line } from "react-chartjs-2"
 

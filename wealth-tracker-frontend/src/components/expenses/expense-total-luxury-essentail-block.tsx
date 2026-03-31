@@ -2,22 +2,11 @@
 
 import { useAllEssentialExpensesWithDetails, useAllLuxuryExpensesWithDetails } from "./expenses-api-fetcher"
 import { useTotalExpensesNEarnings } from "../dashboard/dashboard-api-fetcher"
-import MoneyStatCard from "../comman/ui/money_stat_card";
 import CommanMoneyStatCardGroup from "../comman/ui/comman-money-stat-card-group";
 
 
-type NExpensesDataType = {
-    category: string;
-    amount: number;
-    date: string;
-}
 
 
-type essentialExpensesDataType = {
-    TotalessentialExpenses: number;
-    essentialCategories: string[];
-    essentialExpenses: NExpensesDataType[];
-}
 
 
 export default function TotalLuxuryEssentialExpensesBlock() {
@@ -26,24 +15,15 @@ export default function TotalLuxuryEssentialExpensesBlock() {
 
     const {
         data: allEssentialExpensesData,
-        isLoading: loadingAllEssentialExpenses,
-        isError: errorAllEssentialExpenses,
-        error: allEssentialExpensesError,
     } = useAllEssentialExpensesWithDetails()
 
 
     const {
         data: allLuxuryExpensesData,
-        isLoading: loadingAllLuxuryExpenses,
-        isError: errorAllLuxuryExpenses,
-        error: allLuxuryExpensesError,
     } = useAllLuxuryExpensesWithDetails()
 
     const {
         data: totalExpensesNEarningsData,
-        isLoading: loadingtotalExpensesNEarningsData,
-        isError: errortotalExpensesNEarningsData,
-        error: totalExpensesNEarningsDataError,
     } = useTotalExpensesNEarnings();
 
 

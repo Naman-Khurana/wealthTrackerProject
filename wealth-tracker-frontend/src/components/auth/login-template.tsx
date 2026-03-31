@@ -135,7 +135,7 @@ export default function LoginTemplate(){
                 </section>
                 
                 <input type="submit" value="Login" className=" bg-white cursor-pointer shadow-md hover:shadow-xl w-[65%] rounded-4xl p-[7px]  hover:scale-105 transition duration-500 hover:bg-purple-700 hover:text-white"/>  
-                <p className="text-white text-[12px] mt-[-8px]">Don't have an account yet? <button onClick={handleRotateAndRedirect} className="font-bold inline-block  cursor-pointer   hover:scale-105 transition duration-500">Register</button></p>
+                <p className="text-white text-[12px] mt-[-8px]">{`Don't have an account yet?`} <button onClick={handleRotateAndRedirect} className="font-bold inline-block  cursor-pointer   hover:scale-105 transition duration-500">Register</button></p>
             </form>
         
         </main>

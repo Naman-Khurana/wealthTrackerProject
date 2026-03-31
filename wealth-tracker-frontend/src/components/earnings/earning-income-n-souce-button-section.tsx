@@ -1,17 +1,14 @@
 "use client"
 
-import { useState } from "react"
-import { Home, PhoneCall, Settings, User } from "lucide-react"
+import { Home, User } from "lucide-react"
 import { AnimatedBackground } from "../../../components/motion-primitives/animated-background"
 import Card from "../comman/ui/card"
 import ActionButton from "../comman/ui/action-button"
 import { useModal } from "@/context/model-context"
-import { useEarningsWithDetails } from "./earnings-api-fetcher"
-import { Tab } from "@headlessui/react"
 import { useEarningsFilter } from "@/context/earnings-filter-context"
 import { EarningsFilterEnum } from "@/type/enums"
 export default function EarningIncomeNSourceAddButtonSection() {
-  const {activeTab,setActiveTab}=useEarningsFilter()
+  const {setActiveTab}=useEarningsFilter()
 
   const { openModal } = useModal()
   
@@ -22,15 +19,7 @@ export default function EarningIncomeNSourceAddButtonSection() {
     
   ]
 
-  // const [activeTab, setActiveTab] = useState(TABS[0].label)
 
-  
-  const {
-  data: dataWithDetails,
-  isLoading: isLoadingWithDetail,
-  isError: isErrorWithDetail,
-  error: errorWithDetail
-} = useEarningsWithDetails()
 
   return (
     <Card className="h-full w-full flex flex-row gap-1 pr-2">

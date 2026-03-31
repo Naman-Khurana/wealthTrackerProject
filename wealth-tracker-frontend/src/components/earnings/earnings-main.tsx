@@ -1,8 +1,5 @@
 "use client"
-import Card from "../comman/ui/card";
 import RecentTransactionBlock from "../comman/ui/recent-history-block";
-import AddExpensesNBudgetButton from "../expenses/add-expenses-budget-button";
-import EarningIncomeNSourceAddButtonSection from "./earning-income-n-souce-button-section";
 import EarningsInsightsSection from "./earnings-insights-section";
 import EaringsTotalNRecurringNOneTime from "./earnings-total-recurring-one-time";
 import IncomeDistributionSection from "./income-distribution-section";
@@ -16,20 +13,19 @@ export default function EarningsComponent() {
         data: dataWithDetails,
         isLoading: isLoadingWithDetail,
         isError: isErrorWithDetail,
-        error: errorWithDetail
+
     } = useEarningsWithDetails();
     const {
         data: dataTypeWise,
         isLoading: isLoadingTypeWise,
         isError: isErrorTypeWise,
-        error: errorTypeWise
     } = useEarningsIncomeTypeWise();
 
     const {
         data: lastSixMonthsEarningsData,
         isLoading: isLoadingLastSixMonthsEarnings,
         isError: isErrorLastSixMonthsEarnings,
-        error: errorLastSixMonthsEarnings
+        
     } = useLastSixMonthlyEarnings()
     
 

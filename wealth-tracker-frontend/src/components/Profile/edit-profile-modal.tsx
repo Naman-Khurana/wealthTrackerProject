@@ -77,7 +77,7 @@ type Props = {
 export default function EditProfileModal({ closeEditProfileModal, isOpen }: Props) {
 
   const updateProfileMutation = useUpdateProfile();
-  const [isPending, setIsPending] = useState(false);  
+  const [isPending] = useState(false);  
   const { user, userSettings, subscription } = useAuth();
 
   const [form, setForm] = useState<FormState>({

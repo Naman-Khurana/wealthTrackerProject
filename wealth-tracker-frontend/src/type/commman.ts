@@ -30,7 +30,7 @@ export type User = {
   accountNonExpired: boolean;
   credentialsNonExpired: boolean;
 
-  authorities: any[];
+  authorities: string[];
   username: string;
 };
 

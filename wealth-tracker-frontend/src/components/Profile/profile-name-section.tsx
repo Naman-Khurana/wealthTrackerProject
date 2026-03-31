@@ -8,7 +8,7 @@ import { useModal } from "@/context/model-context";
         subscription: Subscription;
         userSettings: UserSettings;
     }
-export default function ProfileNameSection({ user, subscription, userSettings }: prop) {
+export default function ProfileNameSection({ user, subscription }: prop) {
 
     const { openModal } = useModal()
 

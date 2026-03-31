@@ -19,9 +19,7 @@ export default function TotalEarningNExpensesButtonTemplate(props: inputs) {
 
     const {
         data: totalExpensesNEarningsData,
-        isLoading: loadingtotalExpensesNEarningsData,
-        isError: errortotalExpensesNEarningsData,
-        error: totalExpensesNEarningsDataError,
+        
     } = useTotalExpensesNEarnings();
 
 

@@ -6,13 +6,6 @@ type BudgetCategory = {
   percentageUsed: number;
 };
 
-type BudgetUsageResponseDTO = {
-  budgetExists: boolean;
-  percentageUsed: number;
-};
-
-type AllCategoriesBudgetUsageResponseMapDTO = Record<string, BudgetUsageResponseDTO>;
-
 
 
 
@@ -21,8 +14,6 @@ export default function BudgetByCategory() {
   const {
     data: allBudgetCategoriesWithPercentageUsageData,
     isLoading: loadingAllBudgetCategoriesWithPercentageUsage,
-    isError: errorAllBudgetCategoriesWithPercentageUsage,
-    error: allBudgetCategoriesWithPercentageUsageError,
   } = useAllBudgetCategoriesWithPercentageUsage()
   if (loadingAllBudgetCategoriesWithPercentageUsage)
     return (<div> Loading </div>);

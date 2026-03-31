@@ -1,7 +1,6 @@
 "use client"
 import { useState,useRef } from "react"
 import { useRouter } from "next/navigation"
-import { ifError } from "assert";
 import axiosInstance from "@/lib/axios_instance";
 
 export default function RegisterUserTemplate(){
@@ -48,9 +47,10 @@ export default function RegisterUserTemplate(){
     ]
 
     const inputFields=inputFieldsData.map((fields) =>(
-        <div className="relative w-full">
+        <div className="relative w-full" key={fields.type}>
             <input
                 type={fields.type}
+                key={fields.type}
                 placeholder={fields.placeholder}
                 ref={fields.ref}
                 className={inputClasses}
@@ -84,7 +84,7 @@ export default function RegisterUserTemplate(){
                 email : email,
                 password : password
             })
-            .then(response => {
+            .then(() => {
                 route.push('/login  ');
 
             })

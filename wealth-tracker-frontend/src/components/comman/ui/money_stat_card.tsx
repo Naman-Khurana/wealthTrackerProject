@@ -1,4 +1,4 @@
-import { BACKGROUND_COLOR_EMRALD_GREEN, TEXT_COLOR_EMRALD_GREEN } from "@/constants/ui.constants";
+import { TEXT_COLOR_EMRALD_GREEN } from "@/constants/ui.constants";
 
 import Card from "./card";
 

@@ -1,7 +1,6 @@
 "use client"
 
 import ProfileNameSection from "./profile-name-section";
-import ProfilePersonalDetailsSection from "./profile-personal-details-section";
 import ProfileSubSectoinsTemplate from "./profile-subsections-template";
 import { useAuth } from "@/context/auth-context";
 

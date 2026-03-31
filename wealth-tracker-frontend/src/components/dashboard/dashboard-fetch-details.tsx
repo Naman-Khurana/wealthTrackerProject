@@ -1,6 +1,5 @@
 "use client"
 import axiosInstance from "@/lib/axios_instance";
-import { useQuery } from "@tanstack/react-query";
 export default function DashBoardFetch(){
 
 
@@ -18,7 +17,7 @@ export default function DashBoardFetch(){
             
             
         }catch(error){
-                console.log("Error setting the budget..");
+                console.log(`Error setting the budget.. : ${error}`  );
                 return null
         }
     };

@@ -7,14 +7,14 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea"
 import { format } from "date-fns"
-import { Calendar as CalendarIcon, X } from "lucide-react"
+import { Calendar as CalendarIcon } from "lucide-react"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
-import { useState, useRef } from "react";
+import { useState } from "react";
 import Modal from "../comman/ui/modal";
 import { IncomeTypeEnum } from "@/type/enums";
 import { useAddIncome } from "./earnings-api-fetcher";
@@ -24,30 +24,27 @@ type props = {
   isOpen: boolean
 }
 
-type formState = {
+type FormState = {
   source: string;
   incomeType: IncomeTypeEnum;
-  amount: number;
-  date: Date;
+  amount: number | "";
+  date: Date | undefined;
   description: string;
+};
 
-}
 
 export default function AddIncomeModal({ closeAddIncome, isOpen }: props) {
   const { mutate, isPending } = useAddIncome()
-  const handleChange = (field: keyof typeof form, value: any) => {
+  const handleChange = <K extends keyof FormState>(field: K, value: FormState[K]) => {
     setForm(prev => ({ ...prev, [field]: value }));
   };
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<FormState>({
     source: "",
     incomeType: IncomeTypeEnum.RECURRING,
     amount: "",
     date: undefined as Date | undefined,
     description: "",
   })
-
-  const amountRef = useRef<HTMLInputElement>(null);
-  const descriptionRef = useRef<HTMLTextAreaElement>(null);
 
 
 

@@ -1,15 +1,11 @@
 'use client'
 
-import { BACKGROUND_COLOR_EMRALD_GREEN } from "@/constants/ui.constants";
 import ActionButton from "../comman/ui/action-button";
 import { useModal } from "@/context/model-context";
 
-type Props = {
-    openAddExpenses: () => void;
-    openAddBudget: () => void
-}
 
-export default function AddExpensesNBudgetButton({ openAddExpenses, openAddBudget }: Props) {
+
+export default function AddExpensesNBudgetButton() {
 
 
     const { openModal } = useModal()

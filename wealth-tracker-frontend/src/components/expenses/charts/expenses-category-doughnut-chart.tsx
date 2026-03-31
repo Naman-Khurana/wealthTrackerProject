@@ -1,8 +1,8 @@
 "use client";
 
-import { Chart as ChartJS, ArcElement, Tooltip,TooltipItem,Chart,ChartOptions, ChartTypeRegistry, } from "chart.js";
+import { Chart as ChartJS, ArcElement, Tooltip,TooltipItem,ChartOptions, } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
-import { motion } from "framer-motion";
+
 import { useExpensesCategoryWithPercentageUsage } from "../expenses-api-fetcher";
 
 
@@ -13,8 +13,6 @@ export default function ExpensesCategoryDoughnutChart(){
   const{
       data:expensesCategoryWithPercentageUsageData,
       isLoading:loadingExpensesCategoryWithPercentageUsage,
-      isError:errorExpensesCategoryWithPercentageUsage,
-      error: expensesCategoryWithPercentageUsageError,
   }=useExpensesCategoryWithPercentageUsage()
 
   if(loadingExpensesCategoryWithPercentageUsage){

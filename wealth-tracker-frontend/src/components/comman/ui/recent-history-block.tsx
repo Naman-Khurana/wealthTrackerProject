@@ -15,11 +15,11 @@ type props = {
 
 }
 
-export default function RecentTransactionBlock({ title, transactionData }: props) {
+export default function RecentTransactionBlock({  transactionData }: props) {
 
     const listOfTransaction = transactionData.map((transaction) => {
         return (
-            <RecentTransactionRowTemplate category={transaction.category} amount={transaction.amount} date={transaction.date} />
+            <RecentTransactionRowTemplate key={transaction.category} category={transaction.category} amount={transaction.amount} date={transaction.date} />
         );
     })
     console.log(transactionData)

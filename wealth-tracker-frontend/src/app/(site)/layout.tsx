@@ -4,9 +4,7 @@ import { Archivo } from "next/font/google";
 import "../globals.css";
 import Navbar from "@/components/navbar/navbar";
 import Menu from "@/components/main-layout/menu";
-import ReactQueryProvider from "@/components/provider/ReactQueryProvider";
-import { ModalProvider } from "@/context/model-context";
-import ModalRenderer from "@/components/global/modal-renderer";
+
 
 
 // Font setup

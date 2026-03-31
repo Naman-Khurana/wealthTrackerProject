@@ -1,7 +1,6 @@
 import { Earnings } from "@/type/earnings";
-import InsightItem from "../comman/ui/insights-item";
 import SectionCard from "../comman/ui/section-card";
-import { lastSixMonthsData, rowTemplateContent } from "@/type/commman";
+import { lastSixMonthsData } from "@/type/commman";
 
 
 interface Insight {

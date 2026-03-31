@@ -1,12 +1,12 @@
 import { API_BASE_URL } from "@/constants/api.constants";
-import axios from "axios";
+import axios, { type AxiosResponse } from "axios";
 
 const axiosInstance = axios.create({
     baseURL: API_BASE_URL,
     withCredentials: true,
 });
 
-let refreshPromise: Promise<any> | null = null;
+let refreshPromise: Promise<AxiosResponse<unknown>> | null = null;
 
 axiosInstance.interceptors.response.use(
     (response) => response,

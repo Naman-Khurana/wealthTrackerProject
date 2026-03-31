@@ -1,4 +1,4 @@
-import { BACKGROUND_COLOR_EMRALD_GREEN, BACKGROUND_DARK_EMRALD_GREEN, TEXT_COLOR_EMRALD_GREEN, TEXT_DARK_EMRALD_GREEN } from "@/constants/ui.constants";
+import { BACKGROUND_COLOR_EMRALD_GREEN,  TEXT_COLOR_EMRALD_GREEN} from "@/constants/ui.constants";
 
 type StatRowWithProgressBarProps = {
   label: React.ReactNode;

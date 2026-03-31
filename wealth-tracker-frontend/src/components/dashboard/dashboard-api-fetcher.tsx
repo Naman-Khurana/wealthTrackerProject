@@ -97,7 +97,7 @@ export function useTotalExpensesNEarnings() {
         staleTime: Infinity,
     });
 }
-export function usePercentageBudgetUsed(budgetRangeCategory: string, expenseCategory: string) {
+export function usePercentageBudgetUsed(budgetRangeCategory: string) {
     return useQuery<fetchPercentageBudgetUsedDTO>({
         queryKey: ["percentageBudgetused", budgetRangeCategory],
         queryFn: () => fetchPercentageBudgetUsed(budgetRangeCategory),

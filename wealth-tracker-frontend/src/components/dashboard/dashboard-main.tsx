@@ -1,12 +1,8 @@
 
 import LineChartTemplate from "./charts/line-chart-template"
 import BarChartTemplate from "./charts/bar-chart-template"
-import CustomDoughnutChart from "./charts/customized-doughnut-chart"
 import TotalEarningNExpensesButtonTemplate from "./total-earning-expenses-button"
-import DashBoardFetch from "./dashboard-fetch-details"
 import DashBoardBudgetSection from "./dashboard-budget-section"
-import SectionCard from "../comman/ui/section-card"
-import { Car } from "lucide-react"
 import Card from "../comman/ui/card"
 export default function DashBoardComponent() {
     const upperSectionFields = [
@@ -25,7 +21,7 @@ export default function DashBoardComponent() {
 
     const upperSection = upperSectionFields.map((block) => (
 
-        <TotalEarningNExpensesButtonTemplate title={block.title} value={block.value} image={block.image} />
+        <TotalEarningNExpensesButtonTemplate  key={block.title} title={block.title} value={block.value} image={block.image} />
     ))
     return (
 
@@ -42,13 +38,7 @@ export default function DashBoardComponent() {
                 {/* Section Upper */}
             </section>
             <section className="h-[42%] w-full bg-black/25 rounded-2xl border border-gray-600 text-center flex justify-between items-center gap-5  overflow-hidden px-[4%] py-[5%]">
-                {/* Section Lower */}
-                {/* <button  className="relative w-[25%] h-[90%] bg-black/50 border border-gray-600 shadow-2xl rounded-2xl text-[50px] transition-all duration-200 hover:scale-[1.02] hover:bg-gray-800/50">
-                            +
-                            <DashBoardFetch />
-                             idea : add a visa card template
-                                feature coming soon (redirect) 
-                        </button> */}
+               
                 <div className="w-[25%] h-[30%]  flex items-center ">
                     {/* BUDGET SECTION  */}
                     <DashBoardBudgetSection />

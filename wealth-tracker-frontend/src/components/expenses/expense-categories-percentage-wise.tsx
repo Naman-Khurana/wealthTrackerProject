@@ -6,9 +6,6 @@ export default function ExpensesCategoriesPercentageUsageSection(){
 
     const{
       data:expensesCategoryWithPercentageUsageData,
-      isLoading:loadingExpensesCategoryWithPercentageUsage,
-      isError:errorExpensesCategoryWithPercentageUsage,
-      error: expensesCategoryWithPercentageUsageError,
     }=useExpensesCategoryWithPercentageUsage()
 
 const categories = expensesCategoryWithPercentageUsageData?.map(item => (

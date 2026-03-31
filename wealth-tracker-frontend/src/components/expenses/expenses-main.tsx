@@ -1,28 +1,16 @@
 "use client"
 
 import AddExpensesNBudgetButton from "./add-expenses-budget-button";
-import ExpensesCategoryDoughnutChart from "./charts/expenses-category-doughnut-chart";
 import TotalLuxuryEssentialExpensesBlock from "./expense-total-luxury-essentail-block";
 import BudgetByCategory from "./charts/budget-by-category-section";
 import InsightsNCompareSection from "./insights-compared-to-section";
 import RecentExpensesSection from "./recent-transactions-section";
-import AddExpensesSection from "./add-expenses-section";
-import Example from "./add-expense-section-two";
-import { useState } from "react";
-import { useModal } from "@/context/model-context";
-import AddBudgetSection from "./add-budget-section";
+
+
 import ExpensesCategoriesPercentageUsageSection from "./expense-categories-percentage-wise";
 
 export default function ExpensesComponent(){
-    const { openModal } = useModal()
-    const [showAddExpense,setShowAddExpenses]=useState(false);
-    const [showAddBudget,setShowAddBudget]=useState(false);
-    const openAddExpensesButton=()=>{
-        setShowAddExpenses(!showAddExpense);
-    }
-    const openAddBudgetButton=()=>{
-        setShowAddBudget(!showAddBudget);
-    }
+
     
     return(
         <main className="relative w-full h-[99%]  text-white flex justify-center items-center gap-3 ">
@@ -35,7 +23,7 @@ export default function ExpensesComponent(){
                     <TotalLuxuryEssentialExpensesBlock/>
         
                     <div className="h-full w-[20%] flex items-center justify-center">
-                        <AddExpensesNBudgetButton openAddExpenses={openAddExpensesButton} openAddBudget={openAddBudgetButton}/>
+                        <AddExpensesNBudgetButton />
                     </div>
 
                 </section>

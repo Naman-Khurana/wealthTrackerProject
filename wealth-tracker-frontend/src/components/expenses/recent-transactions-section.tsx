@@ -5,12 +5,6 @@ import Divider from "../comman/ui/divider";
 import { useNExpenses } from "./expenses-api-fetcher";
 import RecentTransactionRowTemplate from "./recent-transaction-row-template";
 
-type NExpensesDataType = {
-  category: string;
-  amount: number;
-  date: string;
-};
-
 // ── Skeleton row ────────────────────────────────────────────────────────────
 function SkeletonRow() {
   return (

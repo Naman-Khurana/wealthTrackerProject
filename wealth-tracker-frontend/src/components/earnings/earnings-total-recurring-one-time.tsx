@@ -1,7 +1,4 @@
-import { title } from "process"
-import MoneyStatCard from "../comman/ui/money_stat_card"
 import CommanMoneyStatCardGroup from "../comman/ui/comman-money-stat-card-group"
-import Card from "../comman/ui/card"
 import EarningIncomeNSourceAddButtonSection from "./earning-income-n-souce-button-section"
 import { EarningsIncomeTypeWise } from "@/type/earnings"
 

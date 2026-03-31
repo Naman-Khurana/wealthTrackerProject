@@ -4,16 +4,22 @@ import { AnimatePresence, Transition, motion } from 'motion/react';
 import {
   Children,
   cloneElement,
+  HTMLAttributes,
   ReactElement,
   useEffect,
   useState,
   useId,
 } from 'react';
 
+type AnimatedBackgroundChildProps = HTMLAttributes<HTMLElement> & {
+  'data-id': string;
+  'data-checked'?: 'true' | 'false';
+};
+
+type AnimatedBackgroundChild = ReactElement<AnimatedBackgroundChildProps>;
+
 export type AnimatedBackgroundProps = {
-  children:
-    | ReactElement<{ 'data-id': string }>[]
-    | ReactElement<{ 'data-id': string }>;
+  children: AnimatedBackgroundChild[] | AnimatedBackgroundChild;
   defaultValue?: string;
   onValueChange?: (newActiveId: string | null) => void;
   className?: string;
@@ -46,7 +52,7 @@ export function AnimatedBackground({
     }
   }, [defaultValue]);
 
-  return Children.map(children, (child: any, index) => {
+  return Children.map(children, (child: AnimatedBackgroundChild, index) => {
     const id = child.props['data-id'];
 
     const interactionProps = enableHover

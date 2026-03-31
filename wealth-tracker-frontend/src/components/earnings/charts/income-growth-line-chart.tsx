@@ -4,7 +4,6 @@ import React from "react"
 
 import { useLastSixMonthlyEarnings } from "@/components/dashboard/dashboard-api-fetcher";
 import LineChart from "@/components/comman/graphs/linechart";
-import { error } from "console";
 
 
 

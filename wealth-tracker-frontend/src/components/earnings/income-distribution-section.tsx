@@ -1,4 +1,3 @@
-import { BACKGROUND_COLOR_EMRALD_GREEN, TEXT_COLOR_EMRALD_GREEN } from "@/constants/ui.constants";
 import SectionCard from "../comman/ui/section-card";
 import StatRowWithProgressBar from "../comman/ui/stat-row-with-progress-bar";
 import Divider from "../comman/ui/divider";
