@@ -48,7 +48,7 @@ export default function ProfileComponent() {
 
     const financialPreferences: ProfileSubsectionDateType = {
         heading: "Financial Preferences",
-        attribute1: { key: "Default Currency", value: userSettings?.currency ?? "rfdhrINR" },
+        attribute1: { key: "Default Currency", value: userSettings?.currency ?? "INR" },
         attribute2: { key: "Budget Reset Day", value: "1st of Month" },
         attribute3: { key: "Category View", value: "All" }
     };
