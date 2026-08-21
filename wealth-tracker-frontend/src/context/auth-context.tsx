@@ -15,6 +15,19 @@ export type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+const AUTH_COOKIE_NAME = "wealth-tracker-auth-userid";
+
+function setAuthCookie(userId: number | null) {
+  if (typeof window === "undefined") return;
+
+  if (userId === null) {
+    window.document.cookie = `${AUTH_COOKIE_NAME}=; path=/; max-age=0; sameSite=lax`;
+    return;
+  }
+
+  window.document.cookie = `${AUTH_COOKIE_NAME}=${userId}; path=/; sameSite=lax`;
+}
+
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
@@ -31,8 +44,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(parsed.user ?? null);
       setUserSettings(parsed.userSettings ?? null);
       setSubscription(parsed.subscription ?? null);
+      setAuthCookie(parsed.user?.id ?? null);
     } catch {
       window.localStorage.removeItem(AUTH_STORAGE_KEY);
+      setAuthCookie(null);
     }
   }, []);
 
@@ -41,6 +56,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUserSettings(data.userSettings);
     setSubscription(data.subscription);
     window.localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(data));
+    setAuthCookie(data.user?.id ?? null);
   };
 
   const logout = () => {
@@ -48,6 +64,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUserSettings(null);
     setSubscription(null);
     window.localStorage.removeItem(AUTH_STORAGE_KEY);
+    setAuthCookie(null);
   };
   return (
     <AuthContext.Provider value={{

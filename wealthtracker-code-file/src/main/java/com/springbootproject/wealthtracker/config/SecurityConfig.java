@@ -6,6 +6,7 @@ import com.springbootproject.wealthtracker.Security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.SecurityBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -19,6 +20,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -30,6 +32,9 @@ public class SecurityConfig  {
     private AuthenticationProvider authenticationProvider;
     private CustomUserDetailsService customUserDetailsService;
     private CustomAuthenticationSuccessHandler successHandler;
+
+    @Value("${app.cors.allowed-origins:http://localhost:8080,http://localhost:3000,http://localhost:3001}")
+    private String allowedOrigins;
 
     @Autowired
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, AuthenticationProvider authenticationProvider, CustomUserDetailsService customUserDetailsService, CustomAuthenticationSuccessHandler successHandler) {
@@ -72,11 +77,17 @@ public class SecurityConfig  {
     CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration configuration=new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("http://localhost:8080","http://localhost:3000"));
-        configuration.setAllowedMethods(List.of("GET","POST","PUT","DELETE"));
+        configuration.setAllowedOriginPatterns(
+                Arrays.stream(allowedOrigins.split(","))
+                        .map(String::trim)
+                        .filter(origin -> !origin.isEmpty())
+                        .toList()
+        );
+        configuration.setAllowedMethods(List.of("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization","Content-Type","X-Requested-With"));
         configuration.setExposedHeaders(List.of("Authorization"));
         configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source=new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**",configuration);

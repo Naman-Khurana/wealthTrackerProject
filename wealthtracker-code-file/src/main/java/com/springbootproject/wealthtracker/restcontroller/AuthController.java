@@ -91,9 +91,6 @@ public class AuthController {
                 .sameSite("Strict")
                 .build();
 
-        authenticatedUserDetails.setJwt(null);
-        authenticatedUserDetails.setRefreshToken(null);
-
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE,jwtCookie.toString())
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
@@ -126,8 +123,21 @@ public class AuthController {
     }
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<?> refreshToken(@CookieValue(value = "refreshToken",required = false) String refreshToken ) throws Exception{
+        public ResponseEntity<?> refreshToken(
+                        @CookieValue(value = "refreshToken",required = false) String refreshToken,
+                        @RequestHeader(value = "Authorization", required = false) String authorizationHeader
+        ) throws Exception{
         //call the auth service function for refreshing the token
+
+                if ((refreshToken == null || refreshToken.isBlank())
+                                && authorizationHeader != null
+                                && authorizationHeader.startsWith("Bearer ")) {
+                        refreshToken = authorizationHeader.substring(7);
+                }
+
+                if (refreshToken == null || refreshToken.isBlank()) {
+                        throw new UnauthorizedException("Refresh token missing");
+                }
 
 
         LoginResponseDTO responseDTO=authenticationService.authenticationWithRefreshToken(refreshToken);
@@ -150,7 +160,7 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE,jwtCookie.toString())
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                .body("Authenticated");
+                .body(responseDTO);
         //otherwise return unauthorized error
     }
 

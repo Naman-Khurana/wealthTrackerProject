@@ -18,7 +18,7 @@ public class DashBoardController {
         this.jwtUtil=jwtUtil;
         this.theDashBoardService = theDashBoardService;}
 
-    @GetMapping("/")
+        @GetMapping({"", "/"})
     public DashBoardHomeDTO displayDashBoard(
             @CookieValue(name = "jwt", required = false) String token
     ){

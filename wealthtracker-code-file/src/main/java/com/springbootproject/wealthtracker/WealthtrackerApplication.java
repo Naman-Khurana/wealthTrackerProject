@@ -14,7 +14,8 @@ import java.time.LocalDate;
 import java.sql.Date;
 
 @SpringBootApplication
-public class WealthtrackerApplication {
+public class
+WealthtrackerApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(WealthtrackerApplication.class,args);

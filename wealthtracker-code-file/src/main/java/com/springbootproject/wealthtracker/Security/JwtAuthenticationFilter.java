@@ -6,6 +6,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -98,7 +100,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             }
         }
-        filterChain.doFilter(request,response);
+
+        HttpServletRequest requestToUse = request;
+        boolean hasJwtCookie = request.getCookies() != null
+                && Arrays.stream(request.getCookies()).anyMatch(cookie -> "jwt".equals(cookie.getName()));
+
+        if (!hasJwtCookie && jwt != null && !jwt.isBlank()) {
+            final String jwtToken = jwt;
+            requestToUse = new HttpServletRequestWrapper(request) {
+                @Override
+                public Cookie[] getCookies() {
+                    Cookie[] existing = super.getCookies();
+                    Cookie authCookie = new Cookie("jwt", jwtToken);
+
+                    if (existing == null || existing.length == 0) {
+                        return new Cookie[]{authCookie};
+                    }
+
+                    Cookie[] merged = Arrays.copyOf(existing, existing.length + 1);
+                    merged[existing.length] = authCookie;
+                    return merged;
+                }
+            };
+        }
+
+        filterChain.doFilter(requestToUse,response);
 
 
     }
@@ -107,7 +133,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest requests) throws ServletException{
         String path=requests.getRequestURI();
         return path.equals("/api/auth/login") ||
-                path.equals("/api/auth/.*/logout") ||
+                path.equals("/api/auth/logout") ||
                 path.matches ("/api/auth/register") ||
                 path.equals("/api/auth/refresh-token");
     }

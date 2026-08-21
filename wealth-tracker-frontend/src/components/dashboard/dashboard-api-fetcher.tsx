@@ -28,19 +28,19 @@ type fetchPercentageBudgetUsedDTO = {
 }
 
 const fetchLastSixMonthlyEarnings = async () => {
-    const details = await axiosInstance.get('/earnings/lastSixMonthsData ');
+    const details = await axiosInstance.get('/earnings/lastSixMonthsData');
     return details.data;
 
 };
 
 const fetchLastSixMonthlyExpenses = async () => {
-    const details = await axiosInstance.get('/expenses/lastSixMonthsData ');
+    const details = await axiosInstance.get('/expenses/lastSixMonthsData');
     return details.data;
 
 };
 
 const fetchAllExpensesBudgets = async () => {
-    const details = await axiosInstance.get('/expenses/budget/get ');
+    const details = await axiosInstance.get('/expenses/budget/get');
     return details.data;
 }
 

@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 export function middleware(request: NextRequest){
-    const token =request.cookies.get('jwt')?.value;
+  const authUserId = request.cookies.get('wealth-tracker-auth-userid')?.value;
     const { pathname }=request.nextUrl
 
     const isAuthPage=pathname=='/login' || pathname=='/register' 
 
-    if(!token && !isAuthPage){
+  if(!authUserId && !isAuthPage){
         return NextResponse.redirect(new URL('/login',request.url));
     }
 
-    if(token && isAuthPage){
+  if(authUserId && isAuthPage){
         return NextResponse.redirect(new URL('/dashboard',request.url));
     }
 
@@ -18,6 +18,6 @@ export function middleware(request: NextRequest){
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)",
   ],
 };
